@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+# Copyright (c) 2020-2022, NVIDIA CORPORATION.  All rights reserved.
+#
+# NVIDIA CORPORATION and its licensors retain all intellectual property
+# and proprietary rights in and to this software, related documentation
+# and any modifications thereto.  Any use, reproduction, disclosure or
+# distribution of this software and related documentation without an express
+# license agreement from NVIDIA CORPORATION is strictly prohibited.
+
 import argparse
 import os
 
@@ -55,5 +63,10 @@ if __name__ == "__main__":
 	T_lines = map(str.strip,open("pose/RT_c2w.txt","r").readlines())
 	K_els = tuple(map(float, " ".join(K_lines).split(" ")))
 	T_els = tuple(map(float, " ".join(T_lines).split(" ")))
-	print(K_els)
-	print(T_els)
+	assert len(K_els) == 3*3*CAMERAS
+	K_arrays = [np.array(K_els[i:i+3*3]).reshape((3,3)) for i in range(CAMERAS)]
+	assert len(T_els) == 3*4*CAMERAS
+	T_arrays = [np.array(K_els[i:i+3*4]).reshape((4,3)) for i in range(CAMERAS)]
+	for K, T in zip(K_arrays, T_arrays):
+		print(K)
+		print(T)
