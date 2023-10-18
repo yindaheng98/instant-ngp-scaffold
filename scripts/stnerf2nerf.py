@@ -61,12 +61,31 @@ if __name__ == "__main__":
 
 	K_lines = map(str.strip,open("pose/K.txt","r").readlines())
 	T_lines = map(str.strip,open("pose/RT_c2w.txt","r").readlines())
-	K_els = tuple(map(float, " ".join(K_lines).split(" ")))
-	T_els = tuple(map(float, " ".join(T_lines).split(" ")))
-	assert len(K_els) == 3*3*CAMERAS
-	K_arrays = [np.array(K_els[i:i+3*3]).reshape((3,3)) for i in range(CAMERAS)]
-	assert len(T_els) == 3*4*CAMERAS
-	T_arrays = [np.array(K_els[i:i+3*4]).reshape((4,3)) for i in range(CAMERAS)]
-	for K, T in zip(K_arrays, T_arrays):
-		print(K)
-		print(T)
+	K_arrays = [np.array(tuple(map(float, line.split(" ")))).reshape((3,3)) for line in K_lines]
+	T_arrays = [np.array(tuple(map(float, line.split(" ")))).reshape((4,3)) for line in T_lines]
+	
+	for frame, frame_folder in frame_folders.items():
+		frame_files = img_files[frame]
+		frame_data = {
+			"aabb_scale": AABB_SCALE,
+			"k1": 0,
+			"k2": 0,
+			"p1": 0,
+			"p2": 0,
+		}
+		frames_data = []
+		for img_file, K, c2w in zip(frame_files, K_arrays, T_arrays):
+			img = cv2.imread(img_file)
+			w, h, _ = img.shape
+			frames_data.append({
+				"file_path": os.path.relpath(img_file, frame_folder),
+				"transform_matrix": [*c2w.T.tolist(), [0,0,0,1]],
+				"fl_x": K[0,0],
+				"fl_y": K[1,1],
+				"cx": K[0,2],
+				"cy": K[1,2],
+				"w": w,
+				"h": h,
+			})
+		frame_data["frames"] = frames_data
+		print(frame_data)
