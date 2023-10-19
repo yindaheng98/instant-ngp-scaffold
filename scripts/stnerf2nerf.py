@@ -39,25 +39,21 @@ if __name__ == "__main__":
 			continue
 		frame = int(m[0]) - 1
 		frame_folders[frame] = os.path.join(VIDEO_FOLDER, folder)
-	img_files = [None] * len(frame_folders)
+	video_files = [None] * len(frame_folders)
 	for frame, frame_folder in frame_folders.items():
-		camera_files = {}
+		camera_files_dict = {}
 		for camera_file in os.listdir(os.path.join(frame_folder, 'images')):
 			m = re.findall(r"^([0-9]+)", camera_file)
 			if len(m) != 1:
 				continue
 			camera = int(m[0])
-			camera_files[camera] = os.path.join(frame_folder, 'images', camera_file)
-		frame_files = [None] * len(camera_files)
-		for camera, camera_file in camera_files.items():
-			frame_files[camera] = camera_file
-		assert None not in frame_files and len(frame_files) == CAMERAS
-		img_files[frame] = frame_files
-	assert None not in img_files
-
-	image = cv2.imread(img_files[0][0],cv2.IMREAD_UNCHANGED)
-	w = image.shape[1]
-	h = image.shape[0]
+			camera_files_dict[camera] = os.path.join(frame_folder, 'images', camera_file)
+		camera_files = [None] * len(camera_files_dict)
+		for camera, camera_file in camera_files_dict.items():
+			camera_files[camera] = camera_file
+		assert None not in camera_files and len(camera_files) == CAMERAS
+		video_files[frame] = camera_files
+	assert None not in video_files
 
 	K_lines = map(str.strip,open("pose/K.txt","r").readlines())
 	T_lines = map(str.strip,open("pose/RT_c2w.txt","r").readlines())
@@ -65,7 +61,7 @@ if __name__ == "__main__":
 	T_arrays = [np.array(tuple(map(float, line.split(" ")))).reshape((4,3)) for line in T_lines]
 	
 	for frame, frame_folder in frame_folders.items():
-		frame_files = img_files[frame]
+		camera_files = video_files[frame]
 		frame_data = {
 			"aabb_scale": AABB_SCALE,
 			"k1": 0,
@@ -73,12 +69,11 @@ if __name__ == "__main__":
 			"p1": 0,
 			"p2": 0,
 		}
-		frames_data = []
-		for img_file, K, c2w in zip(frame_files, K_arrays, T_arrays):
-			img = cv2.imread(img_file)
-			w, h, _ = img.shape
-			frames_data.append({
-				"file_path": os.path.relpath(img_file, frame_folder),
+		cameras_data = []
+		for camera_file, K, c2w in zip(camera_files, K_arrays, T_arrays):
+			w, h, _ = cv2.imread(camera_file).shape
+			cameras_data.append({
+				"file_path": os.path.relpath(camera_file, frame_folder),
 				"transform_matrix": [*c2w.T.tolist(), [0,0,0,1]],
 				"fl_x": K[0,0],
 				"fl_y": K[1,1],
@@ -87,5 +82,5 @@ if __name__ == "__main__":
 				"w": w,
 				"h": h,
 			})
-		frame_data["frames"] = frames_data
+		frame_data["frames"] = cameras_data
 		print(frame_data)
