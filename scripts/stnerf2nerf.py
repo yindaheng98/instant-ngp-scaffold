@@ -22,7 +22,7 @@ import re
 def parse_args():
 	parser = argparse.ArgumentParser(description="convert a dataset from the nsvf paper format to nerf format transforms.json")
 
-	parser.add_argument("--aabb_scale", default=4, help="large scene scale factor")
+	parser.add_argument("--aabb_scale", default=32, help="large scene scale factor")
 	args = parser.parse_args()
 	return args
 
@@ -112,9 +112,8 @@ if __name__ == "__main__":
 		cameras_data = []
 		for camera_file, K, T in zip(camera_files, Ks, Ts):
 			w, h, _ = cv2.imread(camera_file).shape
-			c2w = np.linalg.inv(T)
-			c2w = c2w[[2,0,1,3],:] # swap y and z 012 201 102
-			c2w[[1,2],:] *= -1 # flip whole world upside down (0,2) also works
+			c2w = T
+			# TODO: Unknown c2w format to OpenCV Colmap RDF
 			cameras_data.append({
 				"file_path": os.path.relpath(camera_file, frame_folder),
 				"transform_matrix": c2w.tolist(),
@@ -126,7 +125,7 @@ if __name__ == "__main__":
 				"h": h,
 			})
 		frame_data["frames"] = cameras_data
-		OUT_PATH = os.path.join(frame_folder, "transforms.json")
+		OUT_PATH = os.path.join(frame_folder, "transforms-origin.json")
 		print(f"writing {OUT_PATH}...")
 		with open(OUT_PATH, "w") as outfile:
 			json.dump(frame_data, outfile, indent=2)
