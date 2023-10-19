@@ -22,9 +22,49 @@ import re
 def parse_args():
 	parser = argparse.ArgumentParser(description="convert a dataset from the nsvf paper format to nerf format transforms.json")
 
-	parser.add_argument("--aabb_scale", default=1, help="large scene scale factor")
+	parser.add_argument("--aabb_scale", default=4, help="large scene scale factor")
 	args = parser.parse_args()
 	return args
+
+
+# https://github.com/DarlingHang/st-nerf/blob/e0c1c32b09d90101218410443193ddabc1f66d2f/data/datasets/utils.py#L6
+def campose_to_extrinsic(camposes):
+    if camposes.shape[1]!=12:
+        raise Exception(" wrong campose data structure!")
+    
+    res = np.zeros((camposes.shape[0],4,4))
+    
+    res[:,0,:] = camposes[:,0:4]
+    res[:,1,:] = camposes[:,4:8]
+    res[:,2,:] = camposes[:,8:12]
+    res[:,3,3] = 1.0
+    
+    return res
+
+
+# https://github.com/DarlingHang/st-nerf/blob/e0c1c32b09d90101218410443193ddabc1f66d2f/data/datasets/utils.py#L20
+def read_intrinsics(fn_instrinsic):
+    fo = open(fn_instrinsic)
+    data= fo.readlines()
+    i = 0
+    Ks = []
+    while i<len(data):
+        tmp = data[i].split()
+        a = [float(i) for i in tmp[0:3]]
+        a = np.array(a)
+        b = [float(i) for i in tmp[3:6]]
+        b = np.array(b)
+        c = [float(i) for i in tmp[6:9]]
+        c = np.array(c)
+        res = np.vstack([a,b,c])
+        Ks.append(res)
+
+        i = i+1
+    Ks = np.stack(Ks)
+    fo.close()
+
+    return Ks
+
 
 if __name__ == "__main__":
 	args = parse_args()
@@ -55,10 +95,10 @@ if __name__ == "__main__":
 		video_files[frame] = camera_files
 	assert None not in video_files
 
-	K_lines = map(str.strip,open("pose/K.txt","r").readlines())
-	T_lines = map(str.strip,open("pose/RT_c2w.txt","r").readlines())
-	K_arrays = [np.array(tuple(map(float, line.split(" ")))).reshape((3,3)) for line in K_lines]
-	T_arrays = [np.array(tuple(map(float, line.split(" ")))).reshape((4,3)) for line in T_lines]
+	# https://github.com/DarlingHang/st-nerf/blob/e0c1c32b09d90101218410443193ddabc1f66d2f/data/datasets/frame_dataset.py#L25C23-L25C23
+	camposes = np.loadtxt(os.path.join('pose', 'RT_c2w.txt'))
+	Ts = campose_to_extrinsic(camposes)
+	Ks = read_intrinsics(os.path.join('pose', 'K.txt'))
 	
 	for frame, frame_folder in frame_folders.items():
 		camera_files = video_files[frame]
@@ -70,11 +110,12 @@ if __name__ == "__main__":
 			"p2": 0,
 		}
 		cameras_data = []
-		for camera_file, K, c2w in zip(camera_files, K_arrays, T_arrays):
+		for camera_file, K, T in zip(camera_files, Ks, Ts):
 			w, h, _ = cv2.imread(camera_file).shape
+			c2w = np.linalg.inv(T)
 			cameras_data.append({
 				"file_path": os.path.relpath(camera_file, frame_folder),
-				"transform_matrix": [*c2w.T.tolist(), [0,0,0,1]],
+				"transform_matrix": c2w.tolist(),
 				"fl_x": K[0,0],
 				"fl_y": K[1,1],
 				"cx": K[0,2],
