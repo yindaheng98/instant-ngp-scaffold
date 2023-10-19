@@ -113,6 +113,8 @@ if __name__ == "__main__":
 		for camera_file, K, T in zip(camera_files, Ks, Ts):
 			w, h, _ = cv2.imread(camera_file).shape
 			c2w = np.linalg.inv(T)
+			c2w = c2w[[2,0,1,3],:] # swap y and z 012 201 102
+			c2w[[0,2],:] *= -1 # flip whole world upside down
 			cameras_data.append({
 				"file_path": os.path.relpath(camera_file, frame_folder),
 				"transform_matrix": c2w.tolist(),
