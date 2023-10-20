@@ -115,7 +115,7 @@ if __name__ == "__main__":
 			c2w = T
 			# TODO: c2w format LLFF/OpenGL DRB or RUB to OpenCV/Colmap RDF
 			# st-nerf c2w[[x,y,z,camera], :] to instant-ngp c2w[[x,z,y,camera], :]
-			c2w = c2w[[0,2,1], :]
+			c2w = c2w[[0,2,1,3], :]
 			cameras_data.append({
 				"file_path": os.path.relpath(camera_file, frame_folder),
 				"transform_matrix": c2w.tolist(),
@@ -127,7 +127,7 @@ if __name__ == "__main__":
 				"h": h,
 			})
 		frame_data["frames"] = cameras_data
-		OUT_PATH = os.path.join(frame_folder, "transforms.json")
+		OUT_PATH = os.path.join(frame_folder, "transforms-origin.json")
 		print(f"writing {OUT_PATH}...")
 		with open(OUT_PATH, "w") as outfile:
 			json.dump(frame_data, outfile, indent=2)
