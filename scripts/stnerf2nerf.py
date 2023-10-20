@@ -161,7 +161,7 @@ if __name__ == "__main__":
 				# "h": h,
 			})
 		frame_data["frames"] = cameras_data
-		OUT_PATH = os.path.join(frame_folder, "transforms-origin.json")
+		OUT_PATH = os.path.join(frame_folder, "transforms.json")
 		print(f"writing {OUT_PATH}...")
 		with open(OUT_PATH, "w") as outfile:
 			json.dump(frame_data, outfile, indent=2)
