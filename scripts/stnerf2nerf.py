@@ -63,6 +63,9 @@ def read_intrinsics(fn_instrinsic):
 
     return Ks
 
+scale = 0.1661062370806396
+shift = np.array([-0.2, 0, 1.0])
+
 if __name__ == "__main__":
 	args = parse_args()
 	AABB_SCALE = int(args.aabb_scale)
@@ -90,6 +93,7 @@ if __name__ == "__main__":
 	Ks = read_intrinsics(os.path.join('pose', 'K.txt'))
 	# TODO: scale the sence using a smarter methods
 	# TODO: c2w format LLFF/OpenGL DRB or RUB to OpenCV/Colmap RDF
+	Ts[:, :3, 3] = (Ts[:, :3, 3] * scale + shift) * AABB_SCALE
 	
 	all_frame_data = {
 		"is_fisheye": False, # should match the sence scale
