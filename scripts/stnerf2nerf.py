@@ -76,14 +76,13 @@ if __name__ == "__main__":
 			continue
 		frame = int(m[0]) - 1
 		frame_folders[frame] = os.path.join(VIDEO_FOLDER, folder)
-	video_files = [None] * len(frame_folders)
+	video_files = {}
 	for frame, frame_folder in frame_folders.items():
 		camera_files = []
 		for camera in range(CAMERAS):
 			camera_file = os.path.join(frame_folder, 'images', f"{camera}.png")
 			camera_files.append(camera_file)
 		video_files[frame] = camera_files
-	assert None not in video_files
 
 	# https://github.com/DarlingHang/st-nerf/blob/e0c1c32b09d90101218410443193ddabc1f66d2f/data/datasets/frame_dataset.py#L25C23-L25C23
 	camposes = np.loadtxt(os.path.join('pose', 'RT_c2w.txt'))
@@ -92,6 +91,11 @@ if __name__ == "__main__":
 	# TODO: scale the sence using a smarter methods
 	# TODO: c2w format LLFF/OpenGL DRB or RUB to OpenCV/Colmap RDF
 	
+	all_frame_data = {
+		"is_fisheye": False, # should match the sence scale
+		"aabb_scale": AABB_SCALE, # should match the sence scale
+		"frames": []
+	}
 	for frame, frame_folder in frame_folders.items():
 		camera_files = video_files[frame]
 		cameras_data = []
@@ -103,13 +107,14 @@ if __name__ == "__main__":
 			img = cv2.imread(camera_file)
 			w, h, _ = img.shape
 			b = cv2.Laplacian(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), cv2.CV_64F).var()
-			c2w = T
+			c2w = np.copy(T)
 			# TODO: c2w format LLFF/OpenGL DRB or RUB to OpenCV/Colmap RDF
 			# st-nerf c2w[[x,y,z,camera], :] to instant-ngp c2w[[x,z,y,camera], :]
 			c2w[0:3,2] *= -1 # flip the y and z axis
 			c2w[0:3,1] *= -1
-			cameras_data.append({
-				"file_path": os.path.relpath(camera_file, frame_folder),
+			c2w = c2w[[1,0,2,3],:]
+			c2w[2,:] *= -1 # flip whole world upside down
+			camera_data = {
 				"transform_matrix": c2w.tolist(),
 				"fl_x": K[0,0], # should match the sence scale
 				"fl_y": K[1,1], # should match the sence scale
@@ -120,9 +125,21 @@ if __name__ == "__main__":
 				"sharpness":b,
 				"w": 1920.0, # should match the sence scale
 				"h": 1080.0, # should match the sence scale
+			}
+			cameras_data.append({
+				"file_path": os.path.relpath(camera_file, frame_folder),
+				**camera_data
+			})
+			all_frame_data["frames"].append({
+				"file_path": camera_file,
+				**camera_data
 			})
 		frame_data["frames"] = cameras_data
 		OUT_PATH = os.path.join(frame_folder, "transforms.json")
 		print(f"writing {OUT_PATH}...")
 		with open(OUT_PATH, "w") as outfile:
 			json.dump(frame_data, outfile, indent=2)
+	OUT_PATH = os.path.join(VIDEO_FOLDER, "transforms.json")
+	print(f"writing {OUT_PATH}...")
+	with open(OUT_PATH, "w") as outfile:
+		json.dump(all_frame_data, outfile, indent=2)
