@@ -1,0 +1,7 @@
+{
+    "cmake.debugConfig": {
+        "args": [
+            "--snapshot=/volume/data/nerf/walking/frame35/base.ingp", "/volume/data/nerf/walking/frame50"
+        ]
+    }
+}
