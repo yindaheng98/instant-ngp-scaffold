@@ -13,6 +13,20 @@
                 "--aabb_scale",
                 "8",
             ]
+        },
+        {
+            "name": "run",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/run.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--load_snapshot",
+                "data/nerf/walking/frame35/base.ingp",
+                "--gui"
+            ]
         }
     ]
 }
