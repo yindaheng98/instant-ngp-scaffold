@@ -27,6 +27,20 @@
                 "data/nerf/walking/frame35/base.ingp",
                 "--gui"
             ]
+        },
+        {
+            "name": "train",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/run.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--save_snapshot",
+                "data/nerf/walking/frame35/frame35.ingp",
+                "data/nerf/walking/frame35"
+            ]
         }
     ]
 }
