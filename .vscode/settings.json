@@ -1,7 +1,7 @@
 {
     "cmake.debugConfig": {
         "args": [
-            "--snapshot=/volume/data/nerf/walking/frame35/base.ingp", "--step=10000", "--freeze", "--save_snapshot=/volume/data/nerf/walking/frame35/base2.ingp", "/volume/data/nerf/walking/frame50"
+            "--step=1000", "--load_snapshot=/volume/results/test0.bson", "--save_snapshot=/volume/results/test1.bson", "/volume/data/nerf/walking/frame35"
         ]
     },
     "files.associations": {
