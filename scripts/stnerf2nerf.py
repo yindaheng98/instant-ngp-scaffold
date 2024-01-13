@@ -21,6 +21,7 @@ def parse_args():
 	parser = argparse.ArgumentParser(description="convert a dataset from the nsvf paper format to nerf format transforms.json")
 
 	parser.add_argument("--aabb_scale", default=8, help="large scene scale factor")
+	parser.add_argument("--path", type=str, required=True, help="path to the video folder")
 	args = parser.parse_args()
 	return args
 
@@ -71,7 +72,7 @@ if __name__ == "__main__":
 	AABB_SCALE = int(args.aabb_scale)
 	CAMERAS = 16
 	SKIP_EARLY = 0
-	VIDEO_FOLDER = "."
+	VIDEO_FOLDER = args.path
 	frame_folders = {}
 	for folder in os.listdir(VIDEO_FOLDER):
 		m = re.findall(r"^frame([0-9]+)", folder)
@@ -88,9 +89,9 @@ if __name__ == "__main__":
 		video_files[frame] = camera_files
 
 	# https://github.com/DarlingHang/st-nerf/blob/e0c1c32b09d90101218410443193ddabc1f66d2f/data/datasets/frame_dataset.py#L25C23-L25C23
-	camposes = np.loadtxt(os.path.join('pose', 'RT_c2w.txt'))
+	camposes = np.loadtxt(os.path.join(VIDEO_FOLDER, 'pose', 'RT_c2w.txt'))
 	Ts = campose_to_extrinsic(camposes)
-	Ks = read_intrinsics(os.path.join('pose', 'K.txt'))
+	Ks = read_intrinsics(os.path.join(VIDEO_FOLDER, 'pose', 'K.txt'))
 	# TODO: scale the sence using a smarter methods
 	# TODO: c2w format LLFF/OpenGL DRB or RUB to OpenCV/Colmap RDF
 	Ts[:, :3, 3] = (Ts[:, :3, 3] * scale + shift) * AABB_SCALE
