@@ -24,7 +24,7 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--load_snapshot",
-                "data/nerf/walking/frame35/base2.ingp",
+                "results/stnerf-walking/frame1.bson",
                 "--gui"
             ]
         },
@@ -42,7 +42,7 @@
                 "--end",
                 "75",
                 "--saveformat",
-                "results/stnerf-walking/frame%d.ingp"
+                "results/stnerf-walking/frame%d.bson"
             ]
         }
     ]
