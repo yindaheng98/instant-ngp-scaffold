@@ -38,11 +38,14 @@ def parse_args():
 	parser.add_argument("--width", "--screenshot_w", type=int, default=0, help="Resolution width of GUI and screenshots.")
 	parser.add_argument("--height", "--screenshot_h", type=int, default=0, help="Resolution height of GUI and screenshots.")
 
-	parser.add_argument("--n_steps", type=int, default=-1, help="Number of steps to train for before quitting.")
 	parser.add_argument("--second_window", action="store_true", help="Open a second window containing a copy of the main output.")
 	parser.add_argument("--vr", action="store_true", help="Render to a VR headset.")
 
 	parser.add_argument("--sharpen", default=0, help="Set amount of sharpening applied to NeRF training images. Range 0.0 to 1.0.")
+
+	parser.add_argument("--start", type=int, required=True, help="The start frame number.")
+	parser.add_argument("--end", type=int, required=True, help="The end frame number.")
+	parser.add_argument("--frameformat", type=str, required=True, help="The path format of exported video frames (.npz).")
 
 
 	return parser.parse_args()
@@ -112,12 +115,18 @@ if __name__ == "__main__":
 		# Match nerf paper behaviour and train on a fixed bg.
 		testbed.nerf.training.random_bg_color = False
 
-	old_training_step = 0
-	n_steps = args.n_steps
-
-	tqdm_last_update = 0
+	N = 10000
+	current_frame = args.start
+	current_frame_data = np.load(args.frameformat % current_frame)['arr_0']
+	for i in range(current_frame_data.shape[0] // N):
+		j = min(i + N, current_frame_data.shape[0])
+		testbed.load_params(current_frame_data[i:j], list(range(i,j)))
 	while testbed.frame():
 		if testbed.want_repl():
 			repl(testbed)
 		testbed.reset_accumulation()
-
+		# current_frame = (current_frame + 1) % args.end + 1
+		# current_frame_data = np.load(args.frameformat % current_frame)['arr_0']
+		# for i in range(current_frame_data.shape[0] // N):
+		# 	j = min(i + N, current_frame_data.shape[0])
+		# 	testbed.load_params(current_frame_data[i:j], list(range(i,j)))
