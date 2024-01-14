@@ -122,13 +122,16 @@ if __name__ == "__main__":
 	for i in range(0, params.shape[0], N):
 		j = min(i + N, params.shape[0])
 		testbed.load_params(params[i:j], list(range(i,j)))
+	for i in range(0, density_grid.shape[0], N):
+		j = min(i + N, density_grid.shape[0])
+		testbed.load_density_grid(density_grid[i:j], list(range(i,j)))
 	while testbed.frame():
 		if testbed.want_repl():
 			repl(testbed)
 		testbed.reset_accumulation()
-		frame = (frame + 1) % args.end + 1
-		frame_data = np.load(args.frameformat % frame)
-		params, density_grid = frame_data['arr_0'], frame_data['arr_1']
-		for i in range(params.shape[0] // N):
-			j = min(i + N, params.shape[0])
-			testbed.load_params(params[i:j], list(range(i,j)))
+		# frame = (frame + 1) % args.end + 1
+		# frame_data = np.load(args.frameformat % frame)
+		# params, density_grid = frame_data['arr_0'], frame_data['arr_1']
+		# for i in range(params.shape[0] // N):
+		# 	j = min(i + N, params.shape[0])
+		# 	testbed.load_params(params[i:j], list(range(i,j)))
