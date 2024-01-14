@@ -46,6 +46,25 @@
                 "--exportformat",
                 "results/stnerf-walking/frame%d.npz"
             ]
+        },
+        {
+            "name": "play",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/play.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--load_snapshot",
+                "results/stnerf-walking/frame75.bson",
+                "--frameformat",
+                "results/stnerf-walking/frame%d.npz",
+                "--start",
+                "1",
+                "--end",
+                "75"
+            ]
         }
     ]
 }
