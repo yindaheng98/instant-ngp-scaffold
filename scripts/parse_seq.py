@@ -19,9 +19,9 @@ def load_params(save):
     params_type = snapshot['params_type']
     density_grid_bin = snapshot['density_grid_binary']
     if params_type == "__half":
-        return np.frombuffer(params_bin, dtype=np.float16).astype(np.float32), np.frombuffer(density_grid_bin, dtype=np.float16)
+        return np.frombuffer(params_bin, dtype=np.float16).astype(np.float32), np.frombuffer(density_grid_bin, dtype=np.float16).astype(np.float32)
     else:
-        return np.frombuffer(params_bin, dtype=np.float32), np.frombuffer(density_grid_bin, dtype=np.float16)
+        return np.frombuffer(params_bin, dtype=np.float32), np.frombuffer(density_grid_bin, dtype=np.float16).astype(np.float32)
 
 if __name__ == "__main__":
     import os
