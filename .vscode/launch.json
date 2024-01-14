@@ -57,7 +57,7 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--load_snapshot",
-                "results/stnerf-walking/frame75.bson",
+                "results/stnerf-walking/frame1.bson",
                 "--frameformat",
                 "results/stnerf-walking/frame%d.npz",
                 "--start",

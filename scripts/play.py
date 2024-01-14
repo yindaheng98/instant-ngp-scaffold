@@ -10,7 +10,7 @@
 
 import argparse
 import os
-import commentjson as json
+import multiprocessing
 
 import numpy as np
 
@@ -116,17 +116,19 @@ if __name__ == "__main__":
 		testbed.nerf.training.random_bg_color = False
 
 	N = 10000
-	current_frame = args.start
-	current_frame_data = np.load(args.frameformat % current_frame)['arr_0']
-	for i in range(0, current_frame_data.shape[0], N):
-		j = min(i + N, current_frame_data.shape[0])
-		testbed.load_params(current_frame_data[i:j], list(range(i,j)))
+	frame = args.start
+	frame_data = np.load(args.frameformat % frame)
+	params, density_grid = frame_data['arr_0'], frame_data['arr_1']
+	for i in range(0, params.shape[0], N):
+		j = min(i + N, params.shape[0])
+		testbed.load_params(params[i:j], list(range(i,j)))
 	while testbed.frame():
 		if testbed.want_repl():
 			repl(testbed)
 		testbed.reset_accumulation()
-		current_frame = (current_frame + 1) % args.end + 1
-		current_frame_data = np.load(args.frameformat % current_frame)['arr_0']
-		for i in range(current_frame_data.shape[0] // N):
-			j = min(i + N, current_frame_data.shape[0])
-			testbed.load_params(current_frame_data[i:j], list(range(i,j)))
+		frame = (frame + 1) % args.end + 1
+		frame_data = np.load(args.frameformat % frame)
+		params, density_grid = frame_data['arr_0'], frame_data['arr_1']
+		for i in range(params.shape[0] // N):
+			j = min(i + N, params.shape[0])
+			testbed.load_params(params[i:j], list(range(i,j)))
