@@ -43,8 +43,10 @@
                 "75",
                 "--saveformat",
                 "results/stnerf-walking/frame%d.bson",
-                "--exportformat",
-                "results/stnerf-walking/frame%d.npz"
+                "--interexportformat",
+                "results/stnerf-walking/frame%d-inter.npz",
+                "--intraexportformat",
+                "results/stnerf-walking/frame%d-intra.npz"
             ]
         },
         {

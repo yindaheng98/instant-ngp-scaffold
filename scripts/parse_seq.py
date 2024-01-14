@@ -7,7 +7,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--start", type=int, required=True, help="The start frame number.")
 parser.add_argument("--end", type=int, required=True, help="The end frame number.")
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the saved snapshot.")
-parser.add_argument("--exportformat", type=str, required=True, help="The path format of exported video file (.npz).")
+parser.add_argument("--interexportformat", type=str, required=True, help="The path format of exported inter-frame video frames (.npz).")
+parser.add_argument("--intraexportformat", type=str, required=True, help="The path format of exported intra-frame video frames (.npz).")
 
 def load_save(path):
     with open(path, "rb") as f:
@@ -23,18 +24,33 @@ def load_params(save):
     else:
         return np.frombuffer(params_bin, dtype=np.float32), np.frombuffer(density_grid_bin, dtype=np.float16).astype(np.float32)
 
+T = 1e-4
+
 if __name__ == "__main__":
     import os
     args = parser.parse_args()
     root = os.getcwd()
-    os.makedirs(os.path.dirname(args.exportformat), exist_ok=True)
+    os.makedirs(os.path.dirname(args.interexportformat), exist_ok=True)
+    os.makedirs(os.path.dirname(args.intraexportformat), exist_ok=True)
     savepath = os.path.join(root, args.saveformat % args.start)
     save = load_save(savepath)
     params, density_grid = load_params(save)
-    np.savez_compressed(args.exportformat % args.start, arr_0=params, arr_1=density_grid)
+    np.savez_compressed(args.intraexportformat % args.start, arr_0=params, arr_1=density_grid)
     for i in tqdm(range(args.start + 1, args.end + 1)):
         savepath = os.path.join(root, args.saveformat % i)
         save = load_save(savepath)
         last_params, last_density_grid, (params, density_grid) = params, density_grid, load_params(save)
-        np.savez_compressed(args.exportformat % i, arr_0=params, arr_1=density_grid)
-
+        np.savez_compressed(args.intraexportformat % i, arr_0=params, arr_1=density_grid)
+        diff_params = params - last_params
+        diff_density_grid = density_grid - last_density_grid
+        diff_params_idx = np.where(diff_params > T)[0]
+        diff_density_grid_idx = np.where(diff_density_grid > T)[0]
+        np.savez_compressed(
+            args.interexportformat % i,
+            arr_0=diff_params[diff_params_idx],
+            arr_1=diff_density_grid[diff_density_grid_idx],
+            arr_2=diff_params_idx,
+            arr_3=diff_density_grid_idx,
+        )
+        params[diff_params <= T] += diff_params[diff_params <= T]
+        density_grid[diff_density_grid <= T] += diff_density_grid[diff_density_grid <= T]
