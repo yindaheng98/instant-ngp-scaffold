@@ -118,15 +118,15 @@ if __name__ == "__main__":
 	N = 10000
 	current_frame = args.start
 	current_frame_data = np.load(args.frameformat % current_frame)['arr_0']
-	for i in range(current_frame_data.shape[0] // N):
+	for i in range(0, current_frame_data.shape[0], N):
 		j = min(i + N, current_frame_data.shape[0])
 		testbed.load_params(current_frame_data[i:j], list(range(i,j)))
 	while testbed.frame():
 		if testbed.want_repl():
 			repl(testbed)
 		testbed.reset_accumulation()
-		# current_frame = (current_frame + 1) % args.end + 1
-		# current_frame_data = np.load(args.frameformat % current_frame)['arr_0']
-		# for i in range(current_frame_data.shape[0] // N):
-		# 	j = min(i + N, current_frame_data.shape[0])
-		# 	testbed.load_params(current_frame_data[i:j], list(range(i,j)))
+		current_frame = (current_frame + 1) % args.end + 1
+		current_frame_data = np.load(args.frameformat % current_frame)['arr_0']
+		for i in range(current_frame_data.shape[0] // N):
+			j = min(i + N, current_frame_data.shape[0])
+			testbed.load_params(current_frame_data[i:j], list(range(i,j)))
