@@ -10,7 +10,7 @@
 
 import argparse
 import os
-import multiprocessing
+from dataloader import Frameset, DataLoader
 
 import numpy as np
 
@@ -119,25 +119,19 @@ if __name__ == "__main__":
 	testbed.set_params_load_cache_size(N)
 	testbed.set_density_grid_load_cache_size(N)
 
-	frame = args.start
-	frame_data = np.load(args.frameformat % frame)
-	params, density_grid = frame_data['arr_0'].astype(np.float32), frame_data['arr_1'].astype(np.float32)
-	params_idx, density_grid_idx = frame_data['arr_2'], frame_data['arr_3']
-	testbed.load_params(params, params_idx)
-	testbed.load_density_grid(density_grid, density_grid_idx)
+	ds = Frameset(args.start, args.end, args.frameformat)
 	while testbed.frame():
-		if testbed.want_repl():
-			repl(testbed)
-		testbed.reset_accumulation()
-		frame = frame % args.end + 1
-		if frame < args.start:
-			scene_info = get_scene(args.load_snapshot)
-			if scene_info is not None:
-				args.load_snapshot = default_snapshot_filename(scene_info)
-			testbed.load_snapshot(args.load_snapshot)
-			frame = args.start
-		frame_data = np.load(args.frameformat % frame)
-		params, density_grid = frame_data['arr_0'].astype(np.float32), frame_data['arr_1'].astype(np.float32)
-		params_idx, density_grid_idx = frame_data['arr_2'], frame_data['arr_3']
-		testbed.load_params(params, params_idx)
-		testbed.load_density_grid(density_grid, density_grid_idx)
+		dl = DataLoader(ds, num_workers=16, batch_size=1, prefetch_batches=8, collate_fn=lambda batch: batch)
+		for b in dl:
+			params, density_grid, params_idx, density_grid_idx = b[0]
+			params, density_grid = params.astype(np.float32), density_grid.astype(np.float32)
+			testbed.load_params(params, params_idx)
+			testbed.load_density_grid(density_grid, density_grid_idx)
+			if not testbed.frame():
+				break
+			if testbed.want_repl():
+				repl(testbed)
+		scene_info = get_scene(args.load_snapshot)
+		if scene_info is not None:
+			args.load_snapshot = default_snapshot_filename(scene_info)
+		testbed.load_snapshot(args.load_snapshot)
