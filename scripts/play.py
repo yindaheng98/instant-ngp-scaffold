@@ -127,8 +127,8 @@ if __name__ == "__main__":
 		if testbed.want_repl():
 			repl(testbed)
 		testbed.reset_accumulation()
-		# frame = (frame + 1) % args.end + 1
-		# frame_data = np.load(args.frameformat % frame)
-		# params, density_grid = frame_data['arr_0'], frame_data['arr_1']
-		# testbed.load_params(params, list(range(params.shape[0])))
-		# testbed.load_density_grid(density_grid, list(range(density_grid.shape[0])))
+		frame = (frame + 1) % args.end + 1
+		frame_data = np.load(args.frameformat % frame)
+		params, density_grid = frame_data['arr_0'].astype(np.float32), frame_data['arr_1'].astype(np.float32)
+		testbed.load_params(params, list(range(params.shape[0])))
+		testbed.load_density_grid(density_grid, list(range(density_grid.shape[0])))
