@@ -19,11 +19,13 @@ if __name__ == "__main__":
     os.makedirs(os.path.dirname(savepath), exist_ok=True)
     cmd = [executable, f"--step={args.steps}", f"--save_snapshot={savepath}", datapath]
     print(cmd)
-    subprocess.run(cmd)
+    if not os.path.exists(savepath):
+        subprocess.run(cmd)
     for i in range(args.start + 1, args.end + 1):
         last_savepath = savepath
         datapath = os.path.join(root, args.dataformat % i)
         savepath = os.path.join(root, args.saveformat % i)
         cmd = [executable, f"--step={args.steps}", f"--save_snapshot={savepath}", f"--snapshot={last_savepath}", "--freeze", datapath]
         print(cmd)
-        subprocess.run(cmd)
+        if not os.path.exists(savepath):
+            subprocess.run(cmd)
