@@ -61,7 +61,7 @@
                 "--load_snapshot",
                 "results/stnerf-walking/frame1.bson",
                 "--frameformat",
-                "results/stnerf-walking/frame%d.npz",
+                "results/stnerf-walking/frame%d-intra.npz",
                 "--start",
                 "1",
                 "--end",
