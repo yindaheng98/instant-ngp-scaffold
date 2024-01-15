@@ -115,16 +115,14 @@ if __name__ == "__main__":
 		# Match nerf paper behaviour and train on a fixed bg.
 		testbed.nerf.training.random_bg_color = False
 
-	N = 10000
+	N = 2**20
 	frame = args.start
 	frame_data = np.load(args.frameformat % frame)
-	params, density_grid = frame_data['arr_0'], frame_data['arr_1']
-	for i in range(0, params.shape[0], N):
-		j = min(i + N, params.shape[0])
-		testbed.load_params(params[i:j], list(range(i,j)))
-	for i in range(0, density_grid.shape[0], N):
-		j = min(i + N, density_grid.shape[0])
-		testbed.load_density_grid(density_grid[i:j], list(range(i,j)))
+	params, density_grid = frame_data['arr_0'].astype(np.float32), frame_data['arr_1'].astype(np.float32)
+	testbed.set_params_load_cache_size(N)
+	testbed.set_density_grid_load_cache_size(N)
+	testbed.load_params(params, list(range(params.shape[0])))
+	testbed.load_density_grid(density_grid, list(range(density_grid.shape[0])))
 	while testbed.frame():
 		if testbed.want_repl():
 			repl(testbed)
@@ -132,6 +130,5 @@ if __name__ == "__main__":
 		# frame = (frame + 1) % args.end + 1
 		# frame_data = np.load(args.frameformat % frame)
 		# params, density_grid = frame_data['arr_0'], frame_data['arr_1']
-		# for i in range(params.shape[0] // N):
-		# 	j = min(i + N, params.shape[0])
-		# 	testbed.load_params(params[i:j], list(range(i,j)))
+		# testbed.load_params(params, list(range(params.shape[0])))
+		# testbed.load_density_grid(density_grid, list(range(density_grid.shape[0])))
