@@ -116,19 +116,22 @@ if __name__ == "__main__":
 		testbed.nerf.training.random_bg_color = False
 
 	N = 2**20
+	testbed.set_params_load_cache_size(N)
+	testbed.set_density_grid_load_cache_size(N)
+
 	frame = args.start
 	frame_data = np.load(args.frameformat % frame)
 	params, density_grid = frame_data['arr_0'].astype(np.float32), frame_data['arr_1'].astype(np.float32)
-	testbed.set_params_load_cache_size(N)
-	testbed.set_density_grid_load_cache_size(N)
-	testbed.load_params(params, list(range(params.shape[0])))
-	testbed.load_density_grid(density_grid, list(range(density_grid.shape[0])))
+	params_idx, density_grid_idx = frame_data['arr_2'], frame_data['arr_3']
+	testbed.diff_params(params, params_idx)
+	testbed.diff_density_grid(density_grid, density_grid_idx)
 	while testbed.frame():
 		if testbed.want_repl():
 			repl(testbed)
 		testbed.reset_accumulation()
-		frame = (frame + 1) % args.end + 1
+		frame = frame % args.end + 1
 		frame_data = np.load(args.frameformat % frame)
 		params, density_grid = frame_data['arr_0'].astype(np.float32), frame_data['arr_1'].astype(np.float32)
-		testbed.load_params(params, list(range(params.shape[0])))
-		testbed.load_density_grid(density_grid, list(range(density_grid.shape[0])))
+		params_idx, density_grid_idx = frame_data['arr_2'], frame_data['arr_3']
+		testbed.diff_params(params, params_idx)
+		testbed.diff_density_grid(density_grid, density_grid_idx)
