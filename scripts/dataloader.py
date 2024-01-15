@@ -135,7 +135,7 @@ class DataLoader(NaiveDataLoader):
                     w.terminate()
 
 
-class Frameset:
+class NPZset:
     def __init__(self, start, end, format):
         self.start = start
         self.end = end
@@ -146,14 +146,15 @@ class Frameset:
 
     def __getitem__(self, index):
         frame_data = np.load(self.format % (self.start + index))
-        params, density_grid = frame_data['arr_0'].astype(np.float32), frame_data['arr_1'].astype(np.float32)
-        params_idx, density_grid_idx = frame_data['arr_2'], frame_data['arr_3']
-        return params, density_grid, params_idx, density_grid_idx
+        data = {}
+        for k in frame_data:
+            data[k] = frame_data[k]
+        return data
 
 if __name__ == "__main__":
     import numpy as np
 
-    ds = Frameset(2, 75, '/volume/results/stnerf-walking/frame%d-interdiff.npz')
+    ds = NPZset(2, 75, '/volume/results/stnerf-walking/frame%d-interdiff.npz')
     dl = DataLoader(ds, num_workers=16, batch_size=1, prefetch_batches=8, collate_fn=lambda batch: batch)
 
     for b in dl:
