@@ -10,17 +10,11 @@
 
 import argparse
 import os
-from dataloader import Frameset, DataLoader
 
 import numpy as np
 
-import shutil
-import time
-
 from common import *
 from scenes import *
-
-from tqdm import tqdm
 
 import pyngp as ngp # noqa
 
@@ -57,6 +51,7 @@ def get_scene(scene):
 	return None
 
 if __name__ == "__main__":
+	from dataloader import NPZset, DataLoader
 	args = parse_args()
 
 	testbed = ngp.Testbed()
@@ -119,11 +114,19 @@ if __name__ == "__main__":
 	testbed.set_params_load_cache_size(N)
 	testbed.set_density_grid_load_cache_size(N)
 
-	ds = Frameset(args.start, args.end, args.frameformat)
+	ds = NPZset(args.start, args.end, args.frameformat)
 	while testbed.frame():
+		if testbed.want_repl():
+			repl(testbed)
+		testbed.reset_accumulation()
 		dl = DataLoader(ds, num_workers=16, batch_size=1, prefetch_batches=8, collate_fn=lambda batch: batch)
 		for b in dl:
-			params, density_grid, params_idx, density_grid_idx = b[0]
+			if len(b[0]) >= 4:
+				params, density_grid, params_idx, density_grid_idx = b[0]["arr_0"], b[0]["arr_1"], b[0]["arr_2"], b[0]["arr_3"]
+			else:
+				params, density_grid = b[0]["arr_0"], b[0]["arr_1"]
+				params_idx = list(range(params.shape[0]))
+				density_grid_idx = list(range(density_grid.shape[0]))
 			params, density_grid = params.astype(np.float32), density_grid.astype(np.float32)
 			testbed.load_params(params, params_idx)
 			testbed.load_density_grid(density_grid, density_grid_idx)
@@ -131,6 +134,7 @@ if __name__ == "__main__":
 				break
 			if testbed.want_repl():
 				repl(testbed)
+			testbed.reset_accumulation()
 		scene_info = get_scene(args.load_snapshot)
 		if scene_info is not None:
 			args.load_snapshot = default_snapshot_filename(scene_info)

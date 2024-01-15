@@ -43,14 +43,35 @@
                 "75",
                 "--saveformat",
                 "results/stnerf-walking/frame%d.bson",
+                "--intraexportformat",
+                "results/stnerf-walking/frame%d-intra.npz",
                 "--interexportformat",
                 "results/stnerf-walking/frame%d-inter.npz",
-                "--intraexportformat",
-                "results/stnerf-walking/frame%d-intra.npz"
+                "--interdiffexportformat",
+                "results/stnerf-walking/frame%d-interdiff.npz"
             ]
         },
         {
-            "name": "play",
+            "name": "intra play",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/play.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--load_snapshot",
+                "results/stnerf-walking/frame1.bson",
+                "--frameformat",
+                "results/stnerf-walking/frame%d-intra.npz",
+                "--start",
+                "2",
+                "--end",
+                "75"
+            ]
+        },
+        {
+            "name": "inter play",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/play.py",
