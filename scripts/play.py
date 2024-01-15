@@ -30,7 +30,7 @@ def parse_args():
 
 	parser.add_argument("--network", default="", help="Path to the network config. Uses the scene's default if unspecified.")
 
-	parser.add_argument("--load_snapshot", "--snapshot", default="", help="Load this snapshot before training. recommended extension: .ingp/.bson")
+	parser.add_argument("--load_snapshot", "--snapshot", required=True, help="Load this snapshot before training. recommended extension: .ingp/.bson")
 
 	parser.add_argument("--nerf_compatibility", action="store_true", help="Matches parameters with original NeRF. Can cause slowness and worse results on some scenes, but helps with high PSNR on synthetic scenes.")
 	parser.add_argument("--exposure", default=0.0, type=float, help="Controls the brightness of the image. Positive numbers increase brightness, negative numbers decrease it.")
@@ -123,15 +123,21 @@ if __name__ == "__main__":
 	frame_data = np.load(args.frameformat % frame)
 	params, density_grid = frame_data['arr_0'].astype(np.float32), frame_data['arr_1'].astype(np.float32)
 	params_idx, density_grid_idx = frame_data['arr_2'], frame_data['arr_3']
-	testbed.diff_params(params, params_idx)
-	testbed.diff_density_grid(density_grid, density_grid_idx)
+	testbed.load_params(params, params_idx)
+	testbed.load_density_grid(density_grid, density_grid_idx)
 	while testbed.frame():
 		if testbed.want_repl():
 			repl(testbed)
 		testbed.reset_accumulation()
 		frame = frame % args.end + 1
+		if frame < args.start:
+			scene_info = get_scene(args.load_snapshot)
+			if scene_info is not None:
+				args.load_snapshot = default_snapshot_filename(scene_info)
+			testbed.load_snapshot(args.load_snapshot)
+			frame = args.start
 		frame_data = np.load(args.frameformat % frame)
 		params, density_grid = frame_data['arr_0'].astype(np.float32), frame_data['arr_1'].astype(np.float32)
 		params_idx, density_grid_idx = frame_data['arr_2'], frame_data['arr_3']
-		testbed.diff_params(params, params_idx)
-		testbed.diff_density_grid(density_grid, density_grid_idx)
+		testbed.load_params(params, params_idx)
+		testbed.load_density_grid(density_grid, density_grid_idx)
