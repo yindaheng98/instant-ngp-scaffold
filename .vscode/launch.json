@@ -8,10 +8,11 @@
             "program": "${workspaceFolder}/scripts/stnerf2nerf.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "cwd": "${workspaceFolder}/data/nerf/walking",
             "args": [
                 "--aabb_scale",
                 "8",
+                "--path",
+                "data/nerf/taekwondo"
             ]
         },
         {
