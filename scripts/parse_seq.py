@@ -7,8 +7,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--start", type=int, required=True, help="The start frame number.")
 parser.add_argument("--end", type=int, required=True, help="The end frame number.")
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the saved snapshot.")
-parser.add_argument("--interexportformat", type=str, required=True, help="The path format of exported inter-frame video frames (.npz).")
 parser.add_argument("--intraexportformat", type=str, required=True, help="The path format of exported intra-frame video frames (.npz).")
+parser.add_argument("--interexportformat", type=str, required=True, help="The path format of exported inter-frame video frames (.npz).")
+parser.add_argument("--interdiffexportformat", type=str, required=True, help="The path format of exported inter-frame video frames (.npz).")
 
 def load_save(path):
     with open(path, "rb") as f:
@@ -24,7 +25,7 @@ def load_params(save):
     else:
         return np.frombuffer(params_bin, dtype=np.float32).astype(np.float16), np.frombuffer(density_grid_bin, dtype=np.float16)
 
-T = 1e-4
+T = 1e-6
 
 if __name__ == "__main__":
     import os
@@ -46,13 +47,20 @@ if __name__ == "__main__":
         diff_params_idx = np.where(diff_params > T)[0]
         diff_density_grid_idx = np.where(diff_density_grid > T)[0]
         np.savez_compressed(
-            args.interexportformat % i,
+            args.interdiffexportformat % i,
             arr_0=diff_params[diff_params_idx],
             arr_1=diff_density_grid[diff_density_grid_idx],
             arr_2=diff_params_idx,
             arr_3=diff_density_grid_idx,
         )
         params_fp32, density_grid_fp32 = params.astype(np.float32), density_grid.astype(np.float32)
-        params_fp32[diff_params <= T] += diff_params[diff_params <= T]
-        density_grid_fp32[diff_density_grid <= T] += diff_density_grid[diff_density_grid <= T]
-        params, density_grid = params.astype(np.float16), density_grid.astype(np.float16)
+        params_fp32[diff_params_idx] += diff_params[diff_params_idx]
+        density_grid_fp32[diff_density_grid_idx] += diff_density_grid[diff_density_grid_idx]
+        params, density_grid = params_fp32.astype(np.float16), density_grid_fp32.astype(np.float16)
+        np.savez_compressed(
+            args.interexportformat % i,
+            arr_0=params[diff_params_idx],
+            arr_1=density_grid[diff_density_grid_idx],
+            arr_2=diff_params_idx,
+            arr_3=diff_density_grid_idx,
+        )
