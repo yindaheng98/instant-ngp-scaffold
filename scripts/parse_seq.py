@@ -20,9 +20,9 @@ def load_params(save):
     params_type = snapshot['params_type']
     density_grid_bin = snapshot['density_grid_binary']
     if params_type == "__half":
-        return np.frombuffer(params_bin, dtype=np.float16).astype(np.float32), np.frombuffer(density_grid_bin, dtype=np.float16).astype(np.float32)
+        return np.frombuffer(params_bin, dtype=np.float16), np.frombuffer(density_grid_bin, dtype=np.float16)
     else:
-        return np.frombuffer(params_bin, dtype=np.float32), np.frombuffer(density_grid_bin, dtype=np.float16).astype(np.float32)
+        return np.frombuffer(params_bin, dtype=np.float32).astype(np.float16), np.frombuffer(density_grid_bin, dtype=np.float16)
 
 T = 1e-4
 
@@ -52,5 +52,7 @@ if __name__ == "__main__":
             arr_2=diff_params_idx,
             arr_3=diff_density_grid_idx,
         )
-        params[diff_params <= T] += diff_params[diff_params <= T]
-        density_grid[diff_density_grid <= T] += diff_density_grid[diff_density_grid <= T]
+        params_fp32, density_grid_fp32 = params.astype(np.float32), density_grid.astype(np.float32)
+        params_fp32[diff_params <= T] += diff_params[diff_params <= T]
+        density_grid_fp32[diff_density_grid <= T] += diff_density_grid[diff_density_grid <= T]
+        params, density_grid = params.astype(np.float16), density_grid.astype(np.float16)
