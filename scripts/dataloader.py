@@ -134,6 +134,27 @@ class DataLoader(NaiveDataLoader):
                 if w.is_alive():
                     w.terminate()
 
+class NowaitDataLoader(DataLoader):
+
+    def get(self):
+        self.prefetch()
+        if self.index in self.cache:
+            item = self.cache[self.index]
+            del self.cache[self.index]
+        else:
+            while True:
+                try:
+                    (index, data) = self.output_queue.get(timeout=0)
+                except queue.Empty:  # output queue empty, keep trying
+                    return None
+                if index == self.index:  # found our item, ready to return
+                    item = data
+                    break
+                else:  # item isn't the one we want, cache for later
+                    self.cache[index] = data
+
+        self.index += 1
+        return item
 
 class NPZset:
     def __init__(self, start, end, format):
@@ -155,7 +176,7 @@ if __name__ == "__main__":
     import numpy as np
 
     ds = NPZset(2, 75, '/volume/results/stnerf-walking/frame%d-interdiff.npz')
-    dl = DataLoader(ds, num_workers=16, batch_size=1, prefetch_batches=8, collate_fn=lambda batch: batch)
-
-    for b in dl:
+    for b in DataLoader(ds, num_workers=16, batch_size=1, prefetch_batches=8, collate_fn=lambda batch: batch):
+        print(b)
+    for b in NowaitDataLoader(ds, num_workers=16, batch_size=1, prefetch_batches=8, collate_fn=lambda batch: batch):
         print(b)
