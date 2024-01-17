@@ -41,15 +41,59 @@
                 "--start",
                 "1",
                 "--end",
-                "75",
+                "101",
                 "--saveformat",
-                "results/stnerf-walking/frame%d.bson",
+                "results/stnerf-taekwondo/frame%d.bson",
                 "--intraexportformat",
-                "results/stnerf-walking/frame%d-intra.npz",
+                "results/stnerf-taekwondo/frame%d-intra.npz",
                 "--interexportformat",
-                "results/stnerf-walking/frame%d-inter.npz",
+                "results/stnerf-taekwondo/frame%d-inter.npz",
                 "--interdiffexportformat",
-                "results/stnerf-walking/frame%d-interdiff.npz"
+                "results/stnerf-taekwondo/frame%d-interdiff.npz"
+            ]
+        },
+        {
+            "name": "parse_seq2bson",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/parse_seq2bson.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--start",
+                "1",
+                "--end",
+                "101",
+                "--saveformat",
+                "results/stnerf-taekwondo/frame%d.bson",
+                "--intraexportformat",
+                "results/stnerf-taekwondo/frame%d-intra.bson",
+                "--interexportformat",
+                "results/stnerf-taekwondo/frame%d-inter.bson",
+                "--interdiffexportformat",
+                "results/stnerf-taekwondo/frame%d-interdiff.bson"
+            ]
+        },
+        {
+            "name": "intra play mt",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/play_mt.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--load_snapshot",
+                "results/stnerf-taekwondo/frame1.bson",
+                "--frameformat",
+                "results/stnerf-taekwondo/frame%d-intra.npz",
+                "--init",
+                "results/stnerf-taekwondo/frame1-intra.npz",
+                "--start",
+                "2",
+                "--end",
+                "101"
             ]
         },
         {
@@ -62,13 +106,13 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--load_snapshot",
-                "results/stnerf-walking/frame1.bson",
+                "results/stnerf-taekwondo/frame1.bson",
                 "--frameformat",
-                "results/stnerf-walking/frame%d-intra.npz",
+                "results/stnerf-taekwondo/frame%d-intra.npz",
                 "--start",
                 "2",
                 "--end",
-                "75"
+                "101"
             ]
         },
         {
@@ -81,13 +125,15 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--load_snapshot",
-                "results/stnerf-walking/frame1.bson",
+                "results/stnerf-taekwondo/frame1.bson",
                 "--frameformat",
-                "results/stnerf-walking/frame%d-inter.npz",
+                "results/stnerf-taekwondo/frame%d-inter.npz",
+                "--init",
+                "results/stnerf-taekwondo/frame1-intra.npz",
                 "--start",
                 "2",
                 "--end",
-                "75"
+                "101"
             ]
         }
     ]
