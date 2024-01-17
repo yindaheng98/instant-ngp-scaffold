@@ -52,7 +52,6 @@ def get_scene(scene):
 	return None
 
 if __name__ == "__main__":
-	from dataloader import NPZset, NowaitDataLoader
 	args = parse_args()
 
 	testbed = ngp.Testbed()
@@ -116,37 +115,16 @@ if __name__ == "__main__":
 	testbed.set_density_grid_load_cache_size(N)
 	testbed.dynamic_res_target_fps = 15
 
-	dataset = NPZset(args.start, args.end, args.frameformat)
-	init_frame_data = np.load(args.init)
-	init_params = init_frame_data["arr_0"]
-	init_density_grid = init_frame_data["arr_1"]
-	init_params_index = list(range(init_params.shape[0]))
-	init_density_grid_index = list(range(init_density_grid.shape[0]))
-	while testbed.frame():
-		if testbed.want_repl():
-			repl(testbed)
-		testbed.reset_accumulation()
-		for b in NowaitDataLoader(dataset, num_workers=8, batch_size=1, prefetch_batches=4, collate_fn=lambda batch: batch):
-			for d in b:
-				if testbed.load_params_dequeue():
-					print("ok load_params_dequeue")
-				if testbed.load_density_grid_dequeue():
-					print("ok load_density_grid_dequeue")
-				if not testbed.frame():
-					break
-				if testbed.want_repl():
-					repl(testbed)
-				testbed.reset_accumulation()
-				if not d:
-					continue
-				params, density_grid = d["arr_0"], d["arr_1"]
-				if len(d) >= 4:
-					params_idx = d["arr_2"]
-					density_grid_idx = d["arr_3"]
-				else:
-					params_idx = list(range(params.shape[0]))
-					density_grid_idx = list(range(density_grid.shape[0]))
-				testbed.load_params_enqueue(params, params_idx)
-				testbed.load_density_grid_enqueue(density_grid, density_grid_idx)
-		testbed.load_params_enqueue(init_params, init_params_index)
-		testbed.load_density_grid_enqueue(init_density_grid, init_density_grid_index)
+	def render(path):
+		while not testbed.load_frame_enqueue(path):
+			if not testbed.frame():
+				testbed.join_last_update_frame_thread()
+				exit(0)
+			if testbed.want_repl():
+				repl(testbed)
+			testbed.reset_accumulation()
+			if testbed.load_frame_dequeue():
+				print("ok load_frame_dequeue")
+	render(args.init)
+	for i in range(args.start, args.end + 1):
+		render(args.frameformat % i)
