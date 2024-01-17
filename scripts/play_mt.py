@@ -114,7 +114,7 @@ if __name__ == "__main__":
 	N = 2**20
 	testbed.set_params_load_cache_size(N)
 	testbed.set_density_grid_load_cache_size(N)
-	testbed.dynamic_res_target_fps = 5
+	testbed.dynamic_res_target_fps = 15
 
 	dataset = NPZset(args.start, args.end, args.frameformat)
 	init_frame_data = np.load(args.init)
@@ -126,7 +126,7 @@ if __name__ == "__main__":
 		if testbed.want_repl():
 			repl(testbed)
 		testbed.reset_accumulation()
-		for b in NowaitDataLoader(dataset, num_workers=16, batch_size=1, prefetch_batches=8, collate_fn=lambda batch: batch):
+		for b in NowaitDataLoader(dataset, num_workers=8, batch_size=1, prefetch_batches=4, collate_fn=lambda batch: batch):
 			for d in b:
 				if testbed.load_params_dequeue():
 					print("ok load_params_dequeue")
@@ -139,7 +139,7 @@ if __name__ == "__main__":
 				testbed.reset_accumulation()
 				if not d:
 					continue
-				params, density_grid = d["arr_0"].astype(np.float32), d["arr_1"].astype(np.float32)
+				params, density_grid = d["arr_0"], d["arr_1"]
 				if len(d) >= 4:
 					params_idx = d["arr_2"]
 					density_grid_idx = d["arr_3"]

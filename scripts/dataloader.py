@@ -144,7 +144,7 @@ class NowaitDataLoader(DataLoader):
         else:
             while True:
                 try:
-                    (index, data) = self.output_queue.get(timeout=0)
+                    (index, data) = self.output_queue.get_nowait()
                 except queue.Empty:  # output queue empty, keep trying
                     return None
                 if index == self.index:  # found our item, ready to return
