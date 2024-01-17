@@ -53,10 +53,10 @@
             ]
         },
         {
-            "name": "parse_seq2bin",
+            "name": "parse_seq2bson",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/scripts/parse_seq2bin.py",
+            "program": "${workspaceFolder}/scripts/parse_seq2bson.py",
             "console": "integratedTerminal",
             "justMyCode": false,
             "cwd": "${workspaceFolder}",
@@ -68,11 +68,11 @@
                 "--saveformat",
                 "results/stnerf-taekwondo/frame%d.bson",
                 "--intraexportformat",
-                "results/stnerf-taekwondo/frame%d-intra.bin",
+                "results/stnerf-taekwondo/frame%d-intra.bson",
                 "--interexportformat",
-                "results/stnerf-taekwondo/frame%d-inter.bin",
+                "results/stnerf-taekwondo/frame%d-inter.bson",
                 "--interdiffexportformat",
-                "results/stnerf-taekwondo/frame%d-interdiff.bin"
+                "results/stnerf-taekwondo/frame%d-interdiff.bson"
             ]
         },
         {
