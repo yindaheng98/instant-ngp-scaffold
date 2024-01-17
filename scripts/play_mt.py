@@ -125,6 +125,7 @@ if __name__ == "__main__":
 			testbed.reset_accumulation()
 			if testbed.load_frame_dequeue():
 				print("ok load_frame_dequeue")
-	render(args.init)
-	for i in range(args.start, args.end + 1):
-		render(args.frameformat % i)
+	while True:
+		render(args.init)
+		for i in range(args.start, args.end + 1):
+			render(args.frameformat % i)
