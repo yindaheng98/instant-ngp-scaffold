@@ -1,7 +1,16 @@
 {
     "cmake.debugConfig": {
         "args": [
-            "--load_snapshot=/volume/results/stnerf-taekwondo/frame101.bson", "--no-train"
+            "--load_snapshot=/volume/results/stnerf-taekwondo/frame1.bson",
+            "--no-train",
+            "--init",
+            "/volume/results/stnerf-taekwondo/frame1-intra.bson",
+            "--frameformat",
+            "/volume/results/stnerf-taekwondo/frame%d-intra.bson",
+            "--start",
+            "2",
+            "--end",
+            "101"
         ]
     },
     "files.associations": {

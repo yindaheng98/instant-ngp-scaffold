@@ -86,10 +86,10 @@
             "args": [
                 "--load_snapshot",
                 "results/stnerf-taekwondo/frame1.bson",
-                "--frameformat",
-                "results/stnerf-taekwondo/frame%d-intra.bson",
                 "--init",
                 "results/stnerf-taekwondo/frame1-intra.bson",
+                "--frameformat",
+                "results/stnerf-taekwondo/frame%d-inter.bson",
                 "--start",
                 "2",
                 "--end",
