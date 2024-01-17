@@ -38,42 +38,38 @@ if __name__ == "__main__":
     save = load_save(savepath)
     params, density_grid = load_params(save)
     with open(args.intraexportformat % args.start, "wb") as f:
-        f.write(bson.encode({
-            "size": params.shape[0],
-            "params": params.tobytes(),
-            "density_grid": density_grid.tobytes(),
-        }))
+        f.write(struct.pack("L", params.shape[0]))
+        f.write(struct.pack(f"{params.shape[0]}e", *params))
+        f.write(struct.pack("L", density_grid.shape[0]))
+        f.write(struct.pack(f"{density_grid.shape[0]}e", *density_grid))
     for i in tqdm(range(args.start + 1, args.end + 1)):
         savepath = os.path.join(root, args.saveformat % i)
         save = load_save(savepath)
         last_params, last_density_grid, (params, density_grid) = params, density_grid, load_params(save)
         with open(args.intraexportformat % i, "wb") as f:
-            f.write(bson.encode({
-                "size": params.shape[0],
-                "params": params.tobytes(),
-                "density_grid": density_grid.tobytes(),
-            }))
+            f.write(struct.pack("L", params.shape[0]))
+            f.write(struct.pack(f"{params.shape[0]}e", *params))
+            f.write(struct.pack("L", density_grid.shape[0]))
+            f.write(struct.pack(f"{density_grid.shape[0]}e", *density_grid))
         diff_params = params - last_params
         diff_density_grid = density_grid - last_density_grid
         diff_params_idx = np.where(diff_params > T)[0]
         diff_density_grid_idx = np.where(diff_density_grid > T)[0]
         with open(args.interdiffexportformat % i, "wb") as f:
-            f.write(bson.encode({
-                "size": diff_params_idx.shape[0],
-                "params": diff_params[diff_params_idx].tobytes(),
-                "density_grid": diff_density_grid[diff_density_grid_idx].tobytes(),
-                "params_idx": struct.pack(f"{diff_params_idx.shape[0]}L", *diff_params_idx),
-                "density_grid_idx": struct.pack(f"{diff_density_grid_idx.shape[0]}L", *diff_density_grid_idx),
-            }))
+            f.write(struct.pack("L", diff_params_idx.shape[0]))
+            f.write(struct.pack(f"{diff_params_idx.shape[0]}e", *diff_params[diff_params_idx]))
+            f.write(struct.pack(f"{diff_params_idx.shape[0]}L", *diff_params_idx))
+            f.write(struct.pack("L", diff_density_grid_idx.shape[0]))
+            f.write(struct.pack(f"{diff_density_grid_idx.shape[0]}e", *diff_density_grid[diff_density_grid_idx]))
+            f.write(struct.pack(f"{diff_density_grid_idx.shape[0]}L", *diff_density_grid_idx))
         params_fp32, density_grid_fp32 = params.astype(np.float32), density_grid.astype(np.float32)
         params_fp32[diff_params_idx] += diff_params[diff_params_idx]
         density_grid_fp32[diff_density_grid_idx] += diff_density_grid[diff_density_grid_idx]
         params, density_grid = params_fp32.astype(np.float16), density_grid_fp32.astype(np.float16)
         with open(args.interexportformat % i, "wb") as f:
-            f.write(bson.encode({
-                "size": diff_params_idx.shape[0],
-                "params": params[diff_params_idx].tobytes(),
-                "density_grid": density_grid[diff_density_grid_idx].tobytes(),
-                "params_idx": struct.pack(f"{diff_params_idx.shape[0]}L", *diff_params_idx),
-                "density_grid_idx": struct.pack(f"{diff_density_grid_idx.shape[0]}L", *diff_density_grid_idx),
-            }))
+            f.write(struct.pack("L", diff_params_idx.shape[0]))
+            f.write(struct.pack(f"{diff_params_idx.shape[0]}e", *params[diff_params_idx]))
+            f.write(struct.pack(f"{diff_params_idx.shape[0]}L", *diff_params_idx))
+            f.write(struct.pack("L", diff_density_grid_idx.shape[0]))
+            f.write(struct.pack(f"{diff_density_grid_idx.shape[0]}e", *density_grid[diff_density_grid_idx]))
+            f.write(struct.pack(f"{diff_density_grid_idx.shape[0]}L", *diff_density_grid_idx))
