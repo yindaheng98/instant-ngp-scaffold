@@ -57,16 +57,16 @@ if __name__ == "__main__":
             }))
         diff_params = params - last_params
         diff_density_grid = density_grid - last_density_grid
-        diff_params_idx = np.where(diff_params > T)[0]
-        diff_density_grid_idx = np.where(diff_density_grid > T)[0]
+        diff_params_idx = np.where(diff_params > T)[0].astype(np.uint32)
+        diff_density_grid_idx = np.where(diff_density_grid > T)[0].astype(np.uint32)
         with open(args.interdiffexportformat % i, "wb") as f:
             f.write(bson.encode({
                 "params_size": diff_params_idx.shape[0],
                 "density_grid_size": diff_density_grid_idx.shape[0],
                 "params": diff_params[diff_params_idx].tobytes(),
                 "density_grid": diff_density_grid[diff_density_grid_idx].tobytes(),
-                "params_idx": struct.pack(f"{diff_params_idx.shape[0]}L", *diff_params_idx),
-                "density_grid_idx": struct.pack(f"{diff_density_grid_idx.shape[0]}L", *diff_density_grid_idx),
+                "params_idx": diff_params_idx.tobytes(),
+                "density_grid_idx": diff_density_grid_idx.tobytes(),
             }))
         params_fp32, density_grid_fp32 = params.astype(np.float32), density_grid.astype(np.float32)
         params_fp32[diff_params_idx] += diff_params[diff_params_idx]
@@ -78,6 +78,6 @@ if __name__ == "__main__":
                 "density_grid_size": diff_density_grid_idx.shape[0],
                 "params": params[diff_params_idx].tobytes(),
                 "density_grid": density_grid[diff_density_grid_idx].tobytes(),
-                "params_idx": struct.pack(f"{diff_params_idx.shape[0]}L", *diff_params_idx),
-                "density_grid_idx": struct.pack(f"{diff_density_grid_idx.shape[0]}L", *diff_density_grid_idx),
+                "params_idx": diff_params_idx.tobytes(),
+                "density_grid_idx": diff_density_grid_idx.tobytes(),
             }))
