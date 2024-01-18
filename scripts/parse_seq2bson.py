@@ -53,7 +53,7 @@ def load_params(save):
     return params, density_grid
 
 T = 1e-6
-T_TOOBIG = 60000
+T_TOOBIG = 65500
 
 if __name__ == "__main__":
     import os
@@ -71,7 +71,7 @@ if __name__ == "__main__":
             "params": params.tobytes(),
             "density_grid": density_grid.tobytes(),
         }))
-    last_diff_params, last_diff_density_grid = np.copy(params), np.copy(density_grid).astype(np.float32)
+    last_diff_params, last_diff_density_grid = np.copy(params), np.copy(density_grid)
     last_intr_params, last_intr_density_grid = np.copy(params), np.copy(density_grid)
     for i in range(args.start + 1, args.end + 1):
         print("do", i-args.start, "/", args.end-args.start)
@@ -86,29 +86,50 @@ if __name__ == "__main__":
                 "density_grid": density_grid.tobytes(),
             }))
 
-        absolute_diff_density_grid = density_grid.astype(np.float32) - last_diff_density_grid
-        relative_diff_density_grid = absolute_diff_density_grid / last_diff_density_grid
-        relative_diff_density_grid[np.isnan(relative_diff_density_grid)] = absolute_diff_density_grid[np.isnan(relative_diff_density_grid)]
-        big_diff_density_grid_idx = (np.abs(relative_diff_density_grid) > T) & (np.abs(absolute_diff_density_grid) > T)
-        toobig_diff_density_grid_idx = absolute_diff_density_grid > T_TOOBIG
+        diff_density_grid_fp32 = density_grid.astype(np.float32) - last_diff_density_grid.astype(np.float32)
+        diff_density_grid_rel = diff_density_grid_fp32 / last_diff_density_grid.astype(np.float32)
+        diff_density_grid_rel[np.isnan(diff_density_grid_rel)] = diff_density_grid_fp32[np.isnan(diff_density_grid_rel)]
+        density_grid_fp32 = last_diff_density_grid.astype(np.float32) + diff_density_grid_fp32
+        density_grid_error_for_compare = density_grid - (last_diff_density_grid + diff_density_grid_fp32.astype(np.float16))
 
         diff_params = params - last_diff_params
-        diff_density_grid = density_grid.astype(np.float32) - last_diff_density_grid
+        diff_density_grid = density_grid - last_diff_density_grid
         diff_params[np.abs(diff_params) <= T] = 0
-        diff_density_grid[~big_diff_density_grid_idx] = 0
-        diff_density_grid[diff_density_grid > T_TOOBIG] = T_TOOBIG
-        diff_density_grid[diff_density_grid < -T_TOOBIG] = -T_TOOBIG
+        diff_density_grid[np.abs(diff_density_grid) <= T] = 0
+        diff_density_grid[diff_density_grid_fp32 > T_TOOBIG] = T_TOOBIG
+        diff_density_grid[diff_density_grid_fp32 < -T_TOOBIG] = -T_TOOBIG
+        diff_density_grid[density_grid_fp32 > T_TOOBIG] = (T_TOOBIG - last_diff_density_grid)[density_grid_fp32 > T_TOOBIG]
+        diff_density_grid[density_grid_fp32 < -T_TOOBIG] = (-T_TOOBIG - last_diff_density_grid)[density_grid_fp32 < -T_TOOBIG]
         with open(args.interdiffexportformat % i, "wb") as f:
             f.write(bson.encode({
                 "params_size": diff_params.shape[0],
                 "density_grid_size": diff_density_grid.shape[0],
                 "params": diff_params.tobytes(),
-                "density_grid": diff_density_grid.astype(np.float16).tobytes(),
+                "density_grid": diff_density_grid.tobytes(),
             }))
         last_diff_params += diff_params
         last_diff_density_grid += diff_density_grid
-        print("error of params", (params - last_diff_params).max(), (params - last_diff_params).min())
-        print("error of density_grid", (density_grid - last_diff_density_grid).max(), (density_grid - last_diff_density_grid).min())
+
+        error_params = params.astype(np.float32) - last_diff_params.astype(np.float32)
+        error_density_grid = density_grid.astype(np.float32) - last_diff_density_grid.astype(np.float32)
+        print("error of params", error_params.max(), error_params.min())
+        print("error of density_grid", error_density_grid.max(), error_density_grid.min())
+        cause_of_max_error_idx = error_density_grid == error_density_grid.max()
+        cause_of_min_error_idx = error_density_grid == error_density_grid.min()
+        print("cause of density_grid error",
+              error_density_grid.max(),
+              "error should be",
+              density_grid_error_for_compare[cause_of_max_error_idx],
+              density_grid[cause_of_max_error_idx],
+              last_diff_density_grid[cause_of_max_error_idx],
+              diff_density_grid[cause_of_max_error_idx])
+        print("cause of density_grid error",
+              error_density_grid.min(),
+              "error should be",
+              density_grid_error_for_compare[cause_of_min_error_idx],
+              density_grid[cause_of_min_error_idx],
+              last_diff_density_grid[cause_of_min_error_idx],
+              diff_density_grid[cause_of_min_error_idx])
 
         intr_params_idx = np.where(np.abs(params - last_intr_params) > T)[0].astype(np.uint32)
         intr_density_grid_idx = np.where(np.abs(density_grid - last_intr_density_grid) > T)[0].astype(np.uint32)
