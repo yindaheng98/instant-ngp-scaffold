@@ -70,9 +70,7 @@
                 "--intraexportformat",
                 "results/stnerf-taekwondo/frame%d-intra.bson",
                 "--interexportformat",
-                "results/stnerf-taekwondo/frame%d-inter.bson",
-                "--interdiffexportformat",
-                "results/stnerf-taekwondo/frame%d-interdiff.bson"
+                "results/stnerf-taekwondo/frame%d-inter.bson"
             ]
         },
         {

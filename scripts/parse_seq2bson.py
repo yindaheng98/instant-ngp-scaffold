@@ -1,8 +1,7 @@
 import argparse
 import bson
 import numpy as np
-import struct
-from tqdm import tqdm
+import zlib
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--start", type=int, required=True, help="The start frame number.")
@@ -10,7 +9,6 @@ parser.add_argument("--end", type=int, required=True, help="The end frame number
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the saved snapshot.")
 parser.add_argument("--intraexportformat", type=str, required=True, help="The path format of exported intra-frame video frames (.bson).")
 parser.add_argument("--interexportformat", type=str, required=True, help="The path format of exported inter-frame video frames (.bson).")
-parser.add_argument("--interdiffexportformat", type=str, required=True, help="The path format of exported inter-frame video frames (.bson).")
 
 def load_save(path):
     with open(path, "rb") as f:
@@ -65,12 +63,12 @@ if __name__ == "__main__":
     save = load_save(savepath)
     params, density_grid = load_params(save)
     with open(args.intraexportformat % args.start, "wb") as f:
-        f.write(bson.encode({
+        f.write(zlib.compress(bson.encode({
             "params_size": params.shape[0],
             "density_grid_size": density_grid.shape[0],
             "params": params.tobytes(),
             "density_grid": density_grid.tobytes(),
-        }))
+        })))
     last_diff_params, last_diff_density_grid = np.copy(params), np.copy(density_grid)
     last_intr_params, last_intr_density_grid = np.copy(params), np.copy(density_grid)
     for i in range(args.start + 1, args.end + 1):
@@ -79,12 +77,12 @@ if __name__ == "__main__":
         save = load_save(savepath)
         params, density_grid = load_params(save)
         with open(args.intraexportformat % i, "wb") as f:
-            f.write(bson.encode({
+            f.write(zlib.compress(bson.encode({
                 "params_size": params.shape[0],
                 "density_grid_size": density_grid.shape[0],
                 "params": params.tobytes(),
                 "density_grid": density_grid.tobytes(),
-            }))
+            })))
 
         diff_density_grid_fp32 = density_grid.astype(np.float32) - last_diff_density_grid.astype(np.float32)
         diff_density_grid_rel = diff_density_grid_fp32 / last_diff_density_grid.astype(np.float32)
@@ -100,13 +98,13 @@ if __name__ == "__main__":
         diff_density_grid[diff_density_grid_fp32 < -T_TOOBIG] = -T_TOOBIG
         diff_density_grid[density_grid_fp32 > T_TOOBIG] = (T_TOOBIG - last_diff_density_grid)[density_grid_fp32 > T_TOOBIG]
         diff_density_grid[density_grid_fp32 < -T_TOOBIG] = (-T_TOOBIG - last_diff_density_grid)[density_grid_fp32 < -T_TOOBIG]
-        with open(args.interdiffexportformat % i, "wb") as f:
-            f.write(bson.encode({
+        with open(args.interexportformat % i, "wb") as f:
+            f.write(zlib.compress(bson.encode({
                 "params_size": diff_params.shape[0],
                 "density_grid_size": diff_density_grid.shape[0],
                 "params": diff_params.tobytes(),
                 "density_grid": diff_density_grid.tobytes(),
-            }))
+            })))
         last_diff_params += diff_params
         last_diff_density_grid += diff_density_grid
 
@@ -130,19 +128,5 @@ if __name__ == "__main__":
               density_grid[cause_of_min_error_idx],
               last_diff_density_grid[cause_of_min_error_idx],
               diff_density_grid[cause_of_min_error_idx])
-
-        intr_params_idx = np.where(np.abs(params - last_intr_params) > T)[0].astype(np.uint32)
-        intr_density_grid_idx = np.where(np.abs(density_grid - last_intr_density_grid) > T)[0].astype(np.uint32)
-        with open(args.interexportformat % i, "wb") as f:
-            f.write(bson.encode({
-                "params_size": intr_params_idx.shape[0],
-                "density_grid_size": intr_density_grid_idx.shape[0],
-                "params": params[intr_params_idx].tobytes(),
-                "density_grid": density_grid[intr_density_grid_idx].tobytes(),
-                "params_idx": intr_params_idx.tobytes(),
-                "density_grid_idx": intr_density_grid_idx.tobytes(),
-            }))
-        last_intr_params[intr_params_idx] = params[intr_params_idx]
-        last_intr_density_grid[intr_density_grid_idx] = density_grid[intr_density_grid_idx]
 
         pass
