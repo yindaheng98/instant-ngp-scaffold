@@ -108,7 +108,7 @@ if __name__ == "__main__":
         last_diff_params += diff_params
         last_diff_density_grid += diff_density_grid
         print("error of params", (params - last_diff_params).max(), (params - last_diff_params).min())
-        print("error of density_grid", (density_grid - diff_density_grid).max(), (density_grid - diff_density_grid).min())
+        print("error of density_grid", (density_grid - last_diff_density_grid).max(), (density_grid - last_diff_density_grid).min())
 
         intr_params_idx = np.where(np.abs(params - last_intr_params) > T)[0].astype(np.uint32)
         intr_density_grid_idx = np.where(np.abs(density_grid - last_intr_density_grid) > T)[0].astype(np.uint32)
