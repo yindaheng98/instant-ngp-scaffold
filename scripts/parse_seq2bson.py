@@ -22,9 +22,14 @@ def load_params(save):
     params_type = snapshot['params_type']
     density_grid_bin = snapshot['density_grid_binary']
     if params_type == "__half":
-        return np.frombuffer(params_bin, dtype=np.float16), np.frombuffer(density_grid_bin, dtype=np.float16)
+        params, density_grid = np.frombuffer(params_bin, dtype=np.float16), np.frombuffer(density_grid_bin, dtype=np.float16)
     else:
-        return np.frombuffer(params_bin, dtype=np.float32).astype(np.float16), np.frombuffer(density_grid_bin, dtype=np.float16)
+        params, density_grid = np.frombuffer(params_bin, dtype=np.float32).astype(np.float16), np.frombuffer(density_grid_bin, dtype=np.float16)
+    if np.isnan(params).any():
+        raise ValueError("params has NaN!")
+    if np.isnan(density_grid).any():
+        raise ValueError("density_grid has NaN!")
+    return params, density_grid
 
 T = 1e-6
 
@@ -44,7 +49,7 @@ if __name__ == "__main__":
             "params": params.tobytes(),
             "density_grid": density_grid.tobytes(),
         }))
-    last_diff_params, last_diff_density_grid = np.copy(params), np.copy(density_grid)
+    last_diff_params, last_diff_density_grid = np.copy(params), np.copy(density_grid).astype(np.float32)
     last_intr_params, last_intr_density_grid = np.copy(params), np.copy(density_grid)
     for i in tqdm(range(args.start + 1, args.end + 1)):
         savepath = os.path.join(root, args.saveformat % i)
@@ -59,7 +64,7 @@ if __name__ == "__main__":
             }))
 
         diff_params = params - last_diff_params
-        diff_density_grid = density_grid - last_diff_density_grid
+        diff_density_grid = density_grid.astype(np.float32) - last_diff_density_grid
         diff_params[np.abs(diff_params) <= T] = 0
         diff_density_grid[np.abs(diff_density_grid) <= T] = 0
         with open(args.interdiffexportformat % i, "wb") as f:
@@ -67,7 +72,7 @@ if __name__ == "__main__":
                 "params_size": diff_params.shape[0],
                 "density_grid_size": diff_density_grid.shape[0],
                 "params": diff_params.tobytes(),
-                "density_grid": diff_density_grid.tobytes(),
+                "density_grid": diff_density_grid.astype(np.float16).tobytes(),
             }))
         last_diff_params += diff_params
         last_diff_density_grid += diff_density_grid
@@ -85,3 +90,5 @@ if __name__ == "__main__":
             }))
         last_intr_params[intr_params_idx] = params[intr_params_idx]
         last_intr_density_grid[intr_density_grid_idx] = density_grid[intr_density_grid_idx]
+
+        pass

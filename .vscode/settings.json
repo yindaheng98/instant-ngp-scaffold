@@ -6,11 +6,12 @@
             "--init",
             "/volume/results/stnerf-taekwondo/frame1-intra.bson",
             "--frameformat",
-            "/volume/results/stnerf-taekwondo/frame%d-inter.bson",
+            "/volume/results/stnerf-taekwondo/frame%d-interdiff.bson",
             "--start",
             "2",
             "--end",
-            "101"
+            "101",
+            "--diff"
         ]
     },
     "files.associations": {
