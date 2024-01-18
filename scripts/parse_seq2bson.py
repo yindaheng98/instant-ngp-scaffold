@@ -44,10 +44,12 @@ if __name__ == "__main__":
             "params": params.tobytes(),
             "density_grid": density_grid.tobytes(),
         }))
+    last_diff_params, last_diff_density_grid = np.copy(params), np.copy(density_grid)
+    last_intr_params, last_intr_density_grid = np.copy(params), np.copy(density_grid)
     for i in tqdm(range(args.start + 1, args.end + 1)):
         savepath = os.path.join(root, args.saveformat % i)
         save = load_save(savepath)
-        last_params, last_density_grid, (params, density_grid) = params, density_grid, load_params(save)
+        params, density_grid = load_params(save)
         with open(args.intraexportformat % i, "wb") as f:
             f.write(bson.encode({
                 "params_size": params.shape[0],
@@ -55,29 +57,31 @@ if __name__ == "__main__":
                 "params": params.tobytes(),
                 "density_grid": density_grid.tobytes(),
             }))
-        diff_params = params - last_params
-        diff_density_grid = density_grid - last_density_grid
-        diff_params_idx = np.where(diff_params > T)[0].astype(np.uint32)
-        diff_density_grid_idx = np.where(diff_density_grid > T)[0].astype(np.uint32)
+
+        diff_params = params - last_diff_params
+        diff_density_grid = density_grid - last_diff_density_grid
+        diff_params[np.abs(diff_params) <= T] = 0
+        diff_density_grid[np.abs(diff_density_grid) <= T] = 0
         with open(args.interdiffexportformat % i, "wb") as f:
             f.write(bson.encode({
-                "params_size": diff_params_idx.shape[0],
-                "density_grid_size": diff_density_grid_idx.shape[0],
-                "params": diff_params[diff_params_idx].tobytes(),
-                "density_grid": diff_density_grid[diff_density_grid_idx].tobytes(),
-                "params_idx": diff_params_idx.tobytes(),
-                "density_grid_idx": diff_density_grid_idx.tobytes(),
+                "params_size": diff_params.shape[0],
+                "density_grid_size": diff_density_grid.shape[0],
+                "params": diff_params.tobytes(),
+                "density_grid": diff_density_grid.tobytes(),
             }))
-        params_fp32, density_grid_fp32 = params.astype(np.float32), density_grid.astype(np.float32)
-        params_fp32[diff_params_idx] += diff_params[diff_params_idx]
-        density_grid_fp32[diff_density_grid_idx] += diff_density_grid[diff_density_grid_idx]
-        params, density_grid = params_fp32.astype(np.float16), density_grid_fp32.astype(np.float16)
+        last_diff_params += diff_params
+        last_diff_density_grid += diff_density_grid
+
+        intr_params_idx = np.where(np.abs(params - last_intr_params) > T)[0].astype(np.uint32)
+        intr_density_grid_idx = np.where(np.abs(density_grid - last_intr_density_grid) > T)[0].astype(np.uint32)
         with open(args.interexportformat % i, "wb") as f:
             f.write(bson.encode({
-                "params_size": diff_params_idx.shape[0],
-                "density_grid_size": diff_density_grid_idx.shape[0],
-                "params": params[diff_params_idx].tobytes(),
-                "density_grid": density_grid[diff_density_grid_idx].tobytes(),
-                "params_idx": diff_params_idx.tobytes(),
-                "density_grid_idx": diff_density_grid_idx.tobytes(),
+                "params_size": intr_params_idx.shape[0],
+                "density_grid_size": intr_density_grid_idx.shape[0],
+                "params": params[intr_params_idx].tobytes(),
+                "density_grid": density_grid[intr_density_grid_idx].tobytes(),
+                "params_idx": intr_params_idx.tobytes(),
+                "density_grid_idx": intr_density_grid_idx.tobytes(),
             }))
+        last_intr_params[intr_params_idx] = params[intr_params_idx]
+        last_intr_density_grid[intr_density_grid_idx] = density_grid[intr_density_grid_idx]

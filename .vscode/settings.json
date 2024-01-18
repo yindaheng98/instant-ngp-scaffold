@@ -6,7 +6,7 @@
             "--init",
             "/volume/results/stnerf-taekwondo/frame1-intra.bson",
             "--frameformat",
-            "/volume/results/stnerf-taekwondo/frame%d-intra.bson",
+            "/volume/results/stnerf-taekwondo/frame%d-inter.bson",
             "--start",
             "2",
             "--end",
