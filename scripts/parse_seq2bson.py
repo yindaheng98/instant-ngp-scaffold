@@ -46,7 +46,7 @@ def load_params(save):
         print("+inf in density_grid, replace by", replace)
         density_grid[np.isposinf(density_grid)] = replace
     if np.isneginf(density_grid).any():
-        replace = density_grid[~np.isneginf(density_grid)].max()
+        replace = density_grid[~np.isneginf(density_grid)].min()
         print("-inf in density_grid, replace by", replace)
         density_grid[np.isneginf(density_grid)] = replace
 
