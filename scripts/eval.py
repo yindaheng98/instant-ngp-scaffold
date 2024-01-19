@@ -10,6 +10,7 @@
 
 import argparse
 import os
+from textwrap import indent
 import commentjson as json
 
 import numpy as np
@@ -132,6 +133,7 @@ if __name__ == "__main__":
 	testbed.shall_train = False
 	testbed.load_training_data(args.test_transforms)
 
+	allpsnr, allssim = [], []
 	with tqdm(range(testbed.nerf.training.dataset.n_images), unit="images", desc=f"Rendering test frame") as t:
 		for i in t:
 			resolution = testbed.nerf.training.dataset.metadata[i].resolution
@@ -140,6 +142,9 @@ if __name__ == "__main__":
 			ref_image = testbed.render(resolution[0], resolution[1], 1, True)
 			testbed.render_ground_truth = False
 			image = testbed.render(resolution[0], resolution[1], spp, True)
+			
+			if i == 0:
+				write_image(args.load_snapshot + ".png", image)
 
 			A = np.clip(linear_to_srgb(image[...,:3]), 0.0, 1.0)
 			R = np.clip(linear_to_srgb(ref_image[...,:3]), 0.0, 1.0)
@@ -153,3 +158,7 @@ if __name__ == "__main__":
 			maxpsnr = psnr if psnr>maxpsnr else maxpsnr
 			totcount = totcount+1
 			t.set_postfix(psnr = totpsnr/(totcount or 1))
+			allpsnr.append(psnr)
+			allssim.append(ssim)
+	with open(args.load_snapshot + ".json", "w", encoding="utf8") as f:
+		json.dump(dict(psnr=allpsnr, ssim=allssim), f, indent=2)

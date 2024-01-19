@@ -103,18 +103,18 @@
             ]
         },
         {
-            "name": "intra play mt",
+            "name": "eval",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/scripts/play_mt.py",
+            "program": "${workspaceFolder}/scripts/eval.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "cwd": "${workspaceFolder}",
             "args": [
                 "--load_snapshot",
-                "results/stnerf-taekwondo/frame1.bson",
+                "results/stnerf-taekwondo/frame46T=1.000000T_density=1.000000-snapshotsimulate.bson",
                 "--test_transforms",
-                "data/nerf/taekwondo/frame1/transforms.json",
+                "data/nerf/taekwondo/frame46/transforms.json",
             ]
         }
     ]
