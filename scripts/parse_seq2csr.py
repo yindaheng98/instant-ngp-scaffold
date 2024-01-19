@@ -61,6 +61,9 @@ if __name__ == "__main__":
     os.makedirs(os.path.dirname(args.interexportformat), exist_ok=True)
     os.makedirs(os.path.dirname(args.intraexportformat), exist_ok=True)
     savepath = os.path.join(root, args.saveformat % args.start)
+
+    params_sizes, diff_params_sizes = [], []
+    density_grid_sizes, diff_density_grid_sizes = [], []
     save = load_save(savepath)
     params, density_grid = load_params(save)
     params_csr = sparse.csr_matrix(params)
@@ -94,6 +97,10 @@ if __name__ == "__main__":
         last_diff_params += diff_params
         last_diff_density_grid += diff_density_grid
 
+        params_sizes.append(params_csr.size)
+        diff_params_sizes.append(diff_params_csr.size)
+        density_grid_sizes.append(density_grid_csr.size)
+        diff_density_grid_sizes.append(diff_density_grid_csr.size)
         print("params_csr", params_csr.size, "diff_params_csr", diff_params_csr.size)
         print("density_grid", density_grid_csr.size, "diff_density_grid_csr", diff_density_grid_csr.size)
 
@@ -119,3 +126,5 @@ if __name__ == "__main__":
               diff_density_grid[cause_of_min_error_idx])
 
         pass
+    print("params_csr", np.mean(params_sizes), "diff_params_csr", np.mean(diff_params_sizes), "ratio", np.mean(diff_params_sizes)/np.mean(params_sizes))
+    print("density_grid", np.mean(density_grid_sizes), "diff_density_grid_csr", np.mean(diff_density_grid_sizes), "ratio", np.mean(diff_density_grid_sizes)/np.mean(density_grid_sizes))
