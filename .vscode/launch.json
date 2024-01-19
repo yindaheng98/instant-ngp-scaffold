@@ -113,14 +113,8 @@
             "args": [
                 "--load_snapshot",
                 "results/stnerf-taekwondo/frame1.bson",
-                "--init",
-                "results/stnerf-taekwondo/frame1-intra.bson",
-                "--frameformat",
-                "results/stnerf-taekwondo/frame%d-inter.bson",
-                "--start",
-                "2",
-                "--end",
-                "101"
+                "--test_transforms",
+                "data/nerf/taekwondo/frame1/transforms.json",
             ]
         }
     ]

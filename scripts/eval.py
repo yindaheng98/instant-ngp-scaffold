@@ -10,11 +10,14 @@
 
 import argparse
 import os
+import commentjson as json
 
 import numpy as np
 
 from common import *
 from scenes import *
+
+from tqdm import tqdm
 
 import pyngp as ngp # noqa
 
@@ -27,6 +30,7 @@ def parse_args():
 	parser.add_argument("--load_snapshot", "--snapshot", required=True, help="Load this snapshot before training. recommended extension: .ingp/.bson")
 
 	parser.add_argument("--nerf_compatibility", action="store_true", help="Matches parameters with original NeRF. Can cause slowness and worse results on some scenes, but helps with high PSNR on synthetic scenes.")
+	parser.add_argument("--test_transforms", default="", help="Path to a nerf style transforms json from which we will compute PSNR.")
 	parser.add_argument("--exposure", default=0.0, type=float, help="Controls the brightness of the image. Positive numbers increase brightness, negative numbers decrease it.")
 
 	parser.add_argument("--width", "--screenshot_w", type=int, default=0, help="Resolution width of GUI and screenshots.")
@@ -36,12 +40,6 @@ def parse_args():
 	parser.add_argument("--vr", action="store_true", help="Render to a VR headset.")
 
 	parser.add_argument("--sharpen", default=0, help="Set amount of sharpening applied to NeRF training images. Range 0.0 to 1.0.")
-
-	parser.add_argument("--init", type=str, required=True, help="The npz intra frame for init.")
-	parser.add_argument("--start", type=int, required=True, help="The start frame number.")
-	parser.add_argument("--end", type=int, required=True, help="The end frame number.")
-	parser.add_argument("--frameformat", type=str, required=True, help="The path format of exported video frames (.npz).")
-
 
 	return parser.parse_args()
 
@@ -110,22 +108,48 @@ if __name__ == "__main__":
 		# Match nerf paper behaviour and train on a fixed bg.
 		testbed.nerf.training.random_bg_color = False
 
-	N = 2**20
-	testbed.set_params_load_cache_size(N)
-	testbed.set_density_grid_load_cache_size(N)
-	testbed.dynamic_res_target_fps = 15
+	print("Evaluating test transforms from ", args.test_transforms)
+	with open(args.test_transforms) as f:
+		test_transforms = json.load(f)
+	data_dir=os.path.dirname(args.test_transforms)
+	totmse = 0
+	totpsnr = 0
+	totssim = 0
+	totcount = 0
+	minpsnr = 1000
+	maxpsnr = 0
 
-	def render(path):
-		while not testbed.load_frame_enqueue(path):
-			if not testbed.frame():
-				testbed.join_last_update_frame_thread()
-				exit(0)
-			if testbed.want_repl():
-				repl(testbed)
-			testbed.reset_accumulation()
-			if testbed.load_frame_dequeue():
-				print("ok load_frame_dequeue")
-	while True:
-		render(args.init)
-		for i in range(args.start, args.end + 1):
-			render(args.frameformat % i)
+	# Evaluate metrics on black background
+	testbed.background_color = [0.0, 0.0, 0.0, 1.0]
+
+	# Prior nerf papers don't typically do multi-sample anti aliasing.
+	# So snap all pixels to the pixel centers.
+	testbed.snap_to_pixel_centers = True
+	spp = 8
+
+	testbed.nerf.render_min_transmittance = 1e-4
+
+	testbed.shall_train = False
+	testbed.load_training_data(args.test_transforms)
+
+	with tqdm(range(testbed.nerf.training.dataset.n_images), unit="images", desc=f"Rendering test frame") as t:
+		for i in t:
+			resolution = testbed.nerf.training.dataset.metadata[i].resolution
+			testbed.render_ground_truth = True
+			testbed.set_camera_to_training_view(i)
+			ref_image = testbed.render(resolution[0], resolution[1], 1, True)
+			testbed.render_ground_truth = False
+			image = testbed.render(resolution[0], resolution[1], spp, True)
+
+			A = np.clip(linear_to_srgb(image[...,:3]), 0.0, 1.0)
+			R = np.clip(linear_to_srgb(ref_image[...,:3]), 0.0, 1.0)
+			mse = float(compute_error("MSE", A, R))
+			ssim = float(compute_error("SSIM", A, R))
+			totssim += ssim
+			totmse += mse
+			psnr = mse2psnr(mse)
+			totpsnr += psnr
+			minpsnr = psnr if psnr<minpsnr else minpsnr
+			maxpsnr = psnr if psnr>maxpsnr else maxpsnr
+			totcount = totcount+1
+			t.set_postfix(psnr = totpsnr/(totcount or 1))
