@@ -70,9 +70,11 @@
                 "--intraexportformat",
                 "results/stnerf-taekwondo/frame%d-intra.bson",
                 "--interexportformat",
-                "results/stnerf-taekwondo/frame%(i)dT=%(T)f-inter.bson",
-                "-T",
-                "0.0001"
+                "results/stnerf-taekwondo/frame%(i)dT=%(T)fT_density=%(T_density)f-inter.bson",
+                "--T",
+                "0.1",
+                "--T_density",
+                "0.1"
             ]
         },
         {

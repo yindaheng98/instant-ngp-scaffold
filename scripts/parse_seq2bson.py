@@ -9,7 +9,8 @@ parser.add_argument("--end", type=int, required=True, help="The end frame number
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the saved snapshot.")
 parser.add_argument("--intraexportformat", type=str, required=True, help="The path format of exported intra-frame video frames (.bson).")
 parser.add_argument("--interexportformat", type=str, required=True, help="The path format of exported inter-frame video frames (.bson).")
-parser.add_argument("-T", type=float, required=True, help="Threshold for set zero in inter frames.")
+parser.add_argument("--T", type=float, required=True, help="Threshold for set zero in inter frames.")
+parser.add_argument("--T_density", type=float, required=True, help="Threshold for set zero in inter frames.")
 
 def load_save(path):
     with open(path, "rb") as f:
@@ -93,12 +94,12 @@ if __name__ == "__main__":
         diff_params = params - last_diff_params
         diff_density_grid = density_grid - last_diff_density_grid
         diff_params[np.abs(diff_params) <= args.T] = 0
-        diff_density_grid[np.abs(diff_density_grid) <= args.T] = 0
+        diff_density_grid[np.abs(diff_density_grid) <= args.T_density] = 0
         diff_density_grid[diff_density_grid_fp32 > T_TOOBIG] = T_TOOBIG
         diff_density_grid[diff_density_grid_fp32 < -T_TOOBIG] = -T_TOOBIG
         diff_density_grid[density_grid_fp32 > T_TOOBIG] = (T_TOOBIG - last_diff_density_grid)[density_grid_fp32 > T_TOOBIG]
         diff_density_grid[density_grid_fp32 < -T_TOOBIG] = (-T_TOOBIG - last_diff_density_grid)[density_grid_fp32 < -T_TOOBIG]
-        with open(args.interexportformat % {'i':i, "T": args.T}, "wb") as f:
+        with open(args.interexportformat % {'i':i, "T": args.T, "T_density": args.T_density}, "wb") as f:
             f.write(zlib.compress(bson.encode({
                 "params_size": diff_params.shape[0],
                 "density_grid_size": diff_density_grid.shape[0],
