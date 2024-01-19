@@ -71,6 +71,8 @@
                 "results/stnerf-taekwondo/frame%d-intra.bson",
                 "--interexportformat",
                 "results/stnerf-taekwondo/frame%(i)dT=%(T)fT_density=%(T_density)f-inter.bson",
+                "--snapshotsimulate_interexportformat",
+                "results/stnerf-taekwondo/frame%(i)dT=%(T)fT_density=%(T_density)f-snapshotsimulate.bson",
                 "--T",
                 "0.1",
                 "--T_density",

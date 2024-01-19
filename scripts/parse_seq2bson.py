@@ -9,6 +9,7 @@ parser.add_argument("--end", type=int, required=True, help="The end frame number
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the saved snapshot.")
 parser.add_argument("--intraexportformat", type=str, required=True, help="The path format of exported intra-frame video frames (.bson).")
 parser.add_argument("--interexportformat", type=str, required=True, help="The path format of exported inter-frame video frames (.bson).")
+parser.add_argument("--snapshotsimulate_interexportformat", type=str, required=True, help="The path format of exported inter-frame video frames simulated by intra frames (.bson).")
 parser.add_argument("--T", type=float, required=True, help="Threshold for set zero in inter frames.")
 parser.add_argument("--T_density", type=float, required=True, help="Threshold for set zero in inter frames.")
 
@@ -51,6 +52,14 @@ def load_params(save):
         density_grid[np.isneginf(density_grid)] = replace
 
     return params, density_grid
+
+def dump_save(path, save, params, density_grid):
+    params_bin = params.tobytes()
+    density_grid_bin = density_grid.tobytes()
+    save['snapshot']['params_binary'] = params_bin
+    save['snapshot']['density_grid_binary'] = density_grid_bin
+    with open(path, "wb") as f:
+        f.write(bson.encode(save))
 
 T_TOOBIG = 65500
 
@@ -108,6 +117,8 @@ if __name__ == "__main__":
             })))
         last_diff_params += diff_params
         last_diff_density_grid += diff_density_grid
+        dump_save(args.snapshotsimulate_interexportformat % {'i':i, "T": args.T, "T_density": args.T_density},
+                  save, last_diff_params, last_diff_density_grid)
 
         error_params = params.astype(np.float32) - last_diff_params.astype(np.float32)
         error_density_grid = density_grid.astype(np.float32) - last_diff_density_grid.astype(np.float32)
