@@ -95,9 +95,9 @@
                 "--saveformat",
                 "results/stnerf-taekwondo/frame%d.bson",
                 "--intraexportformat",
-                "results/stnerf-taekwondo/frame%d-intra.bson",
+                "results/stnerf-taekwondo/frame%d-intra.json",
                 "--interexportformat",
-                "results/stnerf-taekwondo/frame%(i)dT=%(T)f-inter.bson",
+                "results/stnerf-taekwondo/frame%(i)dT=%(T)f-inter.json",
                 "-T",
                 "0.1"
             ]
