@@ -16,20 +16,6 @@
             ]
         },
         {
-            "name": "run",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/scripts/run.py",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "cwd": "${workspaceFolder}",
-            "args": [
-                "--load_snapshot",
-                "results/stnerf-walking/frame1.bson",
-                "--gui"
-            ]
-        },
-        {
             "name": "parse_seq",
             "type": "python",
             "request": "launch",
@@ -53,10 +39,10 @@
             ]
         },
         {
-            "name": "parse_seq2bson",
+            "name": "PSNRvsCompression",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/scripts/parse_seq2bson.py",
+            "program": "${workspaceFolder}/figures/PSNRvsCompression.py",
             "console": "integratedTerminal",
             "justMyCode": false,
             "cwd": "${workspaceFolder}",
@@ -65,56 +51,14 @@
                 "1",
                 "--end",
                 "101",
-                "--saveformat",
-                "results/stnerf-taekwondo/frame%d.bson",
-                "--intraexportformat",
-                "results/stnerf-taekwondo/frame%d-intra.bson",
-                "--interexportformat",
-                "results/stnerf-taekwondo/frame%(i)dT=%(T)fT_density=%(T_density)f-inter.bson",
-                "--snapshotsimulate_interexportformat",
-                "results/stnerf-taekwondo/frame%(i)dT=%(T)fT_density=%(T_density)f-snapshotsimulate.bson",
-                "--T",
-                "0.1",
-                "--T_density",
-                "0.1"
-            ]
-        },
-        {
-            "name": "parse_seq2csr",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/scripts/parse_seq2csr.py",
-            "console": "integratedTerminal",
-            "justMyCode": false,
-            "cwd": "${workspaceFolder}",
-            "args": [
-                "--start",
-                "1",
-                "--end",
-                "101",
-                "--saveformat",
-                "results/stnerf-taekwondo/frame%d.bson",
-                "--intraexportformat",
+                "--qualityformat",
+                "results/stnerf-taekwondo/frame%d.bson.json",
+                "--diffqualityformat",
+                "results/stnerf-taekwondo/frame%(i)dT=%(T)fT_density=%(T_density)f-snapshotsimulate.bson.json",
+                "--sizeformat",
                 "results/stnerf-taekwondo/frame%d-intra.json",
-                "--interexportformat",
+                "--diffsizeformat",
                 "results/stnerf-taekwondo/frame%(i)dT=%(T)f-inter.json",
-                "-T",
-                "0.1"
-            ]
-        },
-        {
-            "name": "eval",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/scripts/eval.py",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "cwd": "${workspaceFolder}",
-            "args": [
-                "--load_snapshot",
-                "results/stnerf-taekwondo/frame46T=1.000000T_density=1.000000-snapshotsimulate.bson",
-                "--test_transforms",
-                "data/nerf/taekwondo/frame46/transforms.json",
             ]
         }
     ]
