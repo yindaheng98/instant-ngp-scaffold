@@ -63,6 +63,25 @@ def dump_save(path, save, params, density_grid):
 
 T_TOOBIG = 65500
 
+def compute_diff_params(params, last_diff_params, T):
+    diff_params = params - last_diff_params
+    diff_params[np.abs(diff_params) <= T] = 0
+    return diff_params
+
+def compute_diff_density_grid(density_grid, last_diff_density_grid, T_density):
+    diff_density_grid_fp32 = density_grid.astype(np.float32) - last_diff_density_grid.astype(np.float32)
+    diff_density_grid_rel = diff_density_grid_fp32 / last_diff_density_grid.astype(np.float32)
+    diff_density_grid_rel[np.isnan(diff_density_grid_rel)] = diff_density_grid_fp32[np.isnan(diff_density_grid_rel)]
+    density_grid_fp32 = last_diff_density_grid.astype(np.float32) + diff_density_grid_fp32
+
+    diff_density_grid = density_grid - last_diff_density_grid
+    diff_density_grid[np.abs(diff_density_grid) <= T_density] = 0
+    diff_density_grid[diff_density_grid_fp32 > T_TOOBIG] = T_TOOBIG
+    diff_density_grid[diff_density_grid_fp32 < -T_TOOBIG] = -T_TOOBIG
+    diff_density_grid[density_grid_fp32 > T_TOOBIG] = (T_TOOBIG - last_diff_density_grid)[density_grid_fp32 > T_TOOBIG]
+    diff_density_grid[density_grid_fp32 < -T_TOOBIG] = (-T_TOOBIG - last_diff_density_grid)[density_grid_fp32 < -T_TOOBIG]
+    return diff_density_grid
+
 if __name__ == "__main__":
     import os
     args = parser.parse_args()
@@ -95,19 +114,10 @@ if __name__ == "__main__":
             })))
 
         diff_density_grid_fp32 = density_grid.astype(np.float32) - last_diff_density_grid.astype(np.float32)
-        diff_density_grid_rel = diff_density_grid_fp32 / last_diff_density_grid.astype(np.float32)
-        diff_density_grid_rel[np.isnan(diff_density_grid_rel)] = diff_density_grid_fp32[np.isnan(diff_density_grid_rel)]
-        density_grid_fp32 = last_diff_density_grid.astype(np.float32) + diff_density_grid_fp32
         density_grid_error_for_compare = density_grid - (last_diff_density_grid + diff_density_grid_fp32.astype(np.float16))
 
-        diff_params = params - last_diff_params
-        diff_density_grid = density_grid - last_diff_density_grid
-        diff_params[np.abs(diff_params) <= args.T] = 0
-        diff_density_grid[np.abs(diff_density_grid) <= args.T_density] = 0
-        diff_density_grid[diff_density_grid_fp32 > T_TOOBIG] = T_TOOBIG
-        diff_density_grid[diff_density_grid_fp32 < -T_TOOBIG] = -T_TOOBIG
-        diff_density_grid[density_grid_fp32 > T_TOOBIG] = (T_TOOBIG - last_diff_density_grid)[density_grid_fp32 > T_TOOBIG]
-        diff_density_grid[density_grid_fp32 < -T_TOOBIG] = (-T_TOOBIG - last_diff_density_grid)[density_grid_fp32 < -T_TOOBIG]
+        diff_params = compute_diff_params(params, last_diff_params, args.T)
+        diff_density_grid = compute_diff_density_grid(density_grid, last_diff_density_grid, args.T_density)
         with open(args.interexportformat % {'i':i, "T": args.T, "T_density": args.T_density}, "wb") as f:
             f.write(zlib.compress(bson.encode({
                 "params_size": diff_params.shape[0],
