@@ -12,7 +12,14 @@ command() {
 
 echo Start Group:
 command 1 &
+command 0.9 &
+command 0.8 &
+command 0.7 &
+command 0.6 &
 command 0.5 &
+command 0.4 &
+command 0.3 &
+command 0.2 &
 command 0.1 &
 command 0.05 &
 command 0.01 &
