@@ -35,7 +35,8 @@
                 "--saveformat",
                 "results/stnerf-taekwondo/frame%d-nofreeze.bson",
                 "--executable",
-                "./instant-ngp-train"
+                "./instant-ngp-train",
+                "--no_freeze"
             ]
         },
         {
