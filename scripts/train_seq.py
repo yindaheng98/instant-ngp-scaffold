@@ -7,6 +7,7 @@ parser.add_argument("--dataformat", type=str, required=True, help="The path form
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the snapshot to save.")
 parser.add_argument("--executable", type=str, required=True, help="The path to the trainer executable.")
 parser.add_argument("--steps", type=int, required=True, help="How many steps do you want to train.")
+parser.add_argument("--no_freeze", action="store_true", help="Do not freeze.")
 
 if __name__ == "__main__":
     import os
@@ -25,7 +26,9 @@ if __name__ == "__main__":
         last_savepath = savepath
         datapath = os.path.join(root, args.dataformat % i)
         savepath = os.path.join(root, args.saveformat % i)
-        cmd = [executable, f"--step={args.steps}", f"--save_snapshot={savepath}", f"--snapshot={last_savepath}", "--freeze", datapath]
+        cmd = [executable, f"--step={args.steps}", f"--save_snapshot={savepath}", f"--snapshot={last_savepath}", datapath]
+        if not args.no_freeze:
+            cmd += ["--freeze"]
         print(cmd)
         if not os.path.exists(savepath):
             subprocess.run(cmd)
