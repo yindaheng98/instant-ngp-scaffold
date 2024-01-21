@@ -11,20 +11,28 @@ command() {
 }
 
 echo Start Group:
+# 1 0.5 0.1 0.05 0.01
 command 1 1 &
-command 0.9 0.9 &
-command 0.9 0.8 &
-command 0.8 0.8 &
-command 0.8 0.7 &
-command 0.7 0.7 &
-command 0.7 0.6 &
-command 0.6 0.6 &
-command 0.6 0.5 &
+
+command 1 0.5 &
+command 0.5 1 &
 command 0.5 0.5 &
-command 0.4 0.4 &
-command 0.3 0.3 &
-command 0.2 0.2 &
+
+command 1 0.1 &
+command 0.1 1 &
+
+command 0.1 0.5 &
+command 0.5 0.1 &
 command 0.1 0.1 &
+
+command 0.5 0.05 &
+command 0.50 0.5 &
+
+command 0.05 0.1 &
+command 0.1 0.05 &
 command 0.05 0.05 &
+
+command 0.01 0.1 &
+command 0.1 0.01 &
 command 0.01 0.01 &
 wait
