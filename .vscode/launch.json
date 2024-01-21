@@ -56,10 +56,14 @@
                 "results/stnerf-taekwondo/frame%d.bson.json",
                 "--diffqualityformat",
                 "results/stnerf-taekwondo/frame%(i)dT=%(T)fT_density=%(T_density)f-snapshotsimulate.bson.json",
+                "--nofreezequalityformat",
+                "results/stnerf-taekwondo/frame%(i)d-nofreezeT=%(T)fT_density=%(T_density)f-snapshotsimulate.bson.json",
                 "--sizeformat",
                 "results/stnerf-taekwondo/frame%d-intra.json",
                 "--diffsizeformat",
                 "results/stnerf-taekwondo/frame%(i)dT=%(T)f-inter.json",
+                "--nofreezesizeformat",
+                "results/stnerf-taekwondo/frame%(i)d-nofreezeT=%(T)f-inter.json",
             ]
         },
         {
