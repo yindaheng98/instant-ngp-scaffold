@@ -60,6 +60,29 @@
                 "--diffsizeformat",
                 "results/stnerf-taekwondo/frame%(i)dT=%(T)f-inter.json",
             ]
+        },
+        {
+            "name": "PSNRvsCompressionMorePoints",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/figures/PSNRvsCompressionMorePoints.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--start",
+                "1",
+                "--end",
+                "101",
+                "--qualityformat",
+                "results/stnerf-taekwondo/frame%d.bson.json",
+                "--diffqualityformat",
+                "results/stnerf-taekwondo/frame%(i)dT=%(T)fT_density=%(T_density)f-snapshotsimulate.bson.json",
+                "--sizeformat",
+                "results/stnerf-taekwondo/frame%d-intra.json",
+                "--diffsizeformat",
+                "results/stnerf-taekwondo/frame%(i)dT=%(T)f-inter.json",
+            ]
         }
     ]
 }
