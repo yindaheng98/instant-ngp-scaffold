@@ -26,7 +26,7 @@ command 0.5 0.1 &
 command 0.1 0.1 &
 
 command 0.5 0.05 &
-command 0.50 0.5 &
+command 0.05 0.5 &
 
 command 0.05 0.1 &
 command 0.1 0.05 &
