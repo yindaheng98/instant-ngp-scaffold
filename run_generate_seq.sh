@@ -23,6 +23,9 @@ command 0.1 1 &
 
 command 0.1 0.5 &
 command 0.5 0.1 &
+command 0.4 0.1 &
+command 0.3 0.1 &
+command 0.2 0.1 &
 command 0.1 0.1 &
 
 command 0.5 0.05 &
