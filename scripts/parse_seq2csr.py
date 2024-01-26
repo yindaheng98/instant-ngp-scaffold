@@ -3,12 +3,17 @@ import json
 import numpy as np
 import zlib
 from scipy import sparse
-from parse_seq2bson import load_save, load_params, compute_diff_params, compute_diff_density_grid
+from parse_seq2bson import (
+    load_save, load_params, compute_diff_params,
+    compute_diff_density_grid, compute_diff_params,
+    compute_intra_density_grid, compute_intra_params
+)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--start", type=int, required=True, help="The start frame number.")
 parser.add_argument("--end", type=int, required=True, help="The end frame number.")
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the saved snapshot.")
+parser.add_argument("--initexportformat", type=str, required=True, help="The path format of exported init video frames (.bson).")
 parser.add_argument("--intraexportformat", type=str, required=True, help="The path format of exported intra-frame video frames (.bson).")
 parser.add_argument("--interexportformat", type=str, required=True, help="The path format of exported inter-frame video frames (.bson).")
 parser.add_argument("-T", type=float, required=True, help="Threshold for set zero in inter frames.")
@@ -48,7 +53,7 @@ if __name__ == "__main__":
         params_csr_size=params_csr_size,
         density_grid_size=density_grid_size,
         density_grid_csr_size=density_grid_csr_size,
-    ), args.intraexportformat % args.start)
+    ), args.initexportformat % args.start)
     last_diff_params, last_diff_density_grid = np.copy(params), np.copy(density_grid)
     last_intr_params, last_intr_density_grid = np.copy(params), np.copy(density_grid)
     for i in range(args.start + 1, args.end + 1):
@@ -64,7 +69,20 @@ if __name__ == "__main__":
             params_csr_size=params_csr_size,
             density_grid_size=density_grid_size,
             density_grid_csr_size=density_grid_csr_size,
-        ), args.intraexportformat % i)
+        ), args.initexportformat % i)
+
+        intra_params = compute_intra_density_grid(params, last_diff_params, args.T)
+        intra_density_grid = compute_intra_params(density_grid, last_diff_density_grid, args.T)
+        intra_params_size, intra_params_csr_size = get_size(intra_params)
+        intra_density_grid_size, intra_density_grid_csr_size = get_size(intra_density_grid)
+        print("intra:")
+        print_data(intra_params_size, intra_params_csr_size, intra_density_grid_size, intra_density_grid_csr_size)
+        export_data(dict(
+            intra_params_size=intra_params_size,
+            intra_params_csr_size=intra_params_csr_size,
+            intra_density_grid_size=intra_density_grid_size,
+            intra_density_grid_csr_size=intra_density_grid_csr_size,
+        ), args.intraexportformat % {'i':i, "T": args.T})
 
         diff_params = compute_diff_params(params, last_diff_params, args.T)
         diff_density_grid = compute_diff_density_grid(density_grid, last_diff_density_grid, args.T)

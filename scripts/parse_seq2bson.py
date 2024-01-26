@@ -82,6 +82,18 @@ def compute_diff_density_grid(density_grid, last_diff_density_grid, T_density):
     diff_density_grid[density_grid_fp32 < -T_TOOBIG] = (-T_TOOBIG - last_diff_density_grid)[density_grid_fp32 < -T_TOOBIG]
     return diff_density_grid
 
+def compute_intra_params(params, last_params, T):
+    diff_params = compute_diff_params(params, last_params, T)
+    params = np.copy(params)
+    params[diff_params==0] = 0
+    return params
+
+def compute_intra_density_grid(density_grid, last_density_grid, T_density):
+    diff_density_grid = compute_diff_density_grid(density_grid, last_density_grid, T_density)
+    density_grid = np.copy(density_grid)
+    density_grid[diff_density_grid==0] = 0
+    return density_grid
+
 if __name__ == "__main__":
     import os
     args = parser.parse_args()

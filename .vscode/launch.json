@@ -86,6 +86,31 @@
             ]
         },
         {
+            "name": "parse_seq2csr",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/parse_seq2csr.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--start",
+                "1",
+                "--end",
+                "101",
+                "--saveformat",
+                "results/stnerf-taekwondo/frame%d.bson",
+                "--initexportformat",
+                "results/stnerf-taekwondo/frame%d-intra.json",
+                "--intraexportformat",
+                "results/stnerf-taekwondo/frame%(i)dT=%(T)f-intra.json",
+                "--interexportformat",
+                "results/stnerf-taekwondo/frame%(i)dT=%(T)f-inter.json",
+                "-T",
+                "1",
+            ]
+        },
+        {
             "name": "PSNRvsCompressionMorePoints",
             "type": "python",
             "request": "launch",
