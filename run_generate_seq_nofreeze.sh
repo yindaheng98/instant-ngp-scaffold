@@ -1,7 +1,7 @@
 #!/bin/bash
 command() {
     echo $1 $2 start
-    python3 /volume/scripts/parse_seq2bson.py --start 1 --end 101 \
+    wcho python3 /volume/scripts/parse_seq2bson.py --start 1 --end 101 \
         --saveformat results/stnerf-taekwondo/frame%d-nofreeze.bson \
         --intraexportformat results/stnerf-taekwondo/frame%d-nofreeze-intra.bson \
         --interexportformat results/stnerf-taekwondo/frame%\(i\)d-nofreezeT=%\(T\)fT_density=%\(T_density\)f-inter.bson \
@@ -13,6 +13,8 @@ command() {
 echo Start Group:
 # 1 0.5 0.1 0.05 0.01
 command 1 1 &
+
+command 0.5 0.1 &
 
 command 0.5 0.5 &
 
