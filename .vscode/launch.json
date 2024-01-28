@@ -59,6 +59,25 @@
             ]
         },
         {
+            "name": "parse_seq2bson_no_simulation",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/parse_seq2bson_no_simulation.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--start",
+                "1",
+                "--end",
+                "101",
+                "--saveformat",
+                "results/stnerf-taekwondo/frame%d-nofreeze.bson",
+                "--exportformat",
+                "results/stnerf-taekwondo/frame%d-T=%fnosimulationdestroy.bson",
+            ]
+        },
+        {
             "name": "PSNRvsCompression",
             "type": "python",
             "request": "launch",
