@@ -67,6 +67,14 @@ pos[:, 2] += 1
 c2w[:, :, 3] = pos
 c2w[:, :, 2] = -c2w[:, :, 2]
 
+h, w, f = hwf[:, 0], hwf[:, 1], hwf[:, 2]
+K = np.zeros_like(c2w, shape=(c2w.shape[0], 3, 3))
+K[:, 2, 2] = 1
+K[:, 0, 0] = f
+K[:, 1, 1] = f
+K[:, 0, 2] = 0.5*w
+K[:, 1, 2] = 0.5*h
+
 fig = plt.figure(figsize=(12, 6))
 ax = fig.add_subplot(projection='3d')
 draw_cameras(ax, c2w, color="tab:blue")
