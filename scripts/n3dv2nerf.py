@@ -92,18 +92,20 @@ if __name__ == "__main__":
 	poses = poses_arr[:, :-2].reshape([-1, 3, 5]).transpose([1,2,0])
 	poses = np.concatenate([poses[:, 1:2, :], -poses[:, 0:1, :], poses[:, 2:, :]], 1)
 	poses = np.moveaxis(poses, -1, 0)
-	Ts = poses[:, :3, :4]
+	poses = recenter_poses(poses)
+	c2w = poses[:, :3, :4]
 	hwf = poses[:, :3, 4]
 
-	pos = Ts[:, :, 3]
+	pos = c2w[:, :, 3]
 	pos = pos - pos.mean(axis=0)
 	scale = (pos.max(axis=0) - pos.min(axis=0)).max()
 	pos = pos / scale * 2
 	pos[:, 2] += 1
 	pos = pos * AABB_SCALE
-	Ts[:, :, 3] = pos
-	Ts[:, :, 2] = -Ts[:, :, 2]
-	Ts = np.concatenate([Ts, np.zeros_like(Ts, shape=(Ts.shape[0], 1, 4))], axis=1)
+	c2w[:, :, 3] = pos
+	c2w[:, :, 2] = -c2w[:, :, 2]
+	
+	Ts = np.concatenate([c2w, np.zeros_like(c2w, shape=(c2w.shape[0], 1, 4))], axis=1)
 	Ts[:, 3, 3] = 1
 
 	h, w, f = hwf[:, 0], hwf[:, 1], hwf[:, 2]
@@ -131,10 +133,6 @@ if __name__ == "__main__":
 			w, h, _ = img.shape
 			b = cv2.Laplacian(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), cv2.CV_64F).var()
 			c2w = np.copy(T)
-			# TODO: c2w format LLFF/OpenGL DRB or RUB to OpenCV/Colmap RDF
-			c2w[0:3,1] *= -1 # flip the y axis
-			# c2w = c2w[[1,0,2,3],:]
-			c2w[2,:] *= -1 # flip whole world upside down
 			camera_data = {
 				"transform_matrix": c2w.tolist(),
 				"fl_x": K[0,0], # should match the sence scale

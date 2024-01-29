@@ -16,6 +16,20 @@
             ]
         },
         {
+            "name": "n3dv2nerf",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/n3dv2nerf.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "8",
+                "--path",
+                "data/nerf/coffee_martini"
+            ]
+        },
+        {
             "name": "train_seq",
             "type": "python",
             "request": "launch",
