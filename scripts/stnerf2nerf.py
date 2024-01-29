@@ -115,7 +115,7 @@ if __name__ == "__main__":
 				"aabb_scale": AABB_SCALE, # should match the sence scale
 			}
 			img = cv2.imread(camera_file)
-			w, h, _ = img.shape
+			h, w, _ = img.shape
 			b = cv2.Laplacian(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), cv2.CV_64F).var()
 			c2w = np.copy(T)
 			# TODO: c2w format LLFF/OpenGL DRB or RUB to OpenCV/Colmap RDF
@@ -133,8 +133,8 @@ if __name__ == "__main__":
 				"camera_angle_x": math.atan(w / (K[0,0] * 2)) * 2,
 				"camera_angle_y": math.atan(h / (K[1,1] * 2)) * 2,
 				"sharpness":b,
-				"w": 1920.0, # should match the sence scale
-				"h": 1080.0, # should match the sence scale
+				"w": w, # should match the sence scale
+				"h": h, # should match the sence scale
 			}
 			cameras_data.append({
 				"file_path": os.path.relpath(camera_file, frame_folder),

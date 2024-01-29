@@ -130,7 +130,7 @@ if __name__ == "__main__":
 				"aabb_scale": AABB_SCALE, # should match the sence scale
 			}
 			img = cv2.imread(camera_file)
-			w, h, _ = img.shape
+			h, w, _ = img.shape
 			b = cv2.Laplacian(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), cv2.CV_64F).var()
 			c2w = np.copy(T)
 			camera_data = {
