@@ -56,7 +56,15 @@
                 "--aabb_scale",
                 "4",
                 "--path",
-                "data/nerf/coffee_martini"
+                "data/nerf/coffee_martini",
+                "--scale",
+                "0.52",
+                "--shift0",
+                "0",
+                "--shift1",
+                "0",
+                "--shift2",
+                "1",
             ]
         },
         {

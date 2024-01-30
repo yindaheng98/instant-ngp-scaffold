@@ -22,6 +22,10 @@ def parse_args():
 
 	parser.add_argument("--aabb_scale", default=8, help="large scene scale factor")
 	parser.add_argument("--path", type=str, required=True, help="path to the video folder")
+	parser.add_argument("--scale", type=float, required=True, help="scale after aabb_scale")
+	parser.add_argument("--shift0", type=float, default=0., help="shift before aabb_scale")
+	parser.add_argument("--shift1", type=float, default=0., help="shift before aabb_scale")
+	parser.add_argument("--shift2", type=float, default=0., help="shift before aabb_scale")
 	args = parser.parse_args()
 	return args
 
@@ -101,8 +105,10 @@ if __name__ == "__main__":
 	pos = pos - pos.mean(axis=0)
 	scale = (pos.max(axis=0) - pos.min(axis=0)).max()
 	pos = pos / scale * 2
-	pos[:, 2] += 1
-	pos = pos * AABB_SCALE * 0.52
+	pos[:, 0] += args.shift0
+	pos[:, 1] += args.shift1
+	pos[:, 2] += args.shift2
+	pos = pos * AABB_SCALE * args.scale
 	c2w[:, :, 3] = pos
 	c2w = c2w[:, [2,0,1], :]
 	
