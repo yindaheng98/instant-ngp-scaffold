@@ -167,10 +167,10 @@
             ]
         },
         {
-            "name": "parse_seq2csr",
+            "name": "parse_seq_size",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/scripts/parse_seq2csr.py",
+            "program": "${workspaceFolder}/scripts/parse_seq_size.py",
             "console": "integratedTerminal",
             "justMyCode": false,
             "cwd": "${workspaceFolder}",
