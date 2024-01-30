@@ -1,27 +1,39 @@
 #!/bin/bash
+command0() {
+    echo 0 start
+    python3 /volume/scripts/parse_seq_size.py \
+        --start $2 --end $3 \
+        --saveformat results/$4/frame%d.bson \
+        --initexportformat results/$4/frame%d-intra.json \
+        -T 0
+    echo 0 complete
+}
+
 command() {
     echo $1 start
-    python3 /volume/scripts/parse_seq2csr.py \
-        --start 1 --end 101 \
-        --saveformat results/stnerf-taekwondo/frame%d.bson \
-        --initexportformat results/stnerf-taekwondo/frame%d-intra.json \
-        --intraexportformat results/stnerf-taekwondo/frame%\(i\)dT=%\(T\)f-intra.json \
-        --interexportformat results/stnerf-taekwondo/frame%\(i\)dT=%\(T\)f-inter.json \
+    python3 /volume/scripts/parse_seq_size.py \
+        --start $2 --end $3 \
+        --saveformat results/$4/frame%d.bson \
+        --initexportformat results/$4/frame%d-intra.json \
+        --intraexportformat results/$4/frame%\(i\)dT=%\(T\)f-intra.json \
+        --interexportformat results/$4/frame%\(i\)dT=%\(T\)f-inter.json \
         -T $1
     echo $1 complete
 }
 
 echo Start Group:
-command 1 &
-command 0.9 &
-command 0.8 &
-command 0.7 &
-command 0.6 &
-command 0.5 &
-command 0.4 &
-command 0.3 &
-command 0.2 &
-command 0.1 &
-command 0.05 &
-command 0.01 &
+ARGS="1 75 stnerf-walking"
+command0 0 $ARGS &
+command 1 $ARGS &
+command 0.9 $ARGS &
+command 0.8 $ARGS &
+command 0.7 $ARGS &
+command 0.6 $ARGS &
+command 0.5 $ARGS &
+command 0.4 $ARGS &
+command 0.3 $ARGS &
+command 0.2 $ARGS &
+command 0.1 $ARGS &
+command 0.05 $ARGS &
+command 0.01 $ARGS &
 wait

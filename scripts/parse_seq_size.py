@@ -44,6 +44,7 @@ if __name__ == "__main__":
     save = load_save(savepath)
     params, density_grid = load_params(save)
     if args.initexportformat:
+        os.makedirs(os.path.dirname(args.initexportformat), exist_ok=True)
         params_size, params_csr_size = get_size(params)
         density_grid_size, density_grid_csr_size = get_size(density_grid)
         print_data(params_size, params_csr_size, density_grid_size, density_grid_csr_size)
@@ -61,6 +62,7 @@ if __name__ == "__main__":
         save = load_save(savepath)
         params, density_grid = load_params(save)
         if args.initexportformat:
+            os.makedirs(os.path.dirname(args.initexportformat), exist_ok=True)
             params_size, params_csr_size = get_size(params)
             density_grid_size, density_grid_csr_size = get_size(density_grid)
             print_data(params_size, params_csr_size, density_grid_size, density_grid_csr_size)
