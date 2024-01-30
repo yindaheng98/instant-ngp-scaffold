@@ -20,3 +20,18 @@ python3 scripts/n3dv2imgs.py --path data/nerf/coffee_martini --exec ffmpeg > tem
 # python3 scripts/n3dv2imgs.py --path data/nerf/flame_salmon_1 --exec ffmpeg > temp.sh && cat temp.sh && ./temp.sh
 python3 scripts/n3dv2imgs.py --path data/nerf/flame_steak --exec ffmpeg > temp.sh && cat temp.sh && ./temp.sh
 python3 scripts/n3dv2imgs.py --path data/nerf/sear_steak --exec ffmpeg > temp.sh && cat temp.sh && ./temp.sh
+python3 scripts/train_seq.py \
+    --init_steps 30000 --steps 10000 --start 1 --end 300 \
+    --dataformat "data/nerf/coffee_martini/frame%03d" \
+    --saveformat "results/coffee_martini/frame%d.bson" \
+    --executable "./instant-ngp-train"
+python3 scripts/train_seq.py \
+    --init_steps 30000 --steps 10000 --start 1 --end 300 \
+    --dataformat "data/nerf/flame_steak/frame%03d" \
+    --saveformat "results/flame_steak/frame%d.bson" \
+    --executable "./instant-ngp-train"
+python3 scripts/train_seq.py \
+    --init_steps 30000 --steps 10000 --start 1 --end 300 \
+    --dataformat "data/nerf/sear_steak/frame%03d" \
+    --saveformat "results/sear_steak/frame%d.bson" \
+    --executable "./instant-ngp-train"
