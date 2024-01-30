@@ -68,6 +68,48 @@
             ]
         },
         {
+            "name": "n3vd2colmap coffee_martini",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/n3vd2colmap.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "4",
+                "--path",
+                "data/nerf/coffee_martini",
+            ]
+        },
+        {
+            "name": "n3vd2colmap flame_steak",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/n3vd2colmap.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "4",
+                "--path",
+                "data/nerf/flame_steak",
+            ]
+        },
+        {
+            "name": "n3vd2colmap sear_steak",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/n3vd2colmap.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "4",
+                "--path",
+                "data/nerf/sear_steak",
+            ]
+        },
+        {
             "name": "train_seq",
             "type": "python",
             "request": "launch",
