@@ -102,9 +102,8 @@ if __name__ == "__main__":
 	scale = (pos.max(axis=0) - pos.min(axis=0)).max()
 	pos = pos / scale * 2
 	pos[:, 2] += 1
-	pos = pos * AABB_SCALE
+	pos = pos * AABB_SCALE * 0.52
 	c2w[:, :, 3] = pos
-	c2w[:, :, 2] = -c2w[:, :, 2]
 	
 	Ts = np.concatenate([c2w, np.zeros_like(c2w, shape=(c2w.shape[0], 1, 4))], axis=1)
 	Ts[:, 3, 3] = 1
