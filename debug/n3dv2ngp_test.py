@@ -65,6 +65,7 @@ scale = (pos.max(axis=0) - pos.min(axis=0)).max()
 pos = pos / scale * 2
 pos[:, 2] += 1
 c2w[:, :, 3] = pos
+c2w = c2w[:, [2,0,1], :]
 
 h, w, f = hwf[:, 0], hwf[:, 1], hwf[:, 2]
 K = np.zeros_like(c2w, shape=(c2w.shape[0], 3, 3))

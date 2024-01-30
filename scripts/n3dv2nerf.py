@@ -104,6 +104,7 @@ if __name__ == "__main__":
 	pos[:, 2] += 1
 	pos = pos * AABB_SCALE * 0.52
 	c2w[:, :, 3] = pos
+	c2w = c2w[:, [2,0,1], :]
 	
 	Ts = np.concatenate([c2w, np.zeros_like(c2w, shape=(c2w.shape[0], 1, 4))], axis=1)
 	Ts[:, 3, 3] = 1

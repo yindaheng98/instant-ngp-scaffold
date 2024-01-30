@@ -24,7 +24,7 @@
             "justMyCode": true,
             "args": [
                 "--aabb_scale",
-                "8",
+                "4",
                 "--path",
                 "data/nerf/coffee_martini"
             ]
