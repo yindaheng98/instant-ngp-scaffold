@@ -5,7 +5,7 @@
             "name": "stnerf2nerf taekwondo",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/scripts/stnerf2nerf.py",
+            "program": "${workspaceFolder}/scripts/stnerf2nerf_taekwondo.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
@@ -13,14 +13,6 @@
                 "8",
                 "--path",
                 "data/nerf/taekwondo",
-                "--scale",
-                "1.3",
-                "--shift0",
-                "0",
-                "--shift1",
-                "0.2",
-                "--shift2",
-                "1.2",
             ]
         },
         {
