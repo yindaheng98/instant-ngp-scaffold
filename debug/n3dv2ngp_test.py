@@ -65,7 +65,6 @@ scale = (pos.max(axis=0) - pos.min(axis=0)).max()
 pos = pos / scale * 2
 pos[:, 2] += 1
 c2w[:, :, 3] = pos
-c2w[:, :, 2] = -c2w[:, :, 2]
 
 h, w, f = hwf[:, 0], hwf[:, 1], hwf[:, 2]
 K = np.zeros_like(c2w, shape=(c2w.shape[0], 3, 3))
@@ -77,6 +76,8 @@ K[:, 1, 2] = 0.5*h
 
 fig = plt.figure(figsize=(12, 6))
 ax = fig.add_subplot(projection='3d')
+det = np.linalg.det(c2w[:, :, :3])
+print(det)
 draw_cameras(ax, c2w, color="tab:blue")
 ax.view_init(elev=-90, azim=90, roll=180)
 ax.set_xlim(-1, 1)
