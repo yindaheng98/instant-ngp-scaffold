@@ -39,4 +39,8 @@ doall() {
     wait
 }
 
+doall "1 101 stnerf-taekwondo"
 doall "1 75 stnerf-walking"
+doall "1 300 coffee_martini"
+doall "1 300 flame_steak"
+doall "1 300 sear_steak"
