@@ -81,6 +81,7 @@ if __name__ == "__main__":
 		camera_folder = os.path.join(VIDEO_FOLDER, folder)
 		camera_folders.append(camera_folder)
 		FRAMES = min(FRAMES, len(os.listdir(camera_folder)))
+	camera_folders = sorted(camera_folders)
 	video_files = [[] for _ in range(FRAMES)]
 	for frame in range(FRAMES):
 		for camera_folder in camera_folders:
