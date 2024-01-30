@@ -53,7 +53,12 @@ pos = pos - pos.mean(axis=0)
 scale = (pos.max(axis=0) - pos.min(axis=0)).max()
 pos = pos / scale * 2
 pos[:, 2] += 1
+pos[:, 0] += 1
 stnerf[:, :, 3] = pos
+stnerf[:, 0:3, 2] *= -1 # flip the y and z axis
+stnerf[:, 0:3, 1] *= -1
+stnerf = stnerf[:, [2,1,0], :]
+stnerf[:, 2, :] *= -1 # flip whole world upside down
 
 def draw_cameras(ax, extrinsic, color):
     poses = extrinsic[:, :, 3]

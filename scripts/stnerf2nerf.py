@@ -22,6 +22,10 @@ def parse_args():
 
 	parser.add_argument("--aabb_scale", default=8, help="large scene scale factor")
 	parser.add_argument("--path", type=str, required=True, help="path to the video folder")
+	parser.add_argument("--scale", type=float, required=True, help="scale after aabb_scale")
+	parser.add_argument("--shift0", type=float, default=0., help="shift before aabb_scale")
+	parser.add_argument("--shift1", type=float, default=0., help="shift before aabb_scale")
+	parser.add_argument("--shift2", type=float, default=0., help="shift before aabb_scale")
 	args = parser.parse_args()
 	return args
 
@@ -96,10 +100,16 @@ if __name__ == "__main__":
 	pos = pos - pos.mean(axis=0)
 	scale = (pos.max(axis=0) - pos.min(axis=0)).max()
 	pos = pos / scale * 2
-	pos[:, 2] += 1
-	pos = pos * AABB_SCALE
+	pos[:, 0] += args.shift0
+	pos[:, 1] += args.shift1
+	pos[:, 2] += args.shift2
+	pos = pos * AABB_SCALE * args.scale
 	stnerf[:, :, 3] = pos
 	Ts[:, :3, :] = stnerf
+	Ts[:, 0:3, 2] *= -1 # flip the y and z axis
+	Ts[:, 0:3, 1] *= -1
+	Ts = Ts[:, [2,1,0,3], :]
+	Ts[:, 2, :] *= -1 # flip whole world upside down
 	
 	all_frame_data = {
 		"is_fisheye": False, # should match the sence scale
@@ -109,7 +119,7 @@ if __name__ == "__main__":
 	for frame, frame_folder in frame_folders.items():
 		camera_files = video_files[frame]
 		cameras_data = []
-		for camera_file, K, T in zip(camera_files, Ks, Ts):
+		for camera_file, K, c2w in zip(camera_files, Ks, Ts):
 			frame_data = {
 				"is_fisheye": False, # should match the sence scale
 				"aabb_scale": AABB_SCALE, # should match the sence scale
@@ -117,13 +127,6 @@ if __name__ == "__main__":
 			img = cv2.imread(camera_file)
 			h, w, _ = img.shape
 			b = cv2.Laplacian(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), cv2.CV_64F).var()
-			c2w = np.copy(T)
-			# TODO: c2w format LLFF/OpenGL DRB or RUB to OpenCV/Colmap RDF
-			# st-nerf c2w[[x,y,z,camera], :] to instant-ngp c2w[[x,z,y,camera], :]
-			c2w[0:3,2] *= -1 # flip the y and z axis
-			c2w[0:3,1] *= -1
-			c2w = c2w[[1,0,2,3],:]
-			c2w[2,:] *= -1 # flip whole world upside down
 			camera_data = {
 				"transform_matrix": c2w.tolist(),
 				"fl_x": K[0,0], # should match the sence scale
