@@ -10,8 +10,6 @@ command() {
     echo $1 $2 complete
 }
 
-command 1.000000 1.000000
-command 0.500000 0.500000
 command 0.500000 0.100000
 command 0.100000 0.100000
 command 0.050000 0.050000

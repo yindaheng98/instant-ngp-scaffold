@@ -12,15 +12,8 @@ command() {
 
 echo Start Group:
 # 1 0.5 0.1 0.05 0.01
-command 1 1 &
-
 command 0.5 0.1 &
-
-command 0.5 0.5 &
-
 command 0.1 0.1 &
-
 command 0.05 0.05 &
-
 command 0.01 0.01 &
 wait
