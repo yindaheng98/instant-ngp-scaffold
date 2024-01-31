@@ -244,6 +244,25 @@
                 "--nofreezesizeformat",
                 "results/stnerf-taekwondo/frame%(i)d-nofreezeT=%(T)f-inter.json",
             ]
+        },
+        {
+            "name": "Sensitivity",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/figures/Sensitivity.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--start",
+                "1",
+                "--end",
+                "101",
+                "--diffqualityformat",
+                "results/stnerf-taekwondo/frame%(i)dT=%(T)fT_density=%(T_density)f-snapshotsimulate.bson.json",
+                "--diffsizeformat",
+                "results/stnerf-taekwondo/frame%(i)dT=%(T)f-inter.json",
+            ]
         }
     ]
 }
