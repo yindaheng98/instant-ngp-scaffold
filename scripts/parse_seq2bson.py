@@ -7,11 +7,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--start", type=int, required=True, help="The start frame number.")
 parser.add_argument("--end", type=int, required=True, help="The end frame number.")
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the saved snapshot.")
-parser.add_argument("--intraexportformat", type=str, required=True, help="The path format of exported intra-frame video frames (.bson).")
-parser.add_argument("--interexportformat", type=str, required=True, help="The path format of exported inter-frame video frames (.bson).")
-parser.add_argument("--snapshotsimulate_interexportformat", type=str, required=True, help="The path format of exported inter-frame video frames simulated by intra frames (.bson).")
-parser.add_argument("--T", type=float, required=True, help="Threshold for set zero in inter frames.")
-parser.add_argument("--T_density", type=float, required=True, help="Threshold for set zero in inter frames.")
+parser.add_argument("--intraexportformat", type=str, default=None, help="The path format of exported intra-frame video frames (.bson).")
+parser.add_argument("--interexportformat", type=str, default=None, help="The path format of exported inter-frame video frames (.bson).")
+parser.add_argument("--snapshotsimulate_interexportformat", type=str, default=None, help="The path format of exported inter-frame video frames simulated by intra frames (.bson).")
+parser.add_argument("--T", type=float, default=0., help="Threshold for set zero in inter frames.")
+parser.add_argument("--T_density", type=float, default=0., help="Threshold for set zero in inter frames.")
 
 def load_save(path):
     with open(path, "rb") as f:
@@ -44,11 +44,11 @@ def load_params(save):
 
     if np.isposinf(density_grid).any():
         replace = density_grid[~np.isposinf(density_grid)].max()
-        print("+inf in density_grid, replace by", replace)
+        print(np.isposinf(density_grid).sum(), "+inf in density_grid, replace by", replace)
         density_grid[np.isposinf(density_grid)] = replace
     if np.isneginf(density_grid).any():
         replace = density_grid[~np.isneginf(density_grid)].min()
-        print("-inf in density_grid, replace by", replace)
+        print(np.isneginf(density_grid).sum(), "-inf in density_grid, replace by", replace)
         density_grid[np.isneginf(density_grid)] = replace
 
     return params, density_grid
@@ -98,18 +98,21 @@ if __name__ == "__main__":
     import os
     args = parser.parse_args()
     root = os.getcwd()
-    os.makedirs(os.path.dirname(args.interexportformat), exist_ok=True)
-    os.makedirs(os.path.dirname(args.intraexportformat), exist_ok=True)
+    if args.interexportformat:
+        os.makedirs(os.path.dirname(args.interexportformat), exist_ok=True)
+    if args.intraexportformat:
+        os.makedirs(os.path.dirname(args.intraexportformat), exist_ok=True)
     savepath = os.path.join(root, args.saveformat % args.start)
     save = load_save(savepath)
     params, density_grid = load_params(save)
-    with open(args.intraexportformat % args.start, "wb") as f:
-        f.write(zlib.compress(bson.encode({
-            "params_size": params.shape[0],
-            "density_grid_size": density_grid.shape[0],
-            "params": params.tobytes(),
-            "density_grid": density_grid.tobytes(),
-        })))
+    if args.intraexportformat:
+        with open(args.intraexportformat % args.start, "wb") as f:
+            f.write(zlib.compress(bson.encode({
+                "params_size": params.shape[0],
+                "density_grid_size": density_grid.shape[0],
+                "params": params.tobytes(),
+                "density_grid": density_grid.tobytes(),
+            })))
     last_diff_params, last_diff_density_grid = np.copy(params), np.copy(density_grid)
     last_intr_params, last_intr_density_grid = np.copy(params), np.copy(density_grid)
     for i in range(args.start + 1, args.end + 1):
@@ -117,14 +120,17 @@ if __name__ == "__main__":
         savepath = os.path.join(root, args.saveformat % i)
         save = load_save(savepath)
         params, density_grid = load_params(save)
-        with open(args.intraexportformat % i, "wb") as f:
-            f.write(zlib.compress(bson.encode({
-                "params_size": params.shape[0],
-                "density_grid_size": density_grid.shape[0],
-                "params": params.tobytes(),
-                "density_grid": density_grid.tobytes(),
-            })))
+        if args.intraexportformat:
+            with open(args.intraexportformat % i, "wb") as f:
+                f.write(zlib.compress(bson.encode({
+                    "params_size": params.shape[0],
+                    "density_grid_size": density_grid.shape[0],
+                    "params": params.tobytes(),
+                    "density_grid": density_grid.tobytes(),
+                })))
 
+        if not args.interexportformat:
+            continue
         diff_density_grid_fp32 = density_grid.astype(np.float32) - last_diff_density_grid.astype(np.float32)
         density_grid_error_for_compare = density_grid - (last_diff_density_grid + diff_density_grid_fp32.astype(np.float16))
 
@@ -139,8 +145,9 @@ if __name__ == "__main__":
             })))
         last_diff_params += diff_params
         last_diff_density_grid += diff_density_grid
-        dump_save(args.snapshotsimulate_interexportformat % {'i':i, "T": args.T, "T_density": args.T_density},
-                  save, last_diff_params, last_diff_density_grid)
+        if args.snapshotsimulate_interexportformat:
+            dump_save(args.snapshotsimulate_interexportformat % {'i':i, "T": args.T, "T_density": args.T_density},
+                    save, last_diff_params, last_diff_density_grid)
 
         error_params = params.astype(np.float32) - last_diff_params.astype(np.float32)
         error_density_grid = density_grid.astype(np.float32) - last_diff_density_grid.astype(np.float32)
