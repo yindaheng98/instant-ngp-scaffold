@@ -102,7 +102,7 @@
             ]
         },
         {
-            "name": "parse_seq2bson_destroyed",
+            "name": "parse_seq2bson_fp16_destroyed",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/parse_seq2bson_destroyed.py",
@@ -115,7 +115,7 @@
                 "--end",
                 "101",
                 "--saveformat",
-                "results/stnerf-taekwondo/frame%d-nofreeze.bson",
+                "results/stnerf-taekwondo/frame%d.bson",
                 "--exportformat",
                 "results/stnerf-taekwondo/frame%d-fp16destroy.bson",
             ]
@@ -134,9 +134,13 @@
                 "--end",
                 "101",
                 "--saveformat",
-                "results/stnerf-taekwondo/frame%d-nofreeze.bson",
+                "results/stnerf-taekwondo/frame%d.bson",
                 "--exportformat",
-                "results/stnerf-taekwondo/frame%d-T=%fnosimulationdestroy.bson",
+                "results/stnerf-taekwondo/frame%(i)dT=%(T)fT_density=%(T_density)f-nosimulationdestroy.bson",
+                "--T",
+                "0.1",
+                "--T_density",
+                "0.1",
             ]
         },
         {
