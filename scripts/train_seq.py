@@ -9,6 +9,7 @@ parser.add_argument("--executable", type=str, required=True, help="The path to t
 parser.add_argument("--init_steps", type=int, required=True, help="How many steps do you want to train in init model.")
 parser.add_argument("--steps", type=int, required=True, help="How many steps do you want to train.")
 parser.add_argument("--no_freeze", action="store_true", help="Do not freeze.")
+parser.add_argument("--decay", type=float, required=True, help="What threshold do you want to use to decay density_grid.")
 
 if __name__ == "__main__":
     import os
@@ -27,7 +28,7 @@ if __name__ == "__main__":
         last_savepath = savepath
         datapath = os.path.join(root, args.dataformat % i)
         savepath = os.path.join(root, args.saveformat % i)
-        cmd = [executable, f"--step={args.steps}", f"--save_snapshot={savepath}", f"--snapshot={last_savepath}", datapath]
+        cmd = [executable, f"--step={args.steps}", f"--save_snapshot={savepath}", f"--snapshot={last_savepath}", f"--decay={args.decay}", datapath]
         if not args.no_freeze:
             cmd += ["--freeze"]
         print(cmd)
