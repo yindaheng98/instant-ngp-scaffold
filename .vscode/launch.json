@@ -261,11 +261,14 @@
                 "--start",
                 "1",
                 "--end",
-                "101",
+                "75",
+                "--name",
+                "walking",
                 "--diffqualityformat",
-                "results/stnerf-taekwondo/frame%(i)dT=%(T)fT_density=%(T_density)f-snapshotsimulate.bson.json",
+                "results/stnerf-walking/frame%(i)dT=%(T)fT_density=%(T_density)f-snapshotsimulate.bson.json",
                 "--diffsizeformat",
-                "results/stnerf-taekwondo/frame%(i)dT=%(T)f-inter.json",
+                "results/stnerf-walking/frame%(i)dT=%(T)f-inter.json",
+                "--show",
             ]
         }
     ]
