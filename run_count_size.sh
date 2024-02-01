@@ -41,6 +41,6 @@ doall() {
 
 doall "1 101 stnerf-taekwondo"
 doall "1 75 stnerf-walking"
-doall "1 300 coffee_martini"
-doall "1 300 flame_steak"
-doall "1 300 sear_steak"
+doall "1 100 coffee_martini"
+doall "1 100 flame_steak"
+doall "1 100 sear_steak"

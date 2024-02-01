@@ -35,9 +35,9 @@ doall() {
     ARGS=$1
     command0 0 0 $ARGS &
     command_destroy 0.1 0.1 $ARGS &
-    command 1 1 $ARGS &
+    # command 1 1 $ARGS &
 
-    command 1 0.1 $ARGS &
+    # command 1 0.1 $ARGS &
 
     command 0.5 0.1 $ARGS &
     command 0.4 0.1 $ARGS &
@@ -49,11 +49,11 @@ doall() {
 
     # command 0.05 0.1 &
     # command 0.1 0.05 &
-    command 0.05 0.05 $ARGS &
+    # command 0.05 0.05 $ARGS &
 
     # command 0.01 0.1 &
-    command 0.1 0.01 $ARGS &
-    command 0.01 0.01 $ARGS &
+    # command 0.1 0.01 $ARGS &
+    # command 0.01 0.01 $ARGS &
     wait
 }
 
