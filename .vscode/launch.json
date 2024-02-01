@@ -321,6 +321,15 @@
                 "--nosimqualityformat",
                 "results/flame_steak/frame%(i)dT=%(T)fT_density=%(T_density)f-nosimulationdestroy.bson.json",
 
+                "--name",
+                "sear_steak",
+                "--diffqualityformat",
+                "results/sear_steak/frame%(i)dT=%(T)fT_density=%(T_density)f-snapshotsimulate.bson.json",
+                "--fp16qualityformat",
+                "results/sear_steak/frame%d-fp16destroy.bson.json",
+                "--nosimqualityformat",
+                "results/sear_steak/frame%(i)dT=%(T)fT_density=%(T_density)f-nosimulationdestroy.bson.json",
+
                 "--show",
             ]
         }
