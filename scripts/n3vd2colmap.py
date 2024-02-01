@@ -69,7 +69,7 @@ if __name__ == "__main__":
 	with open(transforms_file) as f:
 		data = json.load(f)
 	for frame, camera_files in enumerate(video_files):
-		frame_folder = os.path.join(VIDEO_FOLDER, "frame%03d" % (frame + 1))
+		frame_folder = os.path.join(VIDEO_FOLDER, "frame%d" % (frame + 1))
 		cameras = deepcopy(data)
 		for camera in cameras["frames"]:
 			camera_name = os.path.splitext(os.path.basename(camera["file_path"]))[0]

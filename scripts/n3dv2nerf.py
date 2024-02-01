@@ -129,7 +129,7 @@ if __name__ == "__main__":
 		"frames": []
 	}
 	for frame, camera_files in enumerate(video_files):
-		frame_folder = os.path.join(VIDEO_FOLDER, "frame%03d" % (frame + 1))
+		frame_folder = os.path.join(VIDEO_FOLDER, "frame%d" % (frame + 1))
 		cameras_data = []
 		for camera_file, K, T in zip(camera_files, Ks, Ts):
 			frame_data = {
