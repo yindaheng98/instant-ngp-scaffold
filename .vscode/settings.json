@@ -1,18 +1,24 @@
 {
     "cmake.debugConfig": {
         "args": [
-            "--load_snapshot=/volume/results/stnerf-taekwondo/frame1.bson",
-            "--no-train",
-            "--init",
-            "/volume/results/stnerf-taekwondo/frame1-intra.bson",
-            "--frameformat",
-            "/volume/results/stnerf-taekwondo/frame%d-inter.bson",
-            "--start",
-            "2",
-            "--end",
-            "101",
-            "--diff"
-        ]
+            // "--load_snapshot=/volume/results/stnerf-taekwondo/frame1.bson",
+            // "--no-train",
+            // "--init",
+            // "/volume/results/stnerf-taekwondo/frame1-intra.bson",
+            // "--frameformat",
+            // "/volume/results/stnerf-taekwondo/frame%d-intra.bson",
+            // "--start",
+            // "2",
+            // "--end",
+            // "101",
+            // "/volume/data/nerf/taekwondo/frame1"
+            "--step=10000",
+            "--save_snapshot=/volume/results/sear_steak/frame102.bson",
+            "--snapshot=/volume/results/sear_steak/frame101.bson",
+            "--decay=0.5",
+            "/volume/data/nerf/sear_steak/frame102",
+            "--freeze"
+        ],
     },
     "files.associations": {
         "*.rmd": "markdown",
