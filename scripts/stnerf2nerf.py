@@ -26,6 +26,7 @@ def parse_args():
 	parser.add_argument("--shift0", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--shift1", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--shift2", type=float, default=0., help="shift before aabb_scale")
+	parser.add_argument("--residual_root", type=str, required=True, help="root path to the residual images")
 	args = parser.parse_args()
 	return args
 
@@ -74,20 +75,31 @@ if __name__ == "__main__":
 	CAMERAS = 16
 	SKIP_EARLY = 0
 	VIDEO_FOLDER = args.path
+	RESIDUAL_FOLDER = args.residual_root
 	frame_folders = {}
+	frame_residual_folders = {}
 	for folder in os.listdir(VIDEO_FOLDER):
 		m = re.findall(r"^frame([0-9]+)", folder)
 		if len(m) != 1:
 			continue
 		frame = int(m[0]) - 1
 		frame_folders[frame] = os.path.join(VIDEO_FOLDER, folder)
+		frame_residual_folders[frame] = os.path.join(RESIDUAL_FOLDER, folder)
 	video_files = {}
+	video_residual_files = {}
+	frame_idx = []
 	for frame, frame_folder in frame_folders.items():
 		camera_files = []
+		camera_residual_files = []
 		for camera in range(CAMERAS):
 			camera_file = os.path.join(frame_folder, 'images', f"{camera}.png")
 			camera_files.append(camera_file)
+			camera_residual_file = os.path.join(frame_residual_folders[frame], f"{camera}.png")
+			camera_residual_files.append(camera_residual_file)
 		video_files[frame] = camera_files
+		video_residual_files[frame] = camera_residual_files
+		frame_idx.append(frame)
+	frame_idx = sorted(frame_idx)
 
 	# https://github.com/DarlingHang/st-nerf/blob/e0c1c32b09d90101218410443193ddabc1f66d2f/data/datasets/frame_dataset.py#L25C23-L25C23
 	camposes = np.loadtxt(os.path.join(VIDEO_FOLDER, 'pose', 'RT_c2w.txt'))
@@ -116,10 +128,13 @@ if __name__ == "__main__":
 		"aabb_scale": AABB_SCALE, # should match the sence scale
 		"frames": []
 	}
-	for frame, frame_folder in frame_folders.items():
+	last_frames = {}
+	for frame in frame_idx:
+		frame_folder = frame_folders[frame]
 		camera_files = video_files[frame]
+		camera_residual_files = video_residual_files[frame]
 		cameras_data = []
-		for camera_file, K, c2w in zip(camera_files, Ks, Ts):
+		for cam_i, (camera_file, K, c2w, camera_residual_file) in enumerate(zip(camera_files, Ks, Ts, camera_residual_files)):
 			frame_data = {
 				"is_fisheye": False, # should match the sence scale
 				"aabb_scale": AABB_SCALE, # should match the sence scale
@@ -138,14 +153,19 @@ if __name__ == "__main__":
 				"sharpness":b,
 				"w": w, # should match the sence scale
 				"h": h, # should match the sence scale
-			}
-			cameras_data.append({
 				"file_path": os.path.relpath(camera_file, frame_folder),
-				**camera_data
-			})
+			}
+			if cam_i in last_frames:
+				os.makedirs(os.path.dirname(camera_residual_file), exist_ok=True)
+				residual = cv2.subtract(last_frames[cam_i], img)
+				cv2.imwrite(camera_residual_file, residual)
+				camera_data["residual_path"] = os.path.relpath(camera_residual_file, frame_folder)
+			last_frames[cam_i] = img
+			cameras_data.append(camera_data)
 			all_frame_data["frames"].append({
+				**camera_data,
 				"file_path": camera_file,
-				**camera_data
+				"residual_path": camera_residual_file
 			})
 		frame_data["frames"] = cameras_data
 		OUT_PATH = os.path.join(frame_folder, "transforms.json")
