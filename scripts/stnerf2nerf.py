@@ -27,6 +27,7 @@ def parse_args():
 	parser.add_argument("--shift1", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--shift2", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--residual_root", type=str, required=True, help="root path to the residual images")
+	parser.add_argument("--residual_transform_test", action="store_true")
 	args = parser.parse_args()
 	return args
 
@@ -172,6 +173,18 @@ if __name__ == "__main__":
 		print(f"writing {OUT_PATH}...")
 		with open(OUT_PATH, "w") as outfile:
 			json.dump(frame_data, outfile, indent=2)
+		if args.residual_transform_test:
+			frame_residual_folder = frame_residual_folders[frame]
+			for camera_data in frame_data["frames"]:
+				if "residual_path" not in camera_data:
+					continue
+				camera_residual_file = os.path.join(frame_folder, camera_data["residual_path"])
+				camera_data["sharpness"] = cv2.Laplacian(cv2.cvtColor(cv2.imread(camera_residual_file), cv2.COLOR_BGR2GRAY), cv2.CV_64F).var()
+				camera_data["file_path"] = os.path.relpath(camera_residual_file, frame_residual_folder)
+				del camera_data["residual_path"]
+			if frame > 0:
+				with open(os.path.join(frame_residual_folder, "transforms.json"), "w") as outfile:
+					json.dump(frame_data, outfile, indent=2)
 	OUT_PATH = os.path.join(VIDEO_FOLDER, "transforms.json")
 	print(f"writing {OUT_PATH}...")
 	with open(OUT_PATH, "w") as outfile:
