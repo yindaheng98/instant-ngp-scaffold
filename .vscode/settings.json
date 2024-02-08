@@ -1,22 +1,21 @@
 {
     "cmake.debugConfig": {
         "args": [
-            "--load_snapshot=/volume/results/stnerf-taekwondo/frame1.bson",
-            "--no-train",
+            "--load_snapshot=/volume/results/flame_steak/frame1.bson",
             "--init",
-            "/volume/results/stnerf-taekwondo/frame1-intra.bson",
+            "/volume/results/flame_steak/frame1-intra.bson",
             "--frameformat",
-            "/volume/results/stnerf-taekwondo/frame%d-intra.bson",
+            "/volume/results/flame_steak/frame%d-intra.bson",
             "--start",
             "2",
             "--end",
-            "101",
-            "/volume/data/nerf/taekwondo/frame1"
+            "100",
+            "/volume/data/nerf/flame_steak/frame1"
             // "--step=10000",
-            // "--save_snapshot=/volume/results/sear_steak/frame102.bson",
-            // "--snapshot=/volume/results/sear_steak/frame101.bson",
+            // "--save_snapshot=/volume/results/sear_steak/frame101.bson",
+            // "--snapshot=/volume/results/sear_steak/frame100.bson",
             // "--decay=0.5",
-            // "/volume/data/nerf/sear_steak/frame102",
+            // "/volume/data/nerf/sear_steak/frame101",
             // "--freeze"
         ],
     },
@@ -91,7 +90,8 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "bit": "cpp"
     },
     "python.analysis.autoImportCompletions": true
 }
