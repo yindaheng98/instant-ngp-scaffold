@@ -6,6 +6,13 @@ python3 scripts/train_seq.py \
     --executable "./instant-ngp-train"
 python3 scripts/train_seq.py \
     --init_steps 10000 --steps 10000 --start 1 --end 101 \
+    --trainargs=--decay=0.5 \
+    --initformat "data/nerf/taekwondo/frame%d" \
+    --dataformat "data/nerf/taekwondo/residuals/frame%d" \
+    --saveformat "results/stnerf-taekwondo-partial/frame%d.bson" \
+    --executable "./instant-ngp-train"
+python3 scripts/train_seq.py \
+    --init_steps 10000 --steps 10000 --start 1 --end 101 \
     --dataformat "data/nerf/taekwondo/frame%d" \
     --saveformat "results/stnerf-taekwondo/frame%d-nofreeze.bson" \
     --executable "./instant-ngp-train" \

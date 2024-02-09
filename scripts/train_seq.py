@@ -3,24 +3,27 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--start", type=int, required=True, help="The start frame number.")
 parser.add_argument("--end", type=int, required=True, help="The end frame number.")
+parser.add_argument("--initformat", type=str, required=True, help="The path format of the init frame data.")
 parser.add_argument("--dataformat", type=str, required=True, help="The path format of the frames data.")
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the snapshot to save.")
 parser.add_argument("--executable", type=str, required=True, help="The path to the trainer executable.")
 parser.add_argument("--init_steps", type=int, required=True, help="How many steps do you want to train in init model.")
 parser.add_argument("--steps", type=int, required=True, help="How many steps do you want to train.")
 parser.add_argument("--no_freeze", action="store_true", help="Do not freeze.")
-parser.add_argument("--decay", type=float, required=True, help="What threshold do you want to use to decay density_grid.")
+parser.add_argument("--initargs", type=str, action="append", default=[], help="What args do you want to use to train first frame.")
+parser.add_argument("--trainargs", type=str, action="append", default=[], help="What threshold do you want to use to train frame.")
 
 if __name__ == "__main__":
     import os
     import subprocess
     args = parser.parse_args()
     root = os.getcwd()
-    datapath = os.path.join(root, args.dataformat % args.start)
+    datapath = os.path.join(root, args.initformat % args.start)
     savepath = os.path.join(root, args.saveformat % args.start)
     executable = os.path.join(root, args.executable)
     os.makedirs(os.path.dirname(savepath), exist_ok=True)
     cmd = [executable, f"--step={args.init_steps}", f"--save_snapshot={savepath}", datapath]
+    cmd += args.initargs
     print(cmd)
     if not os.path.exists(savepath):
         subprocess.run(cmd)
@@ -28,7 +31,8 @@ if __name__ == "__main__":
         last_savepath = savepath
         datapath = os.path.join(root, args.dataformat % i)
         savepath = os.path.join(root, args.saveformat % i)
-        cmd = [executable, f"--step={args.steps}", f"--save_snapshot={savepath}", f"--snapshot={last_savepath}", f"--decay={args.decay}", datapath]
+        cmd = [executable, f"--step={args.steps}", f"--save_snapshot={savepath}", f"--snapshot={last_savepath}", datapath]
+        cmd += args.trainargs
         if not args.no_freeze:
             cmd += ["--freeze"]
         print(cmd)
