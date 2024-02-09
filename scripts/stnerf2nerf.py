@@ -161,8 +161,8 @@ if __name__ == "__main__":
 				residual = cv2.absdiff(last_frames[cam_i], img)
 				idx = (residual >= 4).any(axis=2)
 				residual = residual.sum(axis=2)
-				residual[idx] = 255
-				residual[~idx] = 0
+				residual[idx] = 0
+				residual[~idx] = 255
 				cv2.imwrite(camera_residual_file, residual.astype(np.uint8))
 				camera_data["mask_path"] = os.path.relpath(camera_residual_file, frame_folder)
 			last_frames[cam_i] = img
