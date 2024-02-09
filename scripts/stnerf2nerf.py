@@ -158,15 +158,19 @@ if __name__ == "__main__":
 			}
 			if cam_i in last_frames:
 				os.makedirs(os.path.dirname(camera_residual_file), exist_ok=True)
-				residual = cv2.subtract(last_frames[cam_i], img)
-				cv2.imwrite(camera_residual_file, residual)
-				camera_data["residual_path"] = os.path.relpath(camera_residual_file, frame_folder)
+				residual = cv2.absdiff(last_frames[cam_i], img)
+				idx = (residual >= 4).any(axis=2)
+				residual = residual.sum(axis=2)
+				residual[idx] = 255
+				residual[~idx] = 0
+				cv2.imwrite(camera_residual_file, residual.astype(np.uint8))
+				camera_data["mask_path"] = os.path.relpath(camera_residual_file, frame_folder)
 			last_frames[cam_i] = img
 			cameras_data.append(camera_data)
 			all_frame_data["frames"].append({
 				**camera_data,
 				"file_path": camera_file,
-				"residual_path": camera_residual_file
+				"mask_path": camera_residual_file
 			})
 		frame_data["frames"] = cameras_data
 		OUT_PATH = os.path.join(frame_folder, "transforms.json")
@@ -176,12 +180,12 @@ if __name__ == "__main__":
 		if args.residual_transform_test:
 			frame_residual_folder = frame_residual_folders[frame]
 			for camera_data in frame_data["frames"]:
-				if "residual_path" not in camera_data:
+				if "mask_path" not in camera_data:
 					continue
-				camera_residual_file = os.path.join(frame_folder, camera_data["residual_path"])
+				camera_residual_file = os.path.join(frame_folder, camera_data["mask_path"])
 				camera_data["sharpness"] = cv2.Laplacian(cv2.cvtColor(cv2.imread(camera_residual_file), cv2.COLOR_BGR2GRAY), cv2.CV_64F).var()
 				camera_data["file_path"] = os.path.relpath(camera_residual_file, frame_residual_folder)
-				del camera_data["residual_path"]
+				del camera_data["mask_path"]
 			if frame > 0:
 				with open(os.path.join(frame_residual_folder, "transforms.json"), "w") as outfile:
 					json.dump(frame_data, outfile, indent=2)
