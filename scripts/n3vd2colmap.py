@@ -26,6 +26,9 @@ def parse_args():
 	parser.add_argument("--aabb_scale", default=8, help="large scene scale factor")
 	parser.add_argument("--path", type=str, required=True, help="path to the video folder")
 	parser.add_argument("--run_colmap", action="store_true")
+	parser.add_argument("--residual_thr", type=float, default=4, help="residual threshold")
+	parser.add_argument("--mask_density_x", type=int, default=4)
+	parser.add_argument("--mask_density_y", type=int, default=4)
 	args = parser.parse_args()
 	return args
 
@@ -80,6 +83,7 @@ if __name__ == "__main__":
 			camera_file = os.path.join("..", camera_name, "%03d.png" % (frame + 1))
 			camera["file_path"] = camera_file
 		os.makedirs(frame_folder, exist_ok=True)
+		print("writing", frame_folder)
 		with open(os.path.join(frame_folder, "transforms.json"), "w", encoding="utf8") as f:
 			json.dump(cameras, f, indent=2)
 		if frame > 0:
@@ -93,10 +97,11 @@ if __name__ == "__main__":
 				camera["mask_path"] = residual_file
 				img = cv2.imread(os.path.join(VIDEO_FOLDER, camera_name, "%03d.png" % (frame + 1)))
 				residual = cv2.absdiff(last_frames[camera_name], img)
-				idx = (residual >= 4).any(axis=2)
+				idx = (residual >= args.residual_thr).any(axis=2)
 				residual = residual.sum(axis=2)
 				residual[idx] = 0
 				residual[~idx] = 255
+				residual[0::args.mask_density_x, 0::args.mask_density_y] = 0
 				cv2.imwrite(os.path.join(residual_folder, residual_file), residual.astype(np.uint8))
 				last_frames[camera_name] = img
 			with open(os.path.join(residual_folder, "transforms.json"), "w", encoding="utf8") as f:
