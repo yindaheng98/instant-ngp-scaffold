@@ -27,6 +27,7 @@ def parse_args():
 	parser.add_argument("--shift1", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--shift2", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--residual_root", type=str, required=True, help="root path to the residual images")
+	parser.add_argument("--residual_thr", type=float, default=4, help="residual threshold")
 	args = parser.parse_args()
 	return args
 
@@ -158,7 +159,7 @@ if __name__ == "__main__":
 			if cam_i in last_frames:
 				os.makedirs(os.path.dirname(camera_residual_file), exist_ok=True)
 				residual = cv2.absdiff(last_frames[cam_i], img)
-				idx = (residual >= 4).any(axis=2)
+				idx = (residual >= args.residual_thr).any(axis=2)
 				residual = residual.sum(axis=2)
 				residual[idx] = 0
 				residual[~idx] = 255
