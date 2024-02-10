@@ -11,6 +11,7 @@
 import argparse
 from copy import deepcopy
 import os
+import cv2
 
 import numpy as np
 import json
@@ -70,6 +71,7 @@ if __name__ == "__main__":
 	transforms_file = os.path.join(tempdir, "transforms.json")
 	with open(transforms_file) as f:
 		data = json.load(f)
+	last_frames = {}
 	for frame, camera_files in enumerate(video_files):
 		frame_folder = os.path.join(VIDEO_FOLDER, "frame%d" % (frame + 1))
 		cameras = deepcopy(data)
@@ -80,6 +82,29 @@ if __name__ == "__main__":
 		os.makedirs(frame_folder, exist_ok=True)
 		with open(os.path.join(frame_folder, "transforms.json"), "w", encoding="utf8") as f:
 			json.dump(cameras, f, indent=2)
+		if frame > 0:
+			residual_folder = os.path.join(VIDEO_FOLDER, "residuals", "frame%d" % (frame + 1))
+			os.makedirs(residual_folder, exist_ok=True)
+			for camera in cameras["frames"]:
+				camera_name = os.path.basename(os.path.dirname(camera["file_path"]))
+				camera_file = os.path.join("..", camera["file_path"])
+				residual_file = os.path.join(".", "%s.png" % camera_name)
+				camera["file_path"] = camera_file
+				camera["mask_path"] = residual_file
+				img = cv2.imread(os.path.join(VIDEO_FOLDER, camera_name, "%03d.png" % (frame + 1)))
+				residual = cv2.absdiff(last_frames[camera_name], img)
+				idx = (residual >= 4).any(axis=2)
+				residual = residual.sum(axis=2)
+				residual[idx] = 0
+				residual[~idx] = 255
+				cv2.imwrite(os.path.join(residual_folder, residual_file), residual.astype(np.uint8))
+				last_frames[camera_name] = img
+			with open(os.path.join(residual_folder, "transforms.json"), "w", encoding="utf8") as f:
+				json.dump(cameras, f, indent=2)
+		else:
+			for camera in cameras["frames"]:
+				camera_name = os.path.basename(os.path.dirname(camera["file_path"]))
+				last_frames[camera_name] = cv2.imread(os.path.join(VIDEO_FOLDER, camera_name, "%03d.png" % (frame + 1)))
 			
 		
 	

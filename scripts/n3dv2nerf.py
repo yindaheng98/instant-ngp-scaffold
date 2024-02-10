@@ -26,6 +26,7 @@ def parse_args():
 	parser.add_argument("--shift0", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--shift1", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--shift2", type=float, default=0., help="shift before aabb_scale")
+	parser.add_argument("--residual_root", type=str, required=True, help="root path to the residual images")
 	args = parser.parse_args()
 	return args
 
