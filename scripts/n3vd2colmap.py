@@ -24,6 +24,7 @@ def parse_args():
 
 	parser.add_argument("--aabb_scale", default=8, help="large scene scale factor")
 	parser.add_argument("--path", type=str, required=True, help="path to the video folder")
+	parser.add_argument("--run_colmap", action="store_true")
 	args = parser.parse_args()
 	return args
 
@@ -49,8 +50,9 @@ if __name__ == "__main__":
 		temp_file = os.path.join(imgfolder, name + ".png")
 		shutil.copyfile(camera_file, temp_file)
 		script = os.path.join(root, "colmap2nerf.py")
-	cmd = f"cd {tempdir} && python3 {script} --images ./images --run_colmap --aabb_scale {args.aabb_scale} --overwrite"
-	os.system(cmd)
+	if args.run_colmap:
+		cmd = f"cd {tempdir} && python3 {script} --images ./images --run_colmap --aabb_scale {args.aabb_scale} --overwrite"
+		os.system(cmd)
 	camera_folders = []
 	for folder in os.listdir(VIDEO_FOLDER):
 		m = re.findall(r"^cam([0-9]+)$", folder)
