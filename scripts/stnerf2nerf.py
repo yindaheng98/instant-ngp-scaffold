@@ -28,6 +28,8 @@ def parse_args():
 	parser.add_argument("--shift2", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--residual_root", type=str, required=True, help="root path to the residual images")
 	parser.add_argument("--residual_thr", type=float, default=4, help="residual threshold")
+	parser.add_argument("--mask_density_x", type=int, default=4)
+	parser.add_argument("--mask_density_y", type=int, default=4)
 	args = parser.parse_args()
 	return args
 
@@ -163,6 +165,7 @@ if __name__ == "__main__":
 				residual = residual.sum(axis=2)
 				residual[idx] = 0
 				residual[~idx] = 255
+				residual[0::args.mask_density_x, 0::args.mask_density_y] = 0
 				cv2.imwrite(camera_residual_file, residual.astype(np.uint8))
 				camera_data["mask_path"] = os.path.relpath(camera_residual_file, frame_folder)
 			last_frames[cam_i] = img
