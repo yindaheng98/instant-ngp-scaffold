@@ -1,23 +1,24 @@
 {
     "cmake.debugConfig": {
+        "cwd": "${workspaceFolder}",
         "args": [
-            "--load_snapshot=/volume/results/flame_steak/frame1.bson",
+            "--load_snapshot=./results/flame_steak/frame1.bson",
             "--init",
-            "/volume/results/flame_steak/frame1-intra.bson",
+            "./results/flame_steak/frame1-intra.bson",
             "--frameformat",
-            "/volume/results/flame_steak/frame%d-intra.bson",
+            "./results/flame_steak/frame%d-intra.bson",
             "--start",
             "2",
             "--end",
             "100",
-            "/volume/data/nerf/flame_steak/frame1"
+            "./data/nerf/flame_steak/frame1"
             // "--step=10000",
             // "--save_snapshot=/volume/results/sear_steak/frame101.bson",
             // "--snapshot=/volume/results/sear_steak/frame100.bson",
             // "--decay=0.5",
             // "/volume/data/nerf/sear_steak/frame101",
             // "--freeze"
-        ],
+        ]
     },
     "files.associations": {
         "*.rmd": "markdown",
@@ -91,7 +92,9 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "queue": "cpp",
+        "xiosbase": "cpp"
     },
     "python.analysis.autoImportCompletions": true,
     "python.analysis.typeCheckingMode": "off"
