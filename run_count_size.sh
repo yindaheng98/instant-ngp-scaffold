@@ -1,7 +1,7 @@
 #!/bin/bash
 command0() {
     echo 0 start
-    python3 /volume/scripts/parse_seq_size.py \
+    python ./scripts/parse_seq_size.py \
         --start $2 --end $3 \
         --saveformat results/$4/frame%d.bson \
         --initexportformat results/$4/frame%d-intra.json \
@@ -11,7 +11,7 @@ command0() {
 
 command() {
     echo $1 start
-    python3 /volume/scripts/parse_seq_size.py \
+    python ./scripts/parse_seq_size.py \
         --start $2 --end $3 \
         --saveformat results/$4/frame%d.bson \
         --intraexportformat results/$4/frame%\(i\)dT=%\(T\)f-intra.json \
@@ -39,8 +39,8 @@ doall() {
     wait
 }
 
-doall "1 101 stnerf-taekwondo"
-doall "1 75 stnerf-walking"
-doall "1 100 coffee_martini"
-doall "1 100 flame_steak"
-doall "1 100 sear_steak"
+doall "1 101 stnerf-taekwondo-regularization-1e-6"
+doall "1 75 stnerf-walking-regularization-1e-6"
+doall "1 100 coffee_martini-regularization-1e-6"
+doall "1 100 flame_steak-regularization-1e-6"
+doall "1 100 sear_steak-regularization-1e-6"
