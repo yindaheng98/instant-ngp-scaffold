@@ -2,6 +2,7 @@ import argparse
 import bson
 import numpy as np
 import zlib
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--start", type=int, required=True, help="The start frame number.")
@@ -54,6 +55,7 @@ def load_params(save):
     return params, density_grid
 
 def dump_save(path, save, params, density_grid):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     params_bin = params.tobytes()
     density_grid_bin = density_grid.tobytes()
     save['snapshot']['params_binary'] = params_bin
@@ -98,14 +100,11 @@ if __name__ == "__main__":
     import os
     args = parser.parse_args()
     root = os.getcwd()
-    if args.interexportformat:
-        os.makedirs(os.path.dirname(args.interexportformat), exist_ok=True)
-    if args.intraexportformat:
-        os.makedirs(os.path.dirname(args.intraexportformat), exist_ok=True)
     savepath = os.path.join(root, args.saveformat % args.start)
     save = load_save(savepath)
     params, density_grid = load_params(save)
     if args.intraexportformat:
+        os.makedirs(os.path.dirname(args.intraexportformat % args.start), exist_ok=True)
         with open(args.intraexportformat % args.start, "wb") as f:
             f.write(zlib.compress(bson.encode({
                 "params_size": params.shape[0],
@@ -121,6 +120,7 @@ if __name__ == "__main__":
         save = load_save(savepath)
         params, density_grid = load_params(save)
         if args.intraexportformat:
+            os.makedirs(os.path.dirname(args.intraexportformat % i), exist_ok=True)
             with open(args.intraexportformat % i, "wb") as f:
                 f.write(zlib.compress(bson.encode({
                     "params_size": params.shape[0],
@@ -136,6 +136,7 @@ if __name__ == "__main__":
 
         diff_params = compute_diff_params(params, last_diff_params, args.T)
         diff_density_grid = compute_diff_density_grid(density_grid, last_diff_density_grid, args.T_density)
+        os.makedirs(os.path.dirname(args.interexportformat % {'i':i, "T": args.T, "T_density": args.T_density}), exist_ok=True)
         with open(args.interexportformat % {'i':i, "T": args.T, "T_density": args.T_density}, "wb") as f:
             f.write(zlib.compress(bson.encode({
                 "params_size": diff_params.shape[0],

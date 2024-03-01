@@ -1,30 +1,30 @@
 #!/bin/bash
 command0() {
     echo $1 $2 $3 $4 $5 start
-    python3 /volume/scripts/parse_seq2bson.py --start $3 --end $4 \
+    python ./scripts/parse_seq2bson.py --start $3 --end $4 \
         --saveformat results/$5/frame%d.bson \
-        --intraexportformat results/$5/frame%d-intra.bson
+        --intraexportformat results/$5/intra/frame%d.bson
     echo $1 $2 $3 $4 $5 complete
 }
 
 command_destroy() {
     echo $1 $2 $3 $4 $5 start
-    python3 /volume/scripts/parse_seq2bson_destroyed.py --start $3 --end $4 \
+    python ./scripts/parse_seq2bson_destroyed.py --start $3 --end $4 \
         --saveformat results/$5/frame%d.bson \
-        --exportformat results/$5/frame%d-fp16destroy.bson
-    python3 /volume/scripts/parse_seq2bson_no_simulation.py --start $3 --end $4 \
+        --exportformat results/$5/fp16destroy/frame%d.bson
+    python ./scripts/parse_seq2bson_no_simulation.py --start $3 --end $4 \
         --saveformat results/$5/frame%d.bson \
-        --exportformat results/$5/frame%\(i\)dT=%\(T\)fT_density=%\(T_density\)f-nosimulationdestroy.bson \
+        --exportformat results/$5/nosimulationdestroy/T=%\(T\)fT_density=%\(T_density\)f/frame%\(i\)d.bson \
         --T $1 --T_density $2
     echo $1 $2 $3 $4 $5 complete
 }
 
 command() {
     echo $1 $2 $3 $4 $5 start
-    python3 /volume/scripts/parse_seq2bson.py --start $3 --end $4 \
+    python ./scripts/parse_seq2bson.py --start $3 --end $4 \
         --saveformat results/$5/frame%d.bson \
-        --interexportformat results/$5/frame%\(i\)dT=%\(T\)fT_density=%\(T_density\)f-inter.bson \
-        --snapshotsimulate_interexportformat results/$5/frame%\(i\)dT=%\(T\)fT_density=%\(T_density\)f-snapshotsimulate.bson \
+        --interexportformat results/$5/inter/T=%\(T\)fT_density=%\(T_density\)f/frame%\(i\)d.bson \
+        --snapshotsimulate_interexportformat results/$5/inter/T=%\(T\)fT_density=%\(T_density\)f/frame%\(i\)d-snapshotsimulate.bson \
         --T $1 --T_density $2
     echo $1 $2 $3 $4 $5 complete
 }

@@ -14,7 +14,6 @@ if __name__ == "__main__":
     import os
     args = parser.parse_args()
     root = os.getcwd()
-    os.makedirs(os.path.dirname(args.exportformat), exist_ok=True)
     savepath = os.path.join(root, args.saveformat % args.start)
     save = load_save(savepath)
     params, density_grid = load_params(save)
