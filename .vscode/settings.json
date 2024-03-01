@@ -2,18 +2,18 @@
     "cmake.debugConfig": {
         "cwd": "${workspaceFolder}",
         "args": [
-            "--load_snapshot=./results/flame_steak/frame1.bson",
+            "--load_snapshot=./results/stnerf-taekwondo-regularization-none/frame1.bson",
             "--init",
-            "./results/flame_steak/frame1-intra.bson",
+            "./results/stnerf-taekwondo-regularization-none/intra/frame1.bson",
             "--frameformat",
-            "./results/flame_steak/frame%d-intra.bson",
+            "./results/stnerf-taekwondo-regularization-none/intra/frame%d.bson",
             "--start",
             "2",
             "--end",
             "100",
             "--savecam",
             "./results/camera.txt",
-            "./data/nerf/flame_steak/frame1"
+            "./data/nerf/taekwondo/frame1"
             // "--step=10000",
             // "--save_snapshot=/volume/results/sear_steak/frame101.bson",
             // "--snapshot=/volume/results/sear_steak/frame100.bson",
