@@ -13,6 +13,8 @@
             "100",
             "--savecam",
             "./results/camera.txt",
+            "--gethit",
+            "--onlyhit",
             "./data/nerf/taekwondo/frame1"
             // "--step=10000",
             // "--save_snapshot=/volume/results/sear_steak/frame101.bson",
