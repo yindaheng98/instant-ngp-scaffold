@@ -123,7 +123,7 @@ if __name__ == "__main__":
 	Ts[:, :3, :] = stnerf
 	Ts[:, 0:3, 2] *= -1 # flip the y and z axis
 	Ts[:, 0:3, 1] *= -1
-	Ts = Ts[:, [2,1,0,3], :]
+	Ts = Ts[:, [0,2,1,3], :]
 	Ts[:, 2, :] *= -1 # flip whole world upside down
 	
 	all_frame_data = {
