@@ -35,3 +35,24 @@ command basketball basketball "1e-4" 30000 10000 0 194
 command basketball basketball "1e-5" 30000 10000 0 194
 command basketball basketball "1e-6" 30000 10000 0 194
 command basketball basketball "1e-7" 30000 10000 0 194
+
+command0 sport_1 sport_1 30000 0
+command1 sport_1 sport_1 "none" 30000 10000 0 200
+command sport_1 sport_1 "1e-4" 30000 10000 0 200
+command sport_1 sport_1 "1e-5" 30000 10000 0 200
+command sport_1 sport_1 "1e-6" 30000 10000 0 200
+command sport_1 sport_1 "1e-7" 30000 10000 0 200
+
+command0 sport_2 sport_2 30000 0
+command1 sport_2 sport_2 "none" 30000 10000 0 200
+command sport_2 sport_2 "1e-4" 30000 10000 0 200
+command sport_2 sport_2 "1e-5" 30000 10000 0 200
+command sport_2 sport_2 "1e-6" 30000 10000 0 200
+command sport_2 sport_2 "1e-7" 30000 10000 0 200
+
+command0 sport_3 sport_3 30000 0
+command1 sport_3 sport_3 "none" 30000 10000 0 200
+command sport_3 sport_3 "1e-4" 30000 10000 0 200
+command sport_3 sport_3 "1e-5" 30000 10000 0 200
+command sport_3 sport_3 "1e-6" 30000 10000 0 200
+command sport_3 sport_3 "1e-7" 30000 10000 0 200
