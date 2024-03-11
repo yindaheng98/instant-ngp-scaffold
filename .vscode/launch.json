@@ -122,6 +122,70 @@
             ]
         },
         {
+            "name": "nhr2nerf basketball",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/nhr2nerf.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "8",
+                "--path",
+                "data/nerf/basketball",
+                "--scale",
+                "1.",
+            ]
+        },
+        {
+            "name": "nhr2nerf sport_1",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/nhr2nerf.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "8",
+                "--path",
+                "data/nerf/sport_1",
+                "--scale",
+                "1.",
+            ]
+        },
+        {
+            "name": "nhr2nerf sport_2",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/nhr2nerf.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "8",
+                "--path",
+                "data/nerf/sport_2",
+                "--scale",
+                "1.",
+            ]
+        },
+        {
+            "name": "nhr2nerf sport_3",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/nhr2nerf.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "8",
+                "--path",
+                "data/nerf/sport_3",
+                "--scale",
+                "1.",
+            ]
+        },
+        {
             "name": "parse_seq2bson_fp16_destroyed",
             "type": "python",
             "request": "launch",
