@@ -34,11 +34,8 @@ def parse_args():
 	parser.add_argument("--test_transforms", default="", help="Path to a nerf style transforms json from which we will compute PSNR.")
 	parser.add_argument("--exposure", default=0.0, type=float, help="Controls the brightness of the image. Positive numbers increase brightness, negative numbers decrease it.")
 
-	parser.add_argument("--width", "--screenshot_w", type=int, default=0, help="Resolution width of GUI and screenshots.")
-	parser.add_argument("--height", "--screenshot_h", type=int, default=0, help="Resolution height of GUI and screenshots.")
-
-	parser.add_argument("--second_window", action="store_true", help="Open a second window containing a copy of the main output.")
-	parser.add_argument("--vr", action="store_true", help="Render to a VR headset.")
+	parser.add_argument("--width", "--screenshot_w", type=int, default=1920, help="Resolution width of GUI and screenshots.")
+	parser.add_argument("--height", "--screenshot_h", type=int, default=1080, help="Resolution height of GUI and screenshots.")
 
 	parser.add_argument("--sharpen", default=0, help="Set amount of sharpening applied to NeRF training images. Range 0.0 to 1.0.")
 
@@ -55,16 +52,6 @@ if __name__ == "__main__":
 
 	testbed = ngp.Testbed()
 	testbed.root_dir = ROOT_DIR
-
-	sw = args.width or 1920
-	sh = args.height or 1080
-	while sw * sh > 1920 * 1080 * 4:
-		sw = int(sw / 2)
-		sh = int(sh / 2)
-	testbed.init_window(sw, sh, second_window=args.second_window)
-	if args.vr:
-		testbed.init_vr()
-
 
 	if args.load_snapshot:
 		scene_info = get_scene(args.load_snapshot)
