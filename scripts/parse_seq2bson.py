@@ -112,8 +112,8 @@ if __name__ == "__main__":
                 "params": params.tobytes(),
                 "density_grid": density_grid.tobytes(),
             })))
-    last_diff_params, last_diff_density_grid = np.copy(params), np.copy(density_grid)
-    last_intr_params, last_intr_density_grid = np.copy(params), np.copy(density_grid)
+    last_diff_params = np.copy(params)
+    last_intr_params = np.copy(params)
     for i in range(args.start + 1, args.end + 1):
         print("do", i-args.start, "/", args.end-args.start)
         savepath = os.path.join(root, args.saveformat % i)
@@ -131,44 +131,24 @@ if __name__ == "__main__":
 
         if not args.interexportformat:
             continue
-        diff_density_grid_fp32 = density_grid.astype(np.float32) - last_diff_density_grid.astype(np.float32)
-        density_grid_error_for_compare = density_grid - (last_diff_density_grid + diff_density_grid_fp32.astype(np.float16))
 
+        density_grid_filtered = np.copy(density_grid)
+        density_grid_filtered[density_grid_filtered > 1] = 1
         diff_params = compute_diff_params(params, last_diff_params, args.T)
-        diff_density_grid = compute_diff_density_grid(density_grid, last_diff_density_grid, args.T_density)
         os.makedirs(os.path.dirname(args.interexportformat % {'i':i, "T": args.T, "T_density": args.T_density}), exist_ok=True)
         with open(args.interexportformat % {'i':i, "T": args.T, "T_density": args.T_density}, "wb") as f:
             f.write(zlib.compress(bson.encode({
                 "params_size": diff_params.shape[0],
-                "density_grid_size": diff_density_grid.shape[0],
+                "density_grid_size": density_grid.shape[0],
                 "params": diff_params.tobytes(),
-                "density_grid": diff_density_grid.tobytes(),
+                "density_grid": density_grid_filtered.tobytes(),
             })))
         last_diff_params += diff_params
-        last_diff_density_grid += diff_density_grid
         if args.snapshotsimulate_interexportformat:
             dump_save(args.snapshotsimulate_interexportformat % {'i':i, "T": args.T, "T_density": args.T_density},
-                    save, last_diff_params, last_diff_density_grid)
+                    save, last_diff_params, density_grid_filtered)
 
         error_params = params.astype(np.float32) - last_diff_params.astype(np.float32)
-        error_density_grid = density_grid.astype(np.float32) - last_diff_density_grid.astype(np.float32)
         print("error of params", error_params.max(), error_params.min())
-        print("error of density_grid", error_density_grid.max(), error_density_grid.min())
-        cause_of_max_error_idx = error_density_grid == error_density_grid.max()
-        cause_of_min_error_idx = error_density_grid == error_density_grid.min()
-        print("cause of density_grid error",
-              error_density_grid.max(),
-              "error should be",
-              density_grid_error_for_compare[cause_of_max_error_idx],
-              density_grid[cause_of_max_error_idx],
-              last_diff_density_grid[cause_of_max_error_idx],
-              diff_density_grid[cause_of_max_error_idx])
-        print("cause of density_grid error",
-              error_density_grid.min(),
-              "error should be",
-              density_grid_error_for_compare[cause_of_min_error_idx],
-              density_grid[cause_of_min_error_idx],
-              last_diff_density_grid[cause_of_min_error_idx],
-              diff_density_grid[cause_of_min_error_idx])
 
         pass
