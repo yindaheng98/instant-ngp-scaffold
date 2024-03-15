@@ -54,6 +54,12 @@ def load_params(save):
 
     return params, density_grid
 
+def load_params_bitfield(save):
+    params, density_grid = load_params(save)
+    snapshot = save['snapshot']
+    density_grid_bitfield = snapshot['density_grid_bitfield']
+    return params, density_grid, density_grid_bitfield
+
 def dump_save(path, save, params, density_grid):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     params_bin = params.tobytes()
@@ -102,7 +108,7 @@ if __name__ == "__main__":
     root = os.getcwd()
     savepath = os.path.join(root, args.saveformat % args.start)
     save = load_save(savepath)
-    params, density_grid = load_params(save)
+    params, density_grid, bitfield = load_params_bitfield(save)
     if args.intraexportformat:
         os.makedirs(os.path.dirname(args.intraexportformat % args.start), exist_ok=True)
         with open(args.intraexportformat % args.start, "wb") as f:
@@ -111,6 +117,8 @@ if __name__ == "__main__":
                 "density_grid_size": density_grid.shape[0],
                 "params": params.tobytes(),
                 "density_grid": density_grid.tobytes(),
+                "density_grid_bitfield": bitfield,
+                "density_grid_bitfield_size": len(bitfield),
             })))
     last_diff_params = np.copy(params)
     last_intr_params = np.copy(params)
@@ -118,7 +126,7 @@ if __name__ == "__main__":
         print("do", i-args.start, "/", args.end-args.start)
         savepath = os.path.join(root, args.saveformat % i)
         save = load_save(savepath)
-        params, density_grid = load_params(save)
+        params, density_grid, bitfield = load_params_bitfield(save)
         if args.intraexportformat:
             os.makedirs(os.path.dirname(args.intraexportformat % i), exist_ok=True)
             with open(args.intraexportformat % i, "wb") as f:
@@ -127,6 +135,8 @@ if __name__ == "__main__":
                     "density_grid_size": density_grid.shape[0],
                     "params": params.tobytes(),
                     "density_grid": density_grid.tobytes(),
+                    "density_grid_bitfield": bitfield,
+                    "density_grid_bitfield_size": len(bitfield),
                 })))
 
         if not args.interexportformat:
@@ -142,6 +152,8 @@ if __name__ == "__main__":
                 "density_grid_size": density_grid.shape[0],
                 "params": diff_params.tobytes(),
                 "density_grid": density_grid_filtered.tobytes(),
+                "density_grid_bitfield": bitfield,
+                "density_grid_bitfield_size": len(bitfield),
             })))
         last_diff_params += diff_params
         if args.snapshotsimulate_interexportformat:
