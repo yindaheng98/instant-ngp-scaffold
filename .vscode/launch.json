@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "stnerf2nerf taekwondo",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/stnerf2nerf.py",
             "console": "integratedTerminal",
@@ -27,7 +27,7 @@
         },
         {
             "name": "stnerf2nerf walking",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/stnerf2nerf.py",
             "console": "integratedTerminal",
@@ -51,7 +51,7 @@
         },
         {
             "name": "n3dv2nerf",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/n3dv2nerf.py",
             "console": "integratedTerminal",
@@ -75,7 +75,7 @@
         },
         {
             "name": "n3vd2colmap coffee_martini",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/n3vd2colmap.py",
             "console": "integratedTerminal",
@@ -91,7 +91,7 @@
         },
         {
             "name": "n3vd2colmap flame_steak",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/n3vd2colmap.py",
             "console": "integratedTerminal",
@@ -107,7 +107,7 @@
         },
         {
             "name": "n3vd2colmap sear_steak",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/n3vd2colmap.py",
             "console": "integratedTerminal",
@@ -123,7 +123,7 @@
         },
         {
             "name": "nhr2nerf basketball",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/nhr2nerf.py",
             "console": "integratedTerminal",
@@ -139,7 +139,7 @@
         },
         {
             "name": "nhr2nerf sport_1",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/nhr2nerf.py",
             "console": "integratedTerminal",
@@ -155,7 +155,7 @@
         },
         {
             "name": "nhr2nerf sport_2",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/nhr2nerf.py",
             "console": "integratedTerminal",
@@ -171,7 +171,7 @@
         },
         {
             "name": "nhr2nerf sport_3",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/nhr2nerf.py",
             "console": "integratedTerminal",
@@ -187,7 +187,7 @@
         },
         {
             "name": "parse_seq2bson_no_simulation",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/parse_seq2bson_no_simulation.py",
             "console": "integratedTerminal",
@@ -210,7 +210,7 @@
         },
         {
             "name": "parse_seq_size",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/parse_seq_size.py",
             "console": "integratedTerminal",
@@ -231,6 +231,27 @@
                 "results/stnerf-walking/frame%(i)dT=%(T)f-inter.json",
                 "-T",
                 "1",
+            ]
+        },
+        {
+            "name": "camera_interp",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/camera_interp.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--path",
+                "./data/nerf/taekwondo/camera.txt",
+                "--pathto",
+                "results/camera.txt",
+                "--times",
+                "16",
+                "--start",
+                "1",
+                "--end",
+                "100",
             ]
         }
     ]
