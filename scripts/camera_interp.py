@@ -27,7 +27,7 @@ if __name__ == "__main__":
             last_matrix = np.matrix(last_frame["camera"]["matrix"])
             this_matrix = np.matrix(this_frame["camera"]["matrix"])
             for i in range(1, args.times + 1):
-                matrix = (last_matrix - this_matrix) / args.times * i + last_matrix
+                matrix = (this_matrix - last_matrix) / args.times * i + last_matrix
                 last_frame["camera"]["matrix"] = matrix.tolist()
                 last_frame["frame"] = frame + args.start
                 f.write(json.dumps(last_frame))
