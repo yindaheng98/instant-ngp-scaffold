@@ -247,7 +247,7 @@
                 "--pathto",
                 "results/camera.txt",
                 "--times",
-                "16",
+                "8",
                 "--start",
                 "1",
                 "--end",
