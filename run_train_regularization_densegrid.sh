@@ -2,6 +2,7 @@ command0() {
     ./instant-ngp-train \
         --step=$3 \
         --save_snapshot results/$2-$5-frame0.bson \
+        --config=configs/nerf/$5.json \
         data/nerf/$1/frame$4
 }
 command() {
