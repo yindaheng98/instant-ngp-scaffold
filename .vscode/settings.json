@@ -2,11 +2,12 @@
     "cmake.debugConfig": {
         "cwd": "${workspaceFolder}",
         "args": [
-            "--load_snapshot=./results/stnerf-taekwondo-regularization-none/frame1.bson",
+            "--load_snapshot=./results/stnerf-taekwondo-regularization-1e-6-densegrid344/frame1.bson",
             "--init",
-            "./results/stnerf-taekwondo-regularization-none/intra/frame1.bson",
+            "./results/stnerf-taekwondo-regularization-1e-6-densegrid344/intra/frame1.bson",
             "--frameformat",
-            "./results/stnerf-taekwondo-regularization-none/intra/frame%d.bson",
+            "./results/stnerf-taekwondo-regularization-1e-6-densegrid344/inter/T=0.010000T_density=0.000000/frame%d.bson",
+            "--diff",
             "--start",
             "2",
             "--end",
@@ -14,7 +15,7 @@
             "--savecam",
             "./results/camera.txt",
             "--gethit",
-            "--onlyhit",
+            "./results/stnerf-taekwondo-regularization-1e-6-densegrid344/gridhit/%d.bson",
             "./data/nerf/taekwondo/frame1"
             // "--step=10000",
             // "--save_snapshot=/volume/results/sear_steak/frame101.bson",
