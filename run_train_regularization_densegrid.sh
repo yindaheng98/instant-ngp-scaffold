@@ -21,7 +21,7 @@ command() {
 
 command0 taekwondo stnerf-taekwondo 30000 1 densegrid
 command taekwondo stnerf-taekwondo "1e-6" 30000 10000 1 101 densegrid
-command taekwondo stnerf-taekwondo "1e-6" 30000 10000 1 101 densegrid
 command0 taekwondo stnerf-taekwondo 30000 1 densegrid344
 command taekwondo stnerf-taekwondo "1e-6" 30000 10000 1 101 densegrid344
-command taekwondo stnerf-taekwondo "1e-6" 30000 10000 1 101 densegrid344
+command0 taekwondo stnerf-taekwondo 30000 1 base_17
+command taekwondo stnerf-taekwondo "1e-6" 30000 10000 1 101 base_17
