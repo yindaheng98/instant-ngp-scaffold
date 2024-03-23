@@ -138,6 +138,25 @@
             ]
         },
         {
+            "name": "nhr2nerf basketball mask",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/nhr2nerf.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--mask",
+                "--aabb_scale",
+                "8",
+                "--mask_aabb_scale",
+                "2",
+                "--path",
+                "data/nerf/basketball",
+                "--shift1",
+                "0.25",
+            ]
+        },
+        {
             "name": "nhr2nerf sport_1",
             "type": "debugpy",
             "request": "launch",

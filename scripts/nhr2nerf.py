@@ -23,7 +23,9 @@ def parse_args():
 
 	parser.add_argument("--aabb_scale", default=8, help="large scene scale factor")
 	parser.add_argument("--path", type=str, required=True, help="path to the video folder")
-	parser.add_argument("--scale", type=float, required=True, help="scale after aabb_scale")
+	parser.add_argument("--scale", type=float, default=1., help="scale after aabb_scale")
+	parser.add_argument("--mask", action="store_true", help="generate with mask")
+	parser.add_argument("--mask_aabb_scale", type=int, default=2, help="large scene scale factor")
 	parser.add_argument("--shift0", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--shift1", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--shift2", type=float, default=0., help="shift before aabb_scale")
@@ -128,18 +130,18 @@ if __name__ == "__main__":
 	
 	all_frame_data = {
 		"is_fisheye": False, # should match the sence scale
-		"aabb_scale": AABB_SCALE, # should match the sence scale
+		"aabb_scale": AABB_SCALE if not args.mask else args.mask_aabb_scale, # should match the sence scale
 		"frames": []
 	}
 	for frame in frame_idx:
-		frame_folder = frame_folders[frame]
+		frame_folder = frame_folders[frame] if not args.mask else os.path.join(frame_folders[frame], "mask")
 		camera_files = video_files[frame]
 		camera_mask_files = video_mask_files[frame]
 		cameras_data = []
 		for cam_i, (camera_file, K, c2w, camera_mask_file) in enumerate(zip(camera_files, Ks, Ts, camera_mask_files)):
 			frame_data = {
 				"is_fisheye": False, # should match the sence scale
-				"aabb_scale": AABB_SCALE, # should match the sence scale
+				"aabb_scale": AABB_SCALE if not args.mask else args.mask_aabb_scale, # should match the sence scale
 			}
 			img = cv2.imread(camera_file)
 			h, w, _ = img.shape
@@ -157,13 +159,20 @@ if __name__ == "__main__":
 				"h": h, # should match the sence scale
 				"file_path": os.path.relpath(camera_file, frame_folder),
 			}
-			# camera_data["mask_path"] = os.path.relpath(camera_mask_file, frame_folder)
+			if args.mask:
+				camera_data["mask_path"] = os.path.relpath(camera_mask_file, frame_folder)
 			cameras_data.append(camera_data)
-			all_frame_data["frames"].append({
-				**camera_data,
-				"file_path": os.path.relpath(camera_file, os.path.dirname(frame_folder)),
-				# "mask_path": os.path.relpath(camera_mask_file, os.path.dirname(frame_folder))
-			})
+			if args.mask:
+				all_frame_data["frames"].append({
+					**camera_data,
+					"file_path": os.path.relpath(camera_file, os.path.join(VIDEO_FOLDER, "mask")),
+					"mask_path": os.path.relpath(camera_mask_file, os.path.join(VIDEO_FOLDER, "mask"))
+				})
+			else:
+				all_frame_data["frames"].append({
+					**camera_data,
+					"file_path": os.path.relpath(camera_file, VIDEO_FOLDER),
+				})
 		frame_data["frames"] = cameras_data
 
 		OUT_PATH = os.path.join(frame_folder, "transforms.json")
@@ -171,6 +180,8 @@ if __name__ == "__main__":
 		with open(OUT_PATH, "w") as outfile:
 			json.dump(frame_data, outfile, indent=2)
 	OUT_PATH = os.path.join(VIDEO_FOLDER, "transforms.json")
+	if args.mask:
+		OUT_PATH = os.path.join(VIDEO_FOLDER, "mask", "transforms.json")
 	print(f"writing {OUT_PATH}...")
 	with open(OUT_PATH, "w") as outfile:
 		json.dump(all_frame_data, outfile, indent=2)
