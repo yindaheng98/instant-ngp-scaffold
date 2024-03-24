@@ -38,6 +38,7 @@ def parse_args():
 	parser.add_argument("--height", "--screenshot_h", type=int, default=1080, help="Resolution height of GUI and screenshots.")
 
 	parser.add_argument("--sharpen", default=0, help="Set amount of sharpening applied to NeRF training images. Range 0.0 to 1.0.")
+	parser.add_argument("--write_image", default=None, help="Write image to this dir.")
 
 	return parser.parse_args()
 
@@ -130,8 +131,9 @@ if __name__ == "__main__":
 			testbed.render_ground_truth = False
 			image = testbed.render(resolution[0], resolution[1], spp, True)
 			
-			if i == 0:
-				write_image(args.load_snapshot + ".png", image)
+			if args.write_image:
+				os.makedirs(args.write_image, exist_ok=True)
+				write_image(os.path.join(args.write_image, os.path.basename(args.load_snapshot) + "%d.png" % i), image)
 
 			A = np.clip(linear_to_srgb(image[...,:3]), 0.0, 1.0)
 			R = np.clip(linear_to_srgb(ref_image[...,:3]), 0.0, 1.0)
