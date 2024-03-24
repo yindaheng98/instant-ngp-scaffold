@@ -19,6 +19,7 @@ from common import *
 from scenes import *
 
 from tqdm import tqdm
+import imageio
 
 import pyngp as ngp # noqa
 
@@ -119,6 +120,7 @@ if __name__ == "__main__":
 	testbed.load_training_data(args.test_transforms)
 
 	allpsnr, allssim = [], []
+	transform_frames = test_transforms["frames"]
 	with tqdm(range(testbed.nerf.training.dataset.n_images), unit="images", desc=f"Rendering test frame") as t:
 		for i in t:
 			resolution = testbed.nerf.training.dataset.metadata[i].resolution
@@ -127,6 +129,12 @@ if __name__ == "__main__":
 			ref_image = testbed.render(resolution[0], resolution[1], 1, True)
 			testbed.render_ground_truth = False
 			image = testbed.render(resolution[0], resolution[1], spp, True)
+			transform_frame = transform_frames[i]
+			if "mask_path" in transform_frame:
+				transform_ref_mask_path = os.path.join(os.path.dirname(args.test_transforms), transform_frame["mask_path"])
+				transform_mask = imageio.imread(transform_ref_mask_path).max(axis=2) == 0
+				ref_image[transform_mask] = 0
+				image[transform_mask] = 0
 			
 			if args.write_image:
 				os.makedirs(args.write_image, exist_ok=True)
