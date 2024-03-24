@@ -34,9 +34,6 @@ def parse_args():
 	parser.add_argument("--test_transforms", default="", help="Path to a nerf style transforms json from which we will compute PSNR.")
 	parser.add_argument("--exposure", default=0.0, type=float, help="Controls the brightness of the image. Positive numbers increase brightness, negative numbers decrease it.")
 
-	parser.add_argument("--width", "--screenshot_w", type=int, default=1920, help="Resolution width of GUI and screenshots.")
-	parser.add_argument("--height", "--screenshot_h", type=int, default=1080, help="Resolution height of GUI and screenshots.")
-
 	parser.add_argument("--sharpen", default=0, help="Set amount of sharpening applied to NeRF training images. Range 0.0 to 1.0.")
 	parser.add_argument("--write_image", default=None, help="Write image to this dir.")
 
