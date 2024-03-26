@@ -272,6 +272,23 @@
                 "--end",
                 "100",
             ]
+        },
+        {
+            "name": "eval",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/eval.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--load_snapshot",
+                "results/basketball-base15-mask-frame0.bson",
+                "--write_image",
+                "results/eval_images/basketball-base15-mask-frame0",
+                "--test_transforms",
+                "data/nerf/basketball/img/0/mask/transforms.json",
+            ]
         }
     ]
 }

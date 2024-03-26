@@ -37,6 +37,7 @@ def parse_args():
 
 	parser.add_argument("--sharpen", default=0, help="Set amount of sharpening applied to NeRF training images. Range 0.0 to 1.0.")
 	parser.add_argument("--write_image", default=None, help="Write image to this dir.")
+	parser.add_argument("--external_mask_fmt", default=None, help="Specify your mask.")
 
 	return parser.parse_args()
 
@@ -130,8 +131,12 @@ if __name__ == "__main__":
 			testbed.render_ground_truth = False
 			image = testbed.render(resolution[0], resolution[1], spp, True)
 			transform_frame = transform_frames[i]
+			transform_ref_mask_path = None
 			if "mask_path" in transform_frame:
 				transform_ref_mask_path = os.path.join(os.path.dirname(args.test_transforms), transform_frame["mask_path"])
+			elif args.external_mask_fmt:
+				transform_ref_mask_path = args.external_mask_fmt % i
+			if transform_ref_mask_path:
 				transform_mask = imageio.imread(transform_ref_mask_path).max(axis=2) == 0
 				ref_image[transform_mask] = 0
 				image[transform_mask] = 0
