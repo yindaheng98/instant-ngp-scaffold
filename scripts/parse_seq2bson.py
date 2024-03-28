@@ -11,8 +11,7 @@ parser.add_argument("--saveformat", type=str, required=True, help="The path form
 parser.add_argument("--intraexportformat", type=str, default=None, help="The path format of exported intra-frame video frames (.bson).")
 parser.add_argument("--interexportformat", type=str, default=None, help="The path format of exported inter-frame video frames (.bson).")
 parser.add_argument("--snapshotsimulate_interexportformat", type=str, default=None, help="The path format of exported inter-frame video frames simulated by intra frames (.bson).")
-parser.add_argument("--T", type=float, default=0., help="Threshold for set zero in inter frames.")
-parser.add_argument("--T_density", type=float, default=0., help="Threshold for set zero in inter frames.")
+parser.add_argument("-T", type=float, default=0., help="Threshold for set zero in inter frames.")
 
 def load_save(path):
     with open(path, "rb") as f:
@@ -69,38 +68,16 @@ def dump_save(path, save, params, density_grid):
     with open(path, "wb") as f:
         f.write(bson.encode(save))
 
-T_TOOBIG = 65500
-
 def compute_diff_params(params, last_diff_params, T):
     diff_params = params - last_diff_params
     diff_params[np.abs(diff_params) <= T] = 0
     return diff_params
-
-def compute_diff_density_grid(density_grid, last_diff_density_grid, T_density):
-    diff_density_grid_fp32 = density_grid.astype(np.float32) - last_diff_density_grid.astype(np.float32)
-    diff_density_grid_rel = diff_density_grid_fp32 / last_diff_density_grid.astype(np.float32)
-    diff_density_grid_rel[np.isnan(diff_density_grid_rel)] = diff_density_grid_fp32[np.isnan(diff_density_grid_rel)]
-    density_grid_fp32 = last_diff_density_grid.astype(np.float32) + diff_density_grid_fp32
-
-    diff_density_grid = density_grid - last_diff_density_grid
-    diff_density_grid[np.abs(diff_density_grid) <= T_density] = 0
-    diff_density_grid[diff_density_grid_fp32 > T_TOOBIG] = T_TOOBIG
-    diff_density_grid[diff_density_grid_fp32 < -T_TOOBIG] = -T_TOOBIG
-    diff_density_grid[density_grid_fp32 > T_TOOBIG] = (T_TOOBIG - last_diff_density_grid)[density_grid_fp32 > T_TOOBIG]
-    diff_density_grid[density_grid_fp32 < -T_TOOBIG] = (-T_TOOBIG - last_diff_density_grid)[density_grid_fp32 < -T_TOOBIG]
-    return diff_density_grid
 
 def compute_intra_params(params, last_params, T):
     diff_params = compute_diff_params(params, last_params, T)
     params = np.copy(params)
     params[diff_params==0] = 0
     return params
-
-def compute_intra_density_grid(density_grid, last_density_grid, T_density):
-    diff_density_grid = compute_diff_density_grid(density_grid, last_density_grid, T_density)
-    density_grid = np.copy(density_grid)
-    density_grid[diff_density_grid==0] = 0
-    return density_grid
 
 if __name__ == "__main__":
     import os
@@ -145,8 +122,8 @@ if __name__ == "__main__":
         density_grid_filtered = np.copy(density_grid)
         density_grid_filtered[density_grid_filtered > 1] = 1
         diff_params = compute_diff_params(params, last_diff_params, args.T)
-        os.makedirs(os.path.dirname(args.interexportformat % {'i':i, "T": args.T, "T_density": args.T_density}), exist_ok=True)
-        with open(args.interexportformat % {'i':i, "T": args.T, "T_density": args.T_density}, "wb") as f:
+        os.makedirs(os.path.dirname(args.interexportformat % {'i':i, "T": args.T}), exist_ok=True)
+        with open(args.interexportformat % {'i':i, "T": args.T}, "wb") as f:
             f.write(zlib.compress(bson.encode({
                 "params_size": diff_params.shape[0],
                 "density_grid_size": density_grid.shape[0],
@@ -157,7 +134,7 @@ if __name__ == "__main__":
             })))
         last_diff_params += diff_params
         if args.snapshotsimulate_interexportformat:
-            dump_save(args.snapshotsimulate_interexportformat % {'i':i, "T": args.T, "T_density": args.T_density},
+            dump_save(args.snapshotsimulate_interexportformat % {'i':i, "T": args.T},
                     save, last_diff_params, density_grid_filtered)
 
         error_params = params.astype(np.float32) - last_diff_params.astype(np.float32)

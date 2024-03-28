@@ -24,18 +24,4 @@ doall() {
     wait
 }
 
-doall "1 101 stnerf-taekwondo-regularization-1e-6"
-doall "1 101 stnerf-taekwondo-regularization-1e-5"
-doall "1 101 stnerf-taekwondo-regularization-1e-4"
-doall "1 75 stnerf-walking-regularization-1e-6"
-doall "1 75 stnerf-walking-regularization-1e-5"
-doall "1 75 stnerf-walking-regularization-1e-4"
-doall "1 100 coffee_martini-regularization-1e-6"
-doall "1 100 coffee_martini-regularization-1e-5"
-doall "1 100 coffee_martini-regularization-1e-4"
-doall "1 100 flame_steak-regularization-1e-6"
-doall "1 100 flame_steak-regularization-1e-5"
-doall "1 100 flame_steak-regularization-1e-4"
-doall "1 100 sear_steak-regularization-1e-6"
-doall "1 100 sear_steak-regularization-1e-5"
-doall "1 100 sear_steak-regularization-1e-4"
+doall "1 101 stnerf-taekwondo-regularization-none"
