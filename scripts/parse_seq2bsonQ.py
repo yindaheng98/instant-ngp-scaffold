@@ -3,6 +3,7 @@ import bson
 import numpy as np
 import zlib
 import os
+import matplotlib.pyplot as plt
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--start", type=int, required=True, help="The start frame number.")
@@ -70,8 +71,13 @@ def dump_save(path, save, params, density_grid):
 T_TOOBIG = 65500
 
 def compute_diff_params(params, last_diff_params):
-    diff_params = params - last_diff_params
-    return diff_params
+    diff_params = (params - last_diff_params).astype(np.float32)
+    mean, std = np.mean(diff_params), np.std(diff_params)
+    norm = (diff_params - mean) / std
+    norm_q = (np.clip((norm + 3) * 256 / 6, 0, 256) - 128).astype(np.int8)
+    norm_deq = (norm_q.astype(np.float16) + 128) * 6 / 256 - 3
+    diff_params_deq = norm_deq * std + mean
+    return diff_params_deq
 
 if __name__ == "__main__":
     import os
