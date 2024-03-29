@@ -3,7 +3,9 @@ command0() {
     echo $1  $2 $3 $4 start
     python ./scripts/parse_seq2bson.py --start $2 --end $3 \
         --saveformat results/$4/frame%d.bson \
-        --intraexportformat results/$4/intra/frame%d.bson
+        --intraexportformat results/$4/intra/frame%d.bson \
+        --layerexportformat results/$4/intra/layer%\(l\)d/frame%\(i\)d.bson \
+        --snapshotsimulate_layerexportformat results/$4/intra/layer%\(l\)d/frame%\(i\)d-snapshotsimulate.bson
     echo $1 $2 $3 $4 complete
 }
 

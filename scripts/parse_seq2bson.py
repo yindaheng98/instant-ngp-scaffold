@@ -9,6 +9,8 @@ parser.add_argument("--start", type=int, required=True, help="The start frame nu
 parser.add_argument("--end", type=int, required=True, help="The end frame number.")
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the saved snapshot.")
 parser.add_argument("--intraexportformat", type=str, default=None, help="The path format of exported intra-frame video frames (.bson).")
+parser.add_argument("--layerexportformat", type=str, default=None, help="The path format of exported intra-frame video frames (.bson).")
+parser.add_argument("--snapshotsimulate_layerexportformat", type=str, default=None, help="The path format of exported intra-frame video frames simulated by intra frames (.bson).")
 parser.add_argument("--interexportformat", type=str, default=None, help="The path format of exported inter-frame video frames (.bson).")
 parser.add_argument("--snapshotsimulate_interexportformat", type=str, default=None, help="The path format of exported inter-frame video frames simulated by intra frames (.bson).")
 parser.add_argument("-T", type=float, default=0., help="Threshold for set zero in inter frames.")
@@ -79,6 +81,17 @@ def compute_intra_params(params, last_params, T):
     params[diff_params==0] = 0
     return params
 
+N_FEATURES_PER_LEVEL = 4
+OFFSET_TABLE = [0, 4096, 89280, 613568, 1137856, 1662144, 2186432, 2710720, 3235008]
+
+def compute_params_layers(params):
+    params_layers = [None] * (len(OFFSET_TABLE) - 1)
+    for l, offset in enumerate(OFFSET_TABLE[:-1]):
+        params_layers[l] = np.zeros_like(params)
+        offset0 = params.shape[0] - OFFSET_TABLE[-1] * N_FEATURES_PER_LEVEL
+        params_layers[l][0:offset0+offset * N_FEATURES_PER_LEVEL] = params[0:offset0+offset * N_FEATURES_PER_LEVEL]
+    return params_layers
+
 if __name__ == "__main__":
     import os
     args = parser.parse_args()
@@ -115,6 +128,22 @@ if __name__ == "__main__":
                     "density_grid_bitfield": bitfield,
                     "density_grid_bitfield_size": len(bitfield),
                 })))
+        if args.layerexportformat:
+            params_layers = compute_params_layers(params)
+            for l, params_layer in enumerate(params_layers):
+                os.makedirs(os.path.dirname(args.layerexportformat % {"i": i, "l": l}), exist_ok=True)
+                with open(args.layerexportformat % {"i": i, "l": l}, "wb") as f:
+                    f.write(zlib.compress(bson.encode({
+                        "params_size": params_layer.shape[0],
+                        "density_grid_size": density_grid.shape[0],
+                        "params": params_layer.tobytes(),
+                        "density_grid": density_grid.tobytes(),
+                        "density_grid_bitfield": bitfield,
+                        "density_grid_bitfield_size": len(bitfield),
+                    })))
+                dump_save(args.snapshotsimulate_layerexportformat % {"i": i, "l": l},
+                          save, params_layer, density_grid)
+
 
         if not args.interexportformat:
             continue
