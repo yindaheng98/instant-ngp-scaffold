@@ -122,10 +122,10 @@
             ]
         },
         {
-            "name": "n3vd2nerf discussion",
+            "name": "n3vd2colmap discussion",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/scripts/n3dv2nerf.py",
+            "program": "${workspaceFolder}/scripts/n3vd2colmap.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
@@ -133,10 +133,8 @@
                 "4",
                 "--path",
                 "data/nerf/discussion",
-                "--scale",
-                "1.",
-                "--shift2",
-                "1",
+                "--residual_thr",
+                "8",
                 "--fmt",
                 "^cam_([0-9]+)$"
             ]
