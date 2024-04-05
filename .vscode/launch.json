@@ -140,6 +140,63 @@
             ]
         },
         {
+            "name": "n3vd2colmap stepin",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/n3vd2colmap.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "4",
+                "--path",
+                "data/nerf/stepin",
+                "--residual_thr",
+                "8",
+                "--fmt",
+                "^cam_([0-9]+)$",
+                // "--run_colmap"
+            ]
+        },
+        {
+            "name": "n3vd2colmap trimming",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/n3vd2colmap.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "4",
+                "--path",
+                "data/nerf/trimming",
+                "--residual_thr",
+                "8",
+                "--fmt",
+                "^cam_([0-9]+)$",
+                // "--run_colmap"
+            ]
+        },
+        {
+            "name": "n3vd2colmap vrheadset",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/n3vd2colmap.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "4",
+                "--path",
+                "data/nerf/vrheadset",
+                "--residual_thr",
+                "8",
+                "--fmt",
+                "^cam_([0-9]+)$",
+                // "--run_colmap"
+            ]
+        },
+        {
             "name": "nhr2nerf basketball",
             "type": "debugpy",
             "request": "launch",
