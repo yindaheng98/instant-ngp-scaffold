@@ -29,6 +29,7 @@ def parse_args():
 	parser.add_argument("--residual_thr", type=float, default=4, help="residual threshold")
 	parser.add_argument("--mask_density_x", type=int, default=4)
 	parser.add_argument("--mask_density_y", type=int, default=4)
+	parser.add_argument("--fmt", type=str, default=r"^cam([0-9]+)$", help="re format of image folder")
 	args = parser.parse_args()
 	return args
 
@@ -45,7 +46,7 @@ if __name__ == "__main__":
 	os.makedirs(imgfolder, exist_ok=True)
 	camera_folders = []
 	for folder in os.listdir(VIDEO_FOLDER):
-		m = re.search(r"^cam([0-9]+)$", folder)
+		m = re.search(args.fmt, folder)
 		if not m:
 			continue
 		name = m.group()
@@ -55,11 +56,11 @@ if __name__ == "__main__":
 		shutil.copyfile(camera_file, temp_file)
 		script = os.path.join(root, "colmap2nerf.py")
 	if args.run_colmap:
-		cmd = f"cd {tempdir} && python3 {script} --images ./images --run_colmap --aabb_scale {args.aabb_scale} --overwrite"
+		cmd = f"cd {tempdir} && python {script} --images ./images --run_colmap --aabb_scale {args.aabb_scale} --overwrite"
 		os.system(cmd)
 	camera_folders = []
 	for folder in os.listdir(VIDEO_FOLDER):
-		m = re.findall(r"^cam([0-9]+)$", folder)
+		m = re.findall(args.fmt, folder)
 		if len(m) != 1:
 			continue
 		camera_folder = os.path.join(VIDEO_FOLDER, folder)
