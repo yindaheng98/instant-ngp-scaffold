@@ -63,3 +63,31 @@ command sear_steak sear_steak "1e-4" 30000 10000 1 300
 command sear_steak sear_steak "1e-5" 30000 10000 1 300
 command sear_steak sear_steak "1e-6" 30000 10000 1 300
 command sear_steak sear_steak "1e-7" 30000 10000 1 300
+
+command0 discussion discussion 30000 1
+command1 discussion discussion "none" 30000 10000 1 300
+command discussion discussion "1e-4" 30000 10000 1 300
+command discussion discussion "1e-5" 30000 10000 1 300
+command discussion discussion "1e-6" 30000 10000 1 300
+command discussion discussion "1e-7" 30000 10000 1 300
+
+command0 stepin stepin 30000 1
+command1 stepin stepin "none" 30000 10000 1 300
+command stepin stepin "1e-4" 30000 10000 1 300
+command stepin stepin "1e-5" 30000 10000 1 300
+command stepin stepin "1e-6" 30000 10000 1 300
+command stepin stepin "1e-7" 30000 10000 1 300
+
+command0 trimming trimming 30000 1
+command1 trimming trimming "none" 30000 10000 1 300
+command trimming trimming "1e-4" 30000 10000 1 300
+command trimming trimming "1e-5" 30000 10000 1 300
+command trimming trimming "1e-6" 30000 10000 1 300
+command trimming trimming "1e-7" 30000 10000 1 300
+
+command0 vrheadset vrheadset 30000 1
+command1 vrheadset vrheadset "none" 30000 10000 1 300
+command vrheadset vrheadset "1e-4" 30000 10000 1 300
+command vrheadset vrheadset "1e-5" 30000 10000 1 300
+command vrheadset vrheadset "1e-6" 30000 10000 1 300
+command vrheadset vrheadset "1e-7" 30000 10000 1 300
