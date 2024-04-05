@@ -26,7 +26,7 @@ def parse_args():
 	parser.add_argument("--shift0", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--shift1", type=float, default=0., help="shift before aabb_scale")
 	parser.add_argument("--shift2", type=float, default=0., help="shift before aabb_scale")
-	parser.add_argument("--residual_root", type=str, required=True, help="root path to the residual images")
+	parser.add_argument("--fmt", type=str, default=r"^cam([0-9]+)$", help="re format of image folder")
 	args = parser.parse_args()
 	return args
 
@@ -80,7 +80,7 @@ if __name__ == "__main__":
 	VIDEO_FOLDER = args.path
 	camera_folders = []
 	for folder in os.listdir(VIDEO_FOLDER):
-		m = re.findall(r"^cam([0-9]+)$", folder)
+		m = re.findall(args.fmt, folder)
 		if len(m) != 1:
 			continue
 		camera_folder = os.path.join(VIDEO_FOLDER, folder)

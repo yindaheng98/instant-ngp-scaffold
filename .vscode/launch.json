@@ -122,6 +122,26 @@
             ]
         },
         {
+            "name": "n3vd2nerf discussion",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/n3dv2nerf.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--aabb_scale",
+                "4",
+                "--path",
+                "data/nerf/discussion",
+                "--scale",
+                "1.",
+                "--shift2",
+                "1",
+                "--fmt",
+                "^cam_([0-9]+)$"
+            ]
+        },
+        {
             "name": "nhr2nerf basketball",
             "type": "debugpy",
             "request": "launch",
