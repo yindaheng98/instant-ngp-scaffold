@@ -22,11 +22,13 @@ doall() {
     # 1 0.5 0.1 0.05 0.01
     ARGS=$1
     command0 0.0 $ARGS &
+    command1 0.1 $ARGS &
     command1 0.2 $ARGS &
+    command1 0.3 $ARGS &
     command1 0.4 $ARGS &
-    command1 0.6 $ARGS &
-    command1 0.8 $ARGS &
-    command1 1.0 $ARGS &
+    # command1 0.6 $ARGS &
+    # command1 0.8 $ARGS &
+    # command1 1.0 $ARGS &
     wait
 }
 
