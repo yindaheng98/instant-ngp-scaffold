@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--start", type=int, required=True, help="The start frame number.")
 parser.add_argument("--end", type=int, required=True, help="The end frame number.")
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the saved snapshot.")
-parser.add_argument("--initexportformat", type=str, default=None, help="The path format of exported init video frames (.json).")
+parser.add_argument("--fullexportformat", type=str, default=None, help="The path format of exported full video frames (.json).")
 parser.add_argument("--intraexportformat", type=str, default=None, help="The path format of exported intra-frame video frames (.json).")
 parser.add_argument("--interexportformat", type=str, default=None, help="The path format of exported inter-frame video frames (.json).")
 parser.add_argument("-T", type=float, required=True, help="Threshold for set zero in inter frames.")
@@ -63,14 +63,14 @@ if __name__ == "__main__":
     sizes = []
     save = load_save(savepath)
     params, _ = load_params(save)
-    if args.initexportformat:
-        os.makedirs(os.path.dirname(args.initexportformat), exist_ok=True)
+    if args.fullexportformat:
+        os.makedirs(os.path.dirname(args.fullexportformat), exist_ok=True)
         params_size, params_csr_size = get_size(params)
-        print_data(f"{args.T}  init", params_size, params_csr_size)
+        print_data(f"{args.T}  full", params_size, params_csr_size)
         export_data(dict(
             params_size=params_size,
             params_csr_size=params_csr_size,
-        ), args.initexportformat % args.start)
+        ), args.fullexportformat % args.start)
     last_diff_params = np.copy(params)
     last_intr_params = np.copy(params)
     for i in range(args.start + 1, args.end + 1):
@@ -78,14 +78,14 @@ if __name__ == "__main__":
         savepath = os.path.join(root, args.saveformat % i)
         save = load_save(savepath)
         params, _ = load_params(save)
-        if args.initexportformat:
-            os.makedirs(os.path.dirname(args.initexportformat), exist_ok=True)
+        if args.fullexportformat:
+            os.makedirs(os.path.dirname(args.fullexportformat), exist_ok=True)
             params_size, params_csr_size = get_size(params)
-            print_data(f"{args.T}  init", params_size, params_csr_size)
+            print_data(f"{args.T}  full", params_size, params_csr_size)
             export_data(dict(
                 params_size=params_size,
                 params_csr_size=params_csr_size,
-            ), args.initexportformat % i)
+            ), args.fullexportformat % i)
 
         if args.intraexportformat:
             os.makedirs(os.path.dirname(args.intraexportformat), exist_ok=True)

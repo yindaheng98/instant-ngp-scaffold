@@ -4,6 +4,7 @@ command() {
     python ./scripts/parse_seq_size.py \
         --start $2 --end $3 \
         --saveformat results/$4/frame%d.bson \
+        --fullexportformat results/$4/size/frame%d.json \
         --intraexportformat results/$4/size/frame%\(i\)dT=%\(T\)f-intra.json \
         --interexportformat results/$4/size/frame%\(i\)dT=%\(T\)f-inter.json \
         -T $1
