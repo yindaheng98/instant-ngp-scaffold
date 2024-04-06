@@ -319,12 +319,12 @@
                 "results/stnerf-walking-regularization-1e-6/frame%d.bson",
                 "--fullexportformat",
                 "results/stnerf-walking-regularization-1e-6/size/frame%d.json",
-                "--intraexportformat",
-                "results/stnerf-walking-regularization-1e-6/size/frame%(i)dT=%(T)f-intra.json",
                 "--interexportformat",
-                "results/stnerf-walking-regularization-1e-6/size/frame%(i)dT=%(T)f-inter.json",
+                "results/stnerf-walking-regularization-1e-6/size/frame%(i)dT=%(T)fL=%(L)s-inter.json",
                 "-T",
-                "0.1",
+                "0.01",
+                "-L",
+                "0.2",
             ]
         },
         {
