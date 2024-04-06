@@ -37,7 +37,7 @@ command taekwondo stnerf-taekwondo "1e-6" 30000 10000 1 101
 command taekwondo stnerf-taekwondo "1e-7" 30000 10000 1 101
 
 command0 walking stnerf-walking 30000 1
-command1 taekwondo stnerf-walking "none" 30000 10000 1 75
+command1 walking stnerf-walking "none" 30000 10000 1 75
 command walking stnerf-walking "1e-4" 30000 10000 1 75
 command walking stnerf-walking "1e-5" 30000 10000 1 75
 command walking stnerf-walking "1e-6" 30000 10000 1 75
