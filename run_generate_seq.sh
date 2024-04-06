@@ -31,7 +31,12 @@ doall() {
 }
 
 doall "1 101 stnerf-taekwondo-regularization-1e-6"
-# doall "1 75 stnerf-walking"
-# doall "1 100 coffee_martini"
-# doall "1 100 flame_steak"
-# doall "1 100 sear_steak"
+doall "1 101 stnerf-taekwondo-regularization-1e-7"
+doall "1 75 stnerf-walking-regularization-1e-6"
+doall "1 75 stnerf-walking-regularization-1e-7"
+doall "1 100 coffee_martini-regularization-1e-6"
+doall "1 100 coffee_martini-regularization-1e-7"
+doall "1 100 flame_steak-regularization-1e-6"
+doall "1 100 flame_steak-regularization-1e-7"
+doall "1 100 sear_steak-regularization-1e-6"
+doall "1 100 sear_steak-regularization-1e-7"
