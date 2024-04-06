@@ -8,12 +8,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--start", type=int, required=True, help="The start frame number.")
 parser.add_argument("--end", type=int, required=True, help="The end frame number.")
 parser.add_argument("--saveformat", type=str, required=True, help="The path format of the saved snapshot.")
-parser.add_argument("--intraexportformat", type=str, default=None, help="The path format of exported intra-frame video frames (.bson).")
+parser.add_argument("--fullexportformat", type=str, default=None, help="The path format of exported intra-frame video frames (.bson).")
 parser.add_argument("--layerexportformat", type=str, default=None, help="The path format of exported intra-frame video frames (.bson).")
 parser.add_argument("--snapshotsimulate_layerexportformat", type=str, default=None, help="The path format of exported intra-frame video frames simulated by intra frames (.bson).")
 parser.add_argument("--interexportformat", type=str, default=None, help="The path format of exported inter-frame video frames (.bson).")
 parser.add_argument("--snapshotsimulate_interexportformat", type=str, default=None, help="The path format of exported inter-frame video frames simulated by intra frames (.bson).")
 parser.add_argument("-T", type=float, default=0., help="Threshold for set zero in inter frames.")
+parser.add_argument("-L", type=float, help="Set this value to use dynamic threshold. Then the threshold will be len(param)*L th largest value in parameters.")
 
 def load_save(path):
     with open(path, "rb") as f:
@@ -70,16 +71,14 @@ def dump_save(path, save, params, density_grid):
     with open(path, "wb") as f:
         f.write(bson.encode(save))
 
-def compute_diff_params(params, last_diff_params, T):
+def compute_diff_params(params, last_diff_params, T, L = None):
     diff_params = params - last_diff_params
     diff_params[np.abs(diff_params) <= T] = 0
+    if L:
+        k = int(np.count_nonzero(diff_params) * L)
+        t = np.partition(np.abs(diff_params), -k)[-k]
+        diff_params[np.abs(diff_params) <= t] = 0
     return diff_params
-
-def compute_intra_params(params, last_params, T):
-    diff_params = compute_diff_params(params, last_params, T)
-    params = np.copy(params)
-    params[diff_params==0] = 0
-    return params
 
 N_FEATURES_PER_LEVEL = 4
 OFFSET_TABLE = [0, 4096, 89280, 613568, 1137856, 1662144, 2186432, 2710720, 3235008]
@@ -99,9 +98,9 @@ if __name__ == "__main__":
     savepath = os.path.join(root, args.saveformat % args.start)
     save = load_save(savepath)
     params, density_grid, bitfield = load_params_bitfield(save)
-    if args.intraexportformat:
-        os.makedirs(os.path.dirname(args.intraexportformat % args.start), exist_ok=True)
-        with open(args.intraexportformat % args.start, "wb") as f:
+    if args.fullexportformat:
+        os.makedirs(os.path.dirname(args.fullexportformat % args.start), exist_ok=True)
+        with open(args.fullexportformat % args.start, "wb") as f:
             f.write(zlib.compress(bson.encode({
                 "params_size": params.shape[0],
                 "density_grid_size": density_grid.shape[0],
@@ -117,9 +116,9 @@ if __name__ == "__main__":
         savepath = os.path.join(root, args.saveformat % i)
         save = load_save(savepath)
         params, density_grid, bitfield = load_params_bitfield(save)
-        if args.intraexportformat:
-            os.makedirs(os.path.dirname(args.intraexportformat % i), exist_ok=True)
-            with open(args.intraexportformat % i, "wb") as f:
+        if args.fullexportformat:
+            os.makedirs(os.path.dirname(args.fullexportformat % i), exist_ok=True)
+            with open(args.fullexportformat % i, "wb") as f:
                 f.write(zlib.compress(bson.encode({
                     "params_size": params.shape[0],
                     "density_grid_size": density_grid.shape[0],
@@ -150,9 +149,9 @@ if __name__ == "__main__":
 
         density_grid_filtered = np.copy(density_grid)
         density_grid_filtered[density_grid_filtered > 1] = 1
-        diff_params = compute_diff_params(params, last_diff_params, args.T)
-        os.makedirs(os.path.dirname(args.interexportformat % {'i':i, "T": args.T}), exist_ok=True)
-        with open(args.interexportformat % {'i':i, "T": args.T}, "wb") as f:
+        diff_params = compute_diff_params(params, last_diff_params, args.T, args.L)
+        os.makedirs(os.path.dirname(args.interexportformat % {'i':i, "T": args.T, "L": args.L}), exist_ok=True)
+        with open(args.interexportformat % {'i':i, "T": args.T, "L": args.L}, "wb") as f:
             f.write(zlib.compress(bson.encode({
                 "params_size": diff_params.shape[0],
                 "density_grid_size": density_grid.shape[0],
@@ -163,7 +162,7 @@ if __name__ == "__main__":
             })))
         last_diff_params += diff_params
         if args.snapshotsimulate_interexportformat:
-            dump_save(args.snapshotsimulate_interexportformat % {'i':i, "T": args.T},
+            dump_save(args.snapshotsimulate_interexportformat % {'i':i, "T": args.T, "L": args.L},
                     save, last_diff_params, density_grid_filtered)
 
         error_params = params.astype(np.float32) - last_diff_params.astype(np.float32)

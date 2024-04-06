@@ -5,7 +5,7 @@ import zlib
 from scipy import sparse
 from parse_seq2bson import (
     load_save, load_params,
-    compute_diff_params, compute_intra_params
+    compute_diff_params
 )
 
 parser = argparse.ArgumentParser()
@@ -18,14 +18,11 @@ parser.add_argument("--interexportformat", type=str, default=None, help="The pat
 parser.add_argument("-T", type=float, required=True, help="Threshold for set zero in inter frames.")
 parser.add_argument("-L", type=float, help="Set this value to use dynamic threshold. Then the threshold will be len(param)*L th largest value in parameters.")
 
-def compute_diff_params(params, last_diff_params, T, L = None):
-    diff_params = params - last_diff_params
-    diff_params[np.abs(diff_params) <= T] = 0
-    if L:
-        k = int(np.count_nonzero(diff_params) * L)
-        t = np.partition(np.abs(diff_params), -k)[-k]
-        diff_params[np.abs(diff_params) <= t] = 0
-    return diff_params
+def compute_intra_params(params, last_params, T, L = None):
+    diff_params = compute_diff_params(params, last_params, T, L)
+    params = np.copy(params)
+    params[diff_params==0] = 0
+    return params
 
 def get_size(data):
     data_compressed = zlib.compress(data.tobytes())
