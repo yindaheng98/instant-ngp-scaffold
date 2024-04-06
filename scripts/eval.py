@@ -30,6 +30,7 @@ def parse_args():
 	parser.add_argument("--network", default="", help="Path to the network config. Uses the scene's default if unspecified.")
 
 	parser.add_argument("--load_snapshot", "--snapshot", required=True, help="Load this snapshot before training. recommended extension: .ingp/.bson")
+	parser.add_argument("--save_results", "--results", type=str, help="Save the results to this json")
 
 	parser.add_argument("--nerf_compatibility", action="store_true", help="Matches parameters with original NeRF. Can cause slowness and worse results on some scenes, but helps with high PSNR on synthetic scenes.")
 	parser.add_argument("--test_transforms", default="", help="Path to a nerf style transforms json from which we will compute PSNR.")
@@ -159,5 +160,8 @@ if __name__ == "__main__":
 			t.set_postfix(psnr = totpsnr/(totcount or 1))
 			allpsnr.append(psnr)
 			allssim.append(ssim)
-	with open(args.load_snapshot + ".json", "w", encoding="utf8") as f:
+	if not args.save_results:
+		args.save_results = args.load_snapshot + ".json"
+	os.makedirs(os.path.dirname(args.save_results), exist_ok=True)
+	with open(args.save_results, "w", encoding="utf8") as f:
 		json.dump(dict(psnr=allpsnr, ssim=allssim), f, indent=2)
