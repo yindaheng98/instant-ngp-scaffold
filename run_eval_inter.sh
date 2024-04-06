@@ -20,8 +20,18 @@ doall() {
     command 1.0 $ARGS
 }
 
-doall "2 5 75 stnerf-taekwondo-regularization-1e-6 data/nerf/taekwondo"
+doall "2 5 101 stnerf-taekwondo-regularization-none data/nerf/taekwondo"
+doall "2 5 101 stnerf-taekwondo-regularization-1e-6 data/nerf/taekwondo"
+doall "2 5 101 stnerf-taekwondo-regularization-1e-7 data/nerf/taekwondo"
+doall "2 5 75 stnerf-walking-regularization-none data/nerf/walking"
 doall "2 5 75 stnerf-walking-regularization-1e-6 data/nerf/walking"
+doall "2 5 75 stnerf-walking-regularization-1e-7 data/nerf/walking"
+doall "2 5 100 coffee_martini-regularization-none data/nerf/coffee_martini"
 doall "2 5 100 coffee_martini-regularization-1e-6 data/nerf/coffee_martini"
+doall "2 5 100 coffee_martini-regularization-1e-7 data/nerf/coffee_martini"
+doall "2 5 100 flame_steak-regularization-none data/nerf/flame_steak"
 doall "2 5 100 flame_steak-regularization-1e-6 data/nerf/flame_steak"
+doall "2 5 100 flame_steak-regularization-1e-7 data/nerf/flame_steak"
+doall "2 5 100 sear_steak-regularization-none data/nerf/sear_steak"
 doall "2 5 100 sear_steak-regularization-1e-6 data/nerf/sear_steak"
+doall "2 5 100 sear_steak-regularization-1e-7 data/nerf/sear_steak"
