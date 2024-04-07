@@ -23,7 +23,9 @@ doall() {
     ARGS="$1"
     echo Start Group:
     command0 0.0 $ARGS &
+    command1 0.05 $ARGS &
     command1 0.1 $ARGS &
+    command1 0.15 $ARGS &
     command1 0.2 $ARGS &
     command1 0.3 $ARGS &
     command1 0.4 $ARGS &
