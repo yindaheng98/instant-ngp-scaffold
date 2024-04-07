@@ -32,6 +32,7 @@ def parse_args():
 	parser.add_argument("--load_snapshot", "--snapshot", required=True, help="Load this snapshot before training. recommended extension: .ingp/.bson")
 	parser.add_argument("--save_results", "--results", type=str, help="Save the results to this json")
 
+	parser.add_argument("--max_test", type=int, default=16, help="Maximum test images")
 	parser.add_argument("--nerf_compatibility", action="store_true", help="Matches parameters with original NeRF. Can cause slowness and worse results on some scenes, but helps with high PSNR on synthetic scenes.")
 	parser.add_argument("--test_transforms", default="", help="Path to a nerf style transforms json from which we will compute PSNR.")
 	parser.add_argument("--exposure", default=0.0, type=float, help="Controls the brightness of the image. Positive numbers increase brightness, negative numbers decrease it.")
@@ -123,7 +124,7 @@ if __name__ == "__main__":
 
 	allpsnr, allssim = [], []
 	transform_frames = test_transforms["frames"]
-	with tqdm(range(testbed.nerf.training.dataset.n_images), unit="images", desc=f"Rendering test frame") as t:
+	with tqdm(range(min(testbed.nerf.training.dataset.n_images, args.max_test)), unit="images", desc=f"Rendering test frame") as t:
 		for i in t:
 			resolution = testbed.nerf.training.dataset.metadata[i].resolution
 			testbed.render_ground_truth = True
