@@ -2,11 +2,11 @@
     "cmake.debugConfig": {
         "cwd": "${workspaceFolder}",
         "args": [
-            "--load_snapshot=./results/stnerf-taekwondo-regularization-1e-6/frame1.bson",
+            "--load_snapshot=./results/stnerf-taekwondo-regularization-1e-7/frame1.bson",
             "--init",
-            "./results/stnerf-taekwondo-regularization-1e-6/intra/frame1.bson",
+            "./results/stnerf-taekwondo-regularization-1e-7/intra/frame1.bson",
             "--frameformat",
-            "./results/stnerf-taekwondo-regularization-1e-6/intra/frame%d.bson",
+            "./results/stnerf-taekwondo-regularization-1e-7/intra/frame%d.bson",
             "--start",
             "2",
             "--end",
@@ -14,7 +14,7 @@
             "--savecam",
             "./results/camera.txt",
             "--gethit",
-            "./results/stnerf-taekwondo-regularization-1e-6/gridhit/B=XXX/frame%d.bson",
+            "./results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/frame%d.bson",
             "--onlyhit",
             "--M_blimit",
             "200000",

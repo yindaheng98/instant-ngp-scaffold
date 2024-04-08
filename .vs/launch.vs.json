@@ -1,0 +1,78 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+	{
+		"type": "default",
+		"project": "CMakeLists.txt",
+		"projectTarget": "instant-ngp.exe",
+		"name": "instant-ngp.exe",
+		"cwd": "${workspaceFolder}",
+		"args": [
+			"--load_snapshot=D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/frame1.bson",
+			"--init",
+			"D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/frame1.bson",
+			"--frameformat",
+			"D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/frame%d.bson",
+			"--start",
+			"2",
+			"--end",
+			"100",
+            "--nocompress",
+			"D:\\MyPrograms\\instant-ngp-flow/data/nerf/taekwondo/frame1"
+		]
+	},
+	{
+		"type": "default",
+		"project": "CMakeLists.txt",
+		"projectTarget": "instant-ngp-replay.exe",
+		"name": "instant-ngp-replay.exe",
+		"cwd": "${workspaceFolder}",
+		"args": [
+            "--load_snapshot=D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/frame1.bson",
+            "--init",
+            "D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/intra/frame1.bson",
+            "--frameformat",
+            "D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/intra/frame%d.bson",
+            "--start",
+            "2",
+            "--end",
+            "100",
+            "--savecam",
+            "D:\\MyPrograms\\instant-ngp-flow/results/camera.txt",
+            "--gethit",
+            "D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/frame%d.bson",
+            "--onlyhit",
+            "--M_blimit",
+            "200000",
+            "D:\\MyPrograms\\instant-ngp-flow/data/nerf/taekwondo/frame1"
+		]
+	},
+	{
+		"type": "default",
+		"project": "CMakeLists.txt",
+		"projectTarget": "instant-ngp-train.exe",
+		"name": "instant-ngp-train.exe",
+		"cwd": "${workspaceFolder}",
+		"args": [
+            "--step=10000",
+            "--save_snapshot=D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-test-residual/frame60.bson",
+            "--snapshot=D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-test-residual/frame1.bson",
+            "--decay=0.5",
+            "D:\\MyPrograms\\instant-ngp-flow/data/nerf/taekwondo/frame60",
+            "--freeze"
+		]
+	},
+	{
+		"type": "default",
+		"project": "CMakeLists.txt",
+		"projectTarget": "instant-ngp-viewer.exe",
+		"name": "instant-ngp-viewer.exe",
+		"cwd": "${workspaceFolder}",
+		"args": [
+            "--load_snapshot=D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-test/frame23.bson",
+            "D:\\MyPrograms\\instant-ngp-flow/data/nerf/taekwondo/frame1"
+		]
+	}
+  ]
+}
