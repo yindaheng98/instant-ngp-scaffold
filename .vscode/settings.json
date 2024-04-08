@@ -16,6 +16,8 @@
             "--gethit",
             "./results/stnerf-taekwondo-regularization-1e-6/gridhit/B=XXX/frame%d.bson",
             "--onlyhit",
+            "--M_blimit",
+            "200000",
             "./data/nerf/taekwondo/frame1"
         ]
     },
