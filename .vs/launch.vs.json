@@ -13,13 +13,11 @@
 			"--init",
 			"D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/intra/frame1.bson",
 			"--frameformat",
-			"D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/intra/frame%d.bson",
+			"D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1/frame%d.bson",
 			"--start",
-			"2",
+			"1",
 			"--end",
 			"100",
-            "--savecam",
-            "D:\\MyPrograms\\instant-ngp-flow/results/camera.txt",
 			"D:\\MyPrograms\\instant-ngp-flow/data/nerf/taekwondo/frame1"
 		]
 	},
