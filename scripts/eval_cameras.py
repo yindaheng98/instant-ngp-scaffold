@@ -20,6 +20,7 @@ from scenes import *
 
 from tqdm import tqdm
 import imageio
+import matplotlib.pyplot as plt
 
 import pyngp as ngp # noqa
 
@@ -50,8 +51,31 @@ def get_scene(scene):
 			return scenes[scene]
 	return None
 
+spp = 8
+
 def eval(testbed, path_snapshot, path_snapshot_gt, camera):
 	print("eval", path_snapshot, path_snapshot_gt, camera)
+
+	testbed.load_snapshot(path_snapshot)
+	testbed.camera_matrix = camera
+	testbed.render_ground_truth = False
+	res_image = testbed.render(1920, 1080, spp, True)
+	A = np.clip(linear_to_srgb(res_image[...,:3]), 0.0, 1.0)
+	# plt.imshow(A)
+	# plt.show()
+
+	testbed.load_snapshot(path_snapshot_gt)
+	testbed.camera_matrix = camera
+	testbed.render_ground_truth = False
+	ref_image = testbed.render(1920, 1080, spp, True)
+	R = np.clip(linear_to_srgb(ref_image[...,:3]), 0.0, 1.0)
+	# plt.imshow(R)
+	# plt.show()
+
+	mse = float(compute_error("MSE", A, R))
+	ssim = float(compute_error("SSIM", A, R))
+	psnr = mse2psnr(mse)
+	print(psnr, ssim)
 
 
 if __name__ == "__main__":
@@ -59,6 +83,49 @@ if __name__ == "__main__":
 
 	testbed = ngp.Testbed()
 	testbed.root_dir = ROOT_DIR
+
+	if testbed.mode == ngp.TestbedMode.Sdf:
+		testbed.tonemap_curve = ngp.TonemapCurve.ACES
+
+	testbed.nerf.sharpen = float(args.sharpen)
+	testbed.exposure = args.exposure
+	testbed.shall_train = False
+
+
+	testbed.nerf.render_with_lens_distortion = True
+
+	if args.nerf_compatibility:
+		print(f"NeRF compatibility mode enabled")
+
+		# Prior nerf papers accumulate/blend in the sRGB
+		# color space. This messes not only with background
+		# alpha, but also with DOF effects and the likes.
+		# We support this behavior, but we only enable it
+		# for the case of synthetic nerf data where we need
+		# to compare PSNR numbers to results of prior work.
+		testbed.color_space = ngp.ColorSpace.SRGB
+
+		# No exponential cone tracing. Slightly increases
+		# quality at the cost of speed. This is done by
+		# default on scenes with AABB 1 (like the synthetic
+		# ones), but not on larger scenes. So force the
+		# setting here.
+		testbed.nerf.cone_angle_constant = 0
+
+		# Match nerf paper behaviour and train on a fixed bg.
+		testbed.nerf.training.random_bg_color = False
+
+	# Evaluate metrics on black background
+	testbed.background_color = [0.0, 0.0, 0.0, 1.0]
+
+	# Prior nerf papers don't typically do multi-sample anti aliasing.
+	# So snap all pixels to the pixel centers.
+	testbed.snap_to_pixel_centers = True
+	spp = 8
+
+	testbed.nerf.render_min_transmittance = 1e-4
+
+	testbed.shall_train = False
 
 	cameras = []
 	with open(args.cameras, "r", encoding="utf8") as f:

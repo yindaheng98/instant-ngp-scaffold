@@ -379,7 +379,7 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--fmt_snapshot",
-                "results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1/frame%d.bson",
+                "results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1/frame%d.bson.snapshot.bson",
                 "--fmt_snapshot_gt",
                 "results/stnerf-taekwondo-regularization-none/frame%d.bson",
                 "--cameras",
