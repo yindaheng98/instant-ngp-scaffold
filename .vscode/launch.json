@@ -370,6 +370,23 @@
             ]
         },
         {
+            "name": "eval_cameras",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/eval_cameras.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--fmt_snapshot",
+                "results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1/frame%d.bson",
+                "--fmt_snapshot_gt",
+                "results/stnerf-taekwondo-regularization-none/frame%d.bson",
+                "--cameras",
+                "camera/stnerf-taekwondo-1.txt",
+            ]
+        },
+        {
             "name": "parse_seq2bsonQ",
             "type": "debugpy",
             "request": "launch",
