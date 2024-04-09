@@ -41,7 +41,6 @@
             "D:\\MyPrograms\\instant-ngp-flow/results/camera.txt",
             "--gethit",
             "D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/frame%d.bson",
-            "--onlyhit",
             "--M_blimit",
             "200000",
             "--save_image",
