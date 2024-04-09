@@ -378,12 +378,16 @@
             "justMyCode": false,
             "cwd": "${workspaceFolder}",
             "args": [
-                "--fmt_snapshot",
-                "results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1/frame%d.bson.snapshot.bson",
-                "--fmt_snapshot_gt",
-                "results/stnerf-taekwondo-regularization-none/frame%d.bson",
-                "--cameras",
-                "camera/stnerf-taekwondo-1.txt",
+                "--start",
+                "1",
+                "--end",
+                "75",
+                "--modelformat",
+                "results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1/frame%d.bson",
+                "--gtformat",
+                "results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1/img/gt/%d.bin",
+                "--lrformat",
+                "results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1/img/lr/%d.bin",
             ]
         },
         {
