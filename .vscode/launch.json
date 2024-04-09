@@ -388,6 +388,8 @@
                 "results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1/img/gt/%d.bin",
                 "--lrformat",
                 "results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1/img/lr/%d.bin",
+                "--save",
+                "results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1_result.json",
             ]
         },
         {

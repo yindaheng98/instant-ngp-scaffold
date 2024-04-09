@@ -12,6 +12,7 @@ parser.add_argument("--end", type=int, required=True, help="The end frame number
 parser.add_argument("--modelformat", type=str, required=True, help="The path format of the saved snapshot.")
 parser.add_argument("--gtformat", type=str, required=True, help="The path format of the saved snapshot.")
 parser.add_argument("--lrformat", type=str, required=True, help="The path format of the saved snapshot.")
+parser.add_argument("--save", type=str, required=True, help="The path format of the saved snapshot.")
 
 def get_size(data):
     data_compressed = zlib.compress(data)
@@ -29,6 +30,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     args = parser.parse_args()
     root = os.getcwd()
+    data = []
     for i in range(args.start, args.end + 1):
         gtpath, lrpath = args.gtformat % i, args.lrformat % i
         gt = np.fromfile(gtpath, dtype='float32').reshape((1080, 1920, 4))
@@ -49,4 +51,9 @@ if __name__ == "__main__":
         # ax[1].imshow(lr)
         # plt.show()
         # plt.close(fig)
-        pass
+        data.append(dict(
+            intra_size=intra_zlib, 
+            inter_size=inter_zlib, 
+            psnr=psnr))
+    with open(args.save, "w", encoding="utf8") as f:
+        json.dump(data, f, indent=2)
