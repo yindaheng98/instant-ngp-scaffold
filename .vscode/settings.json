@@ -18,6 +18,8 @@
             "--onlyhit",
             "--M_blimit",
             "200000",
+            "--save_image",
+            "./results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/img",
             "./data/nerf/taekwondo/frame1"
         ]
     },
