@@ -45,7 +45,7 @@
             "--M_blimit",
             "200000",
             "--save_image",
-            "D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/img",
+            "D:\\MyPrograms\\instant-ngp-flow/results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/img/%d.bin",
             "D:\\MyPrograms\\instant-ngp-flow/data/nerf/taekwondo/frame1"
 		]
 	},
