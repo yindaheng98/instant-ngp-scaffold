@@ -44,9 +44,9 @@ command2 2 300 vrheadset-regularization-1e-7 camera/vrheadset.txt 200000 cam
 command0 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
 command1 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
 command2 2 300 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
-command0 2 100 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam
-command1 2 100 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam
-command2 2 300 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam
+command0 2 75 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam
+command1 2 75 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam
+command2 2 225 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam
 command0 2 100 coffee_martini-regularization-1e-7 camera/coffee_martini.txt 200000 cam
 command1 2 100 coffee_martini-regularization-1e-7 camera/coffee_martini.txt 200000 cam
 command2 2 300 coffee_martini-regularization-1e-7 camera/coffee_martini.txt 200000 cam
