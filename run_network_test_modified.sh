@@ -28,6 +28,30 @@ command2() {
         --lrformat results/$3/gridhit/M=$5/$6/img/lr/%d$7.bin \
         --save results/$3/gridhit/M=$5/$6"-modified_result.json"
 }
+command0 2 100 discussion-regularization-1e-7 camera/discussion.txt 200000 cam -modified
+command1 2 100 discussion-regularization-1e-7 camera/discussion.txt 200000 cam -modified
+command2 2 300 discussion-regularization-1e-7 camera/discussion.txt 200000 cam -modified
+command0 2 100 stepin-regularization-1e-7 camera/stepin.txt 200000 cam -modified
+command1 2 100 stepin-regularization-1e-7 camera/stepin.txt 200000 cam -modified
+command2 2 300 stepin-regularization-1e-7 camera/stepin.txt 200000 cam -modified
+command0 2 100 trimming-regularization-1e-7 camera/trimming.txt 200000 cam -modified
+command1 2 100 trimming-regularization-1e-7 camera/trimming.txt 200000 cam -modified
+command2 2 300 trimming-regularization-1e-7 camera/trimming.txt 200000 cam -modified
+command0 2 100 vrheadset-regularization-1e-7 camera/vrheadset.txt 200000 cam -modified
+command1 2 100 vrheadset-regularization-1e-7 camera/vrheadset.txt 200000 cam -modified
+command2 2 300 vrheadset-regularization-1e-7 camera/vrheadset.txt 200000 cam -modified
+command0 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam -modified
+command1 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam -modified
+command2 2 300 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam -modified
+command0 2 75 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam -modified
+command1 2 75 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam -modified
+command2 2 300 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam -modified
+command0 2 100 coffee_martini-regularization-1e-7 camera/coffee_martini.txt 200000 cam -modified
+command1 2 100 coffee_martini-regularization-1e-7 camera/coffee_martini.txt 200000 cam -modified
+command2 2 300 coffee_martini-regularization-1e-7 camera/coffee_martini.txt 200000 cam -modified
+command0 2 100 flame_steak-regularization-1e-7 camera/flame_steak.txt 200000 cam -modified
+command1 2 100 flame_steak-regularization-1e-7 camera/flame_steak.txt 200000 cam -modified
+command2 2 300 flame_steak-regularization-1e-7 camera/flame_steak.txt 200000 cam -modified
 command0 2 100 sear_steak-regularization-1e-7 camera/sear_steak.txt 200000 cam -modified
 command1 2 100 sear_steak-regularization-1e-7 camera/sear_steak.txt 200000 cam -modified
 command2 2 300 sear_steak-regularization-1e-7 camera/sear_steak.txt 200000 cam -modified
