@@ -29,6 +29,18 @@ command2() {
         --save results/$3/gridhit/M=$5/$6"_result.json" && \
         rm -rf results/$3/gridhit/M=$5/$6
 }
+command0 2 100 discussion-regularization-1e-7 camera/discussion.txt 200000 cam
+command1 2 100 discussion-regularization-1e-7 camera/discussion.txt 200000 cam
+command2 2 300 discussion-regularization-1e-7 camera/discussion.txt 200000 cam
+command0 2 100 stepin-regularization-1e-7 camera/stepin.txt 200000 cam
+command1 2 100 stepin-regularization-1e-7 camera/stepin.txt 200000 cam
+command2 2 300 stepin-regularization-1e-7 camera/stepin.txt 200000 cam
+command0 2 100 trimming-regularization-1e-7 camera/trimming.txt 200000 cam
+command1 2 100 trimming-regularization-1e-7 camera/trimming.txt 200000 cam
+command2 2 300 trimming-regularization-1e-7 camera/trimming.txt 200000 cam
+command0 2 100 vrheadset-regularization-1e-7 camera/vrheadset.txt 200000 cam
+command1 2 100 vrheadset-regularization-1e-7 camera/vrheadset.txt 200000 cam
+command2 2 300 vrheadset-regularization-1e-7 camera/vrheadset.txt 200000 cam
 command0 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
 command1 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
 command2 2 300 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
