@@ -35,27 +35,30 @@ if __name__ == "__main__":
     data = []
     for i in range(args.start, args.end + 1):
         gtpath, lrpath = args.gtformat % i, args.lrformat % i
-        gt = np.fromfile(gtpath, dtype='float32').reshape((1080, 1920, 4))
-        lr = np.fromfile(lrpath, dtype='float32').reshape((1080, 1920, 4))
-        gt = np.clip(linear_to_srgb(gt[...,:3]), 0.0, 1.0)
-        lr = np.clip(linear_to_srgb(lr[...,:3]), 0.0, 1.0)
-        modelpath = args.modelformat % i
-        with open(modelpath, "rb") as f:
-            model = bson.decode_all(f.read())[0]
-        intra, inter = np.frombuffer(model["intra"], dtype=np.float16), np.frombuffer(model["inter"], dtype=np.float16)
-        intra_zlib = get_size(intra)
-        inter_zlib = get_size(inter)
-        psnr = calculate_psnr(lr, gt, max_value=1)
-        print(intra_zlib, inter_zlib, psnr)
-        # fig = plt.figure(figsize=(6, 3))
-        # ax = fig.subplots(nrows=1, ncols=2)
-        # ax[0].imshow(gt)
-        # ax[1].imshow(lr)
-        # plt.show()
-        # plt.close(fig)
-        data.append(dict(
-            intra_size=intra_zlib, 
-            inter_size=inter_zlib, 
-            psnr=psnr))
+        try:
+            gt = np.fromfile(gtpath, dtype='float32').reshape((1080, 1920, 4))
+            lr = np.fromfile(lrpath, dtype='float32').reshape((1080, 1920, 4))
+            gt = np.clip(linear_to_srgb(gt[...,:3]), 0.0, 1.0)
+            lr = np.clip(linear_to_srgb(lr[...,:3]), 0.0, 1.0)
+            modelpath = args.modelformat % i
+            with open(modelpath, "rb") as f:
+                model = bson.decode_all(f.read())[0]
+            intra, inter = np.frombuffer(model["intra"], dtype=np.float16), np.frombuffer(model["inter"], dtype=np.float16)
+            intra_zlib = get_size(intra)
+            inter_zlib = get_size(inter)
+            psnr = calculate_psnr(lr, gt, max_value=1)
+            print(intra_zlib, inter_zlib, psnr)
+            # fig = plt.figure(figsize=(6, 3))
+            # ax = fig.subplots(nrows=1, ncols=2)
+            # ax[0].imshow(gt)
+            # ax[1].imshow(lr)
+            # plt.show()
+            # plt.close(fig)
+            data.append(dict(
+                intra_size=intra_zlib, 
+                inter_size=inter_zlib, 
+                psnr=psnr))
+        except Exception as e:
+            print(e)
     with open(args.save, "w", encoding="utf8") as f:
         json.dump(data, f, indent=2)
