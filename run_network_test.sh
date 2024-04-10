@@ -26,7 +26,8 @@ command2() {
         --modelformat results/$3/gridhit/M=$5/$6/frame%d.bson \
         --gtformat results/$3/gridhit/M=$5/$6/img/gt/%d.bin \
         --lrformat results/$3/gridhit/M=$5/$6/img/lr/%d.bin \
-        --save results/$3/gridhit/M=$5/$6"_result.json"
+        --save results/$3/gridhit/M=$5/$6"_result.json" && \
+        rm -rf results/$3/gridhit/M=$5/$6
 }
 command0 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
 command1 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
