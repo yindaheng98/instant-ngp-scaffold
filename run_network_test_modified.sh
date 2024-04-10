@@ -26,7 +26,8 @@ command2() {
         --modelformat results/$3/gridhit/M=$5/$6/frame%d$7.bson \
         --gtformat results/$3/gridhit/M=$5/$6/img/gt/%d$7.bin \
         --lrformat results/$3/gridhit/M=$5/$6/img/lr/%d$7.bin \
-        --save results/$3/gridhit/M=$5/$6"-modified_result.json"
+        --save results/$3/gridhit/M=$5/$6"-modified_result.json" && \
+        rm -rf results/$3/gridhit/M=$5/$6
 }
 command0 2 100 discussion-regularization-1e-7 camera/discussion.txt 200000 cam -modified
 command1 2 100 discussion-regularization-1e-7 camera/discussion.txt 200000 cam -modified
