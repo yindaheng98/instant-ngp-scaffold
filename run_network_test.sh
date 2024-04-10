@@ -28,6 +28,9 @@ command2() {
         --lrformat results/$3/gridhit/M=$5/$6/img/lr/%d.bin \
         --save results/$3/gridhit/M=$5/$6"_result.json"
 }
+command0 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
+command1 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
+command2 2 300 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
 command0 2 100 sear_steak-regularization-1e-7 camera/sear_steak.txt 200000 cam
 command1 2 100 sear_steak-regularization-1e-7 camera/sear_steak.txt 200000 cam
 command2 2 300 sear_steak-regularization-1e-7 camera/sear_steak.txt 200000 cam
