@@ -15,8 +15,10 @@ parser.add_argument("--lrformat", type=str, required=True, help="The path format
 parser.add_argument("--save", type=str, required=True, help="The path format of the saved snapshot.")
 
 def get_size(data):
-    data_compressed = zlib.compress(data)
-    return len(data_compressed)
+    data_compressed = zlib.compress(data.tobytes())
+    data_csr = sparse.csr_matrix(data)
+    data_csr_compressed = zlib.compress(data_csr.data.tobytes())
+    return min(len(data_compressed), len(data_csr_compressed))
 
 def calculate_psnr(img1, img2, max_value=255):
     """"Calculating peak signal-to-noise ratio (PSNR) between two images."""
@@ -40,7 +42,7 @@ if __name__ == "__main__":
         modelpath = args.modelformat % i
         with open(modelpath, "rb") as f:
             model = bson.decode_all(f.read())[0]
-        intra, inter = model["intra"], model["inter"]
+        intra, inter = np.frombuffer(model["intra"], dtype=np.float16), np.frombuffer(model["inter"], dtype=np.float16)
         intra_zlib = get_size(intra)
         inter_zlib = get_size(inter)
         psnr = calculate_psnr(lr, gt, max_value=1)
