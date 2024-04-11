@@ -29,30 +29,35 @@ command2() {
         --save results/$3/gridhit/M=$5/$6"_result.json" && \
         rm -rf results/$3/gridhit/M=$5/$6
 }
-command0 2 100 discussion-regularization-1e-7 camera/discussion.txt 200000 cam
-command1 2 100 discussion-regularization-1e-7 camera/discussion.txt 200000 cam
-command2 2 300 discussion-regularization-1e-7 camera/discussion.txt 200000 cam
-command0 2 100 stepin-regularization-1e-7 camera/stepin.txt 200000 cam
-command1 2 100 stepin-regularization-1e-7 camera/stepin.txt 200000 cam
-command2 2 300 stepin-regularization-1e-7 camera/stepin.txt 200000 cam
-command0 2 100 trimming-regularization-1e-7 camera/trimming.txt 200000 cam
-command1 2 100 trimming-regularization-1e-7 camera/trimming.txt 200000 cam
-command2 2 300 trimming-regularization-1e-7 camera/trimming.txt 200000 cam
-command0 2 100 vrheadset-regularization-1e-7 camera/vrheadset.txt 200000 cam
-command1 2 100 vrheadset-regularization-1e-7 camera/vrheadset.txt 200000 cam
-command2 2 300 vrheadset-regularization-1e-7 camera/vrheadset.txt 200000 cam
-command0 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
-command1 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
-command2 2 300 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo.txt 200000 cam
-command0 2 75 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam
-command1 2 75 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam
-command2 2 225 stnerf-walking-regularization-1e-7 camera/stnerf-walking.txt 200000 cam
-command0 2 100 coffee_martini-regularization-1e-7 camera/coffee_martini.txt 200000 cam
-command1 2 100 coffee_martini-regularization-1e-7 camera/coffee_martini.txt 200000 cam
-command2 2 300 coffee_martini-regularization-1e-7 camera/coffee_martini.txt 200000 cam
-command0 2 100 flame_steak-regularization-1e-7 camera/flame_steak.txt 200000 cam
-command1 2 100 flame_steak-regularization-1e-7 camera/flame_steak.txt 200000 cam
-command2 2 300 flame_steak-regularization-1e-7 camera/flame_steak.txt 200000 cam
-command0 2 100 sear_steak-regularization-1e-7 camera/sear_steak.txt 200000 cam
-command1 2 100 sear_steak-regularization-1e-7 camera/sear_steak.txt 200000 cam
-command2 2 300 sear_steak-regularization-1e-7 camera/sear_steak.txt 200000 cam
+doall() {
+    command0 $@
+    command1 $@
+    command2 $@
+}
+doall 2 100 discussion-regularization-1e-7 camera/discussion-1.txt 200000 cam1
+doall 2 100 discussion-regularization-1e-7 camera/discussion-2.txt 200000 cam2
+doall 2 100 discussion-regularization-1e-7 camera/discussion-3.txt 200000 cam3
+doall 2 100 stepin-regularization-1e-7 camera/stepin-1.txt 200000 cam1
+doall 2 100 stepin-regularization-1e-7 camera/stepin-2.txt 200000 cam2
+doall 2 100 stepin-regularization-1e-7 camera/stepin-3.txt 200000 cam3
+doall 2 100 trimming-regularization-1e-7 camera/trimming-1.txt 200000 cam1
+doall 2 100 trimming-regularization-1e-7 camera/trimming-2.txt 200000 cam2
+doall 2 100 trimming-regularization-1e-7 camera/trimming-3.txt 200000 cam3
+doall 2 100 vrheadset-regularization-1e-7 camera/vrheadset-1.txt 200000 cam1
+doall 2 100 vrheadset-regularization-1e-7 camera/vrheadset-2.txt 200000 cam2
+doall 2 100 vrheadset-regularization-1e-7 camera/vrheadset-3.txt 200000 cam3
+doall 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo-1.txt 200000 cam1
+doall 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo-2.txt 200000 cam2
+doall 2 100 stnerf-taekwondo-regularization-1e-7 camera/stnerf-taekwondo-3.txt 200000 cam3
+doall 2 75 stnerf-walking-regularization-1e-7 camera/stnerf-walking-1.txt 200000 cam1
+doall 2 75 stnerf-walking-regularization-1e-7 camera/stnerf-walking-2.txt 200000 cam2
+doall 2 75 stnerf-walking-regularization-1e-7 camera/stnerf-walking-3.txt 200000 cam3
+doall 2 100 coffee_martini-regularization-1e-7 camera/coffee_martini-1.txt 200000 cam1
+doall 2 100 coffee_martini-regularization-1e-7 camera/coffee_martini-2.txt 200000 cam2
+doall 2 100 coffee_martini-regularization-1e-7 camera/coffee_martini-3.txt 200000 cam3
+doall 2 100 flame_steak-regularization-1e-7 camera/flame_steak-1.txt 200000 cam1
+doall 2 100 flame_steak-regularization-1e-7 camera/flame_steak-2.txt 200000 cam2
+doall 2 100 flame_steak-regularization-1e-7 camera/flame_steak-3.txt 200000 cam3
+doall 2 100 sear_steak-regularization-1e-7 camera/sear_steak-1.txt 200000 cam1
+doall 2 100 sear_steak-regularization-1e-7 camera/sear_steak-2.txt 200000 cam2
+doall 2 100 sear_steak-regularization-1e-7 camera/sear_steak-3.txt 200000 cam3
