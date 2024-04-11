@@ -3,6 +3,7 @@ import json
 import bson
 import numpy as np
 import zlib
+import cv2
 from scipy import sparse
 from common import linear_to_srgb
 
@@ -33,6 +34,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     root = os.getcwd()
     data = []
+    video_gt = cv2.VideoWriter(args.save + '.gt.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10, (1920,1080))
+    video_lr = cv2.VideoWriter(args.save + '.lr.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10, (1920,1080))
     for i in range(args.start, args.end + 1):
         gtpath, lrpath = args.gtformat % i, args.lrformat % i
         try:
@@ -58,6 +61,10 @@ if __name__ == "__main__":
                 intra_size=intra_zlib, 
                 inter_size=inter_zlib, 
                 psnr=psnr))
+            gt_cv = cv2.cvtColor((gt*255).astype(np.uint8), cv2.COLOR_BGR2RGB)
+            lr_cv = cv2.cvtColor((lr*255).astype(np.uint8), cv2.COLOR_BGR2RGB)
+            video_gt.write(gt_cv)
+            video_lr.write(lr_cv)
         except Exception as e:
             print(e)
     with open(args.save, "w", encoding="utf8") as f:
