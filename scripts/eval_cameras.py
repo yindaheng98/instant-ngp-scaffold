@@ -57,10 +57,15 @@ if __name__ == "__main__":
             # ax[1].imshow(lr)
             # plt.show()
             # plt.close(fig)
-            data.append(dict(
-                intra_size=intra_zlib, 
-                inter_size=inter_zlib, 
-                psnr=psnr))
+            del model['density_grid']
+            del model['density_grid_bitfield']
+            del model['inter']
+            del model['intra']
+            del model['params']
+            model['intra_size'] = intra_zlib
+            model['inter_size'] = inter_zlib
+            model['psnr'] = psnr
+            data.append(model)
             gt_cv = cv2.cvtColor((gt*255).astype(np.uint8), cv2.COLOR_BGR2RGB)
             lr_cv = cv2.cvtColor((lr*255).astype(np.uint8), cv2.COLOR_BGR2RGB)
             video_gt.write(gt_cv)
