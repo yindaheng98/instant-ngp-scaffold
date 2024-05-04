@@ -2,26 +2,19 @@
     "cmake.debugConfig": {
         "cwd": "${workspaceFolder}",
         "args": [
-            "--load_snapshot=./results/stnerf-taekwondo-regularization-1e-7/frame1.bson",
+            "--load_snapshot=./results/flame_steak-regularization-1e-7/frame1.bson",
             "--init",
-            "./results/stnerf-taekwondo-regularization-1e-7/intra/frame1.bson",
+            "./results/flame_steak-regularization-1e-7/intra/frame1.bson",
             "--frameformat",
-            "./results/stnerf-taekwondo-regularization-1e-7/intra/frame%d.bson",
+            "./results/flame_steak-regularization-1e-7/intra/frame%d.bson",
             "--start",
             "2",
             "--end",
             "100",
-            "--savecam",
-            "./camera/stnerf-taekwondo-1.txt",
-            "--gethit",
-            "./results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/cam1/frame%d.bson",
-            "--M_blimit",
-            "200000",
-            "--save_image",
-            "./results/stnerf-taekwondo-regularization-1e-7/gridhit/M=200000/img/%d.bin",
-            "./data/nerf/taekwondo/frame1"
+            "./data/nerf/flame_steak/frame1"
         ]
     },
+    "cmake.sourceDirectory": "${workspaceFolder}/instant-ngp-module",
     "files.associations": {
         "*.rmd": "markdown",
         "cctype": "cpp",

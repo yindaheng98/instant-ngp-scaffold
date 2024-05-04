@@ -1,0 +1,11 @@
+git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch .vs/ .vscode/ -r' --prune-empty --tag-name-filter cat -- --all
+git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch run_*.sh scripts/parse_*.py important_commands.sh scripts/train_seq.py' --prune-empty --tag-name-filter cat -- --all
+git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch debug/ -r' --prune-empty --tag-name-filter cat -- --all
+git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch camera/ -r' --prune-empty --tag-name-filter cat -- --all
+git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch notebooks/ scripts/ -r' --prune-empty --tag-name-filter cat -- --all
+git for-each-ref --format='delete %(refname)' refs/original | git update-ref --stdin
+
+git reflog expire --expire=now --all
+git gc --prune=now
+git push --force --verbose --dry-run
+git push --force
