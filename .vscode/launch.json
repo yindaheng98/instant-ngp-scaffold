@@ -26,6 +26,26 @@
             ]
         },
         {
+            "name": "data2gray taekwondo",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/data2gray.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--root",
+                "data/nerf/taekwondo",
+                "--root_dst",
+                "data/nerf/taekwondo/grayscale",
+                "--transform",
+                "frame%d/transforms.json",
+                "--start",
+                "1",
+                "--end",
+                "100",
+            ]
+        },
+        {
             "name": "stnerf2nerf walking",
             "type": "debugpy",
             "request": "launch",
