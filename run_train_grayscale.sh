@@ -31,5 +31,27 @@ command() {
     convert_color $1 $2 $3 $4 $5
     rm results/grayscale/$2-color-frame1-$4/camera-$5/*.bin
 }
+command_all() {
+    command $1 $2 $3 base $4
+    command $1 $2 $3 base_17 $4
+    command $1 $2 $3 base_17_3 $4
+    command $1 $2 $3 base_17_2 $4
+    command $1 $2 $3 base_17_1 $4
+    command $1 $2 $3 base_16 $4
+    command $1 $2 $3 base_16_3 $4
+    command $1 $2 $3 base_16_2 $4
+    command $1 $2 $3 base_16_1 $4
+    command $1 $2 $3 base_15 $4
+    command $1 $2 $3 base_15_3 $4
+    command $1 $2 $3 base_15_2 $4
+    command $1 $2 $3 base_15_1 $4
+    command $1 $2 $3 base_14 $4
+    command $1 $2 $3 base_14_3 $4
+    command $1 $2 $3 base_14_2 $4
+    command $1 $2 $3 base_14_1 $4
+}
 
-command taekwondo stnerf-taekwondo 300 base 1
+command_all taekwondo stnerf-taekwondo 30000 1
+command_all taekwondo stnerf-taekwondo 30000 2
+command_all taekwondo stnerf-taekwondo 30000 3
+command_all taekwondo stnerf-taekwondo 30000 4
