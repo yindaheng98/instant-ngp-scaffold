@@ -70,6 +70,26 @@
             ]
         },
         {
+            "name": "data2gray walking",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/data2gray.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--root",
+                "data/nerf/walking",
+                "--root_dst",
+                "data/nerf/walking/grayscale",
+                "--transform",
+                "frame%d/transforms.json",
+                "--start",
+                "1",
+                "--end",
+                "75",
+            ]
+        },
+        {
             "name": "n3dv2nerf",
             "type": "debugpy",
             "request": "launch",
@@ -107,6 +127,26 @@
                 "data/nerf/coffee_martini",
                 "--residual_thr",
                 "8"
+            ]
+        },
+        {
+            "name": "data2gray coffee_martini",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/data2gray.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--root",
+                "data/nerf/coffee_martini",
+                "--root_dst",
+                "data/nerf/coffee_martini/grayscale",
+                "--transform",
+                "frame%d/transforms.json",
+                "--start",
+                "1",
+                "--end",
+                "300",
             ]
         },
         {
