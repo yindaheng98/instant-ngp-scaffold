@@ -166,6 +166,26 @@
             ]
         },
         {
+            "name": "data2gray flame_steak",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/data2gray.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--root",
+                "data/nerf/flame_steak",
+                "--root_dst",
+                "data/nerf/flame_steak/grayscale",
+                "--transform",
+                "frame%d/transforms.json",
+                "--start",
+                "1",
+                "--end",
+                "300",
+            ]
+        },
+        {
             "name": "n3vd2colmap sear_steak",
             "type": "debugpy",
             "request": "launch",
@@ -179,6 +199,26 @@
                 "data/nerf/sear_steak",
                 "--residual_thr",
                 "8"
+            ]
+        },
+        {
+            "name": "data2gray sear_steak",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/data2gray.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--root",
+                "data/nerf/sear_steak",
+                "--root_dst",
+                "data/nerf/sear_steak/grayscale",
+                "--transform",
+                "frame%d/transforms.json",
+                "--start",
+                "1",
+                "--end",
+                "300",
             ]
         },
         {
@@ -197,6 +237,26 @@
                 "8",
                 "--fmt",
                 "^cam_([0-9]+)$"
+            ]
+        },
+        {
+            "name": "data2gray discussion",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/data2gray.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--root",
+                "data/nerf/discussion",
+                "--root_dst",
+                "data/nerf/discussion/grayscale",
+                "--transform",
+                "frame%d/transforms.json",
+                "--start",
+                "1",
+                "--end",
+                "300",
             ]
         },
         {
@@ -219,6 +279,26 @@
             ]
         },
         {
+            "name": "data2gray stepin",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/data2gray.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--root",
+                "data/nerf/stepin",
+                "--root_dst",
+                "data/nerf/stepin/grayscale",
+                "--transform",
+                "frame%d/transforms.json",
+                "--start",
+                "1",
+                "--end",
+                "300",
+            ]
+        },
+        {
             "name": "n3vd2colmap trimming",
             "type": "debugpy",
             "request": "launch",
@@ -238,6 +318,26 @@
             ]
         },
         {
+            "name": "data2gray trimming",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/data2gray.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--root",
+                "data/nerf/trimming",
+                "--root_dst",
+                "data/nerf/trimming/grayscale",
+                "--transform",
+                "frame%d/transforms.json",
+                "--start",
+                "1",
+                "--end",
+                "300",
+            ]
+        },
+        {
             "name": "n3vd2colmap vrheadset",
             "type": "debugpy",
             "request": "launch",
@@ -254,6 +354,26 @@
                 "--fmt",
                 "^cam_([0-9]+)$",
                 // "--run_colmap"
+            ]
+        },
+        {
+            "name": "data2gray vrheadset",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/data2gray.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--root",
+                "data/nerf/vrheadset",
+                "--root_dst",
+                "data/nerf/vrheadset/grayscale",
+                "--transform",
+                "frame%d/transforms.json",
+                "--start",
+                "1",
+                "--end",
+                "300",
             ]
         },
         {
