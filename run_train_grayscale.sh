@@ -14,6 +14,10 @@ render_color() {
         --save_image results/grayscale/$2-color-frame1-$4/%d.bin \
         data/nerf/$1/frame1
 }
+convert_color() {
+    python scripts/grayscale/bin2image.py \
+        --format results/grayscale/$2-color-frame1-$4/%d.bin
+}
 train_grayscale() {
     ./build/instant-ngp-train \
         --step=$3 \
@@ -24,6 +28,7 @@ train_grayscale() {
 
 train_color taekwondo stnerf-taekwondo 30000 base
 render_color taekwondo stnerf-taekwondo '' base camera/stnerf-taekwondo-1.txt
+convert_color '' stnerf-taekwondo '' base
 train_color taekwondo stnerf-taekwondo 30000 base_14
 train_color taekwondo stnerf-taekwondo 30000 base_15
 train_color taekwondo stnerf-taekwondo 30000 base_16
