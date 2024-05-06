@@ -18,18 +18,34 @@ convert_color() {
     python scripts/grayscale/bin2image.py \
         --format results/grayscale/$2-color-frame1-$4/camera-$5/%d.bin
 }
-train_grayscale() {
+train_gray() {
     ./build/instant-ngp-train \
         --step=$3 \
-        --save_snapshot results/grayscale/$2-grayscale-frame1-$4.bson \
+        --save_snapshot results/grayscale/$2-gray-frame1-$4.bson \
         -c configs/nerf/$4.json \
         data/nerf/$1/grayscale/frame1
+}
+render_gray() {
+    mkdir -p results/grayscale/$2-gray-frame1-$4
+    ./build/instant-ngp-viewer \
+        --load_snapshot results/grayscale/$2-gray-frame1-$4.bson \
+        --savecam camera/$2-$5.txt \
+        --save_image results/grayscale/$2-gray-frame1-$4/camera-$5/%d.bin \
+        data/nerf/$1/frame1
+}
+convert_gray() {
+    python scripts/grayscale/bin2image.py \
+        --format results/grayscale/$2-gray-frame1-$4/camera-$5/%d.bin
 }
 command() {
     train_color $1 $2 $3 $4
     render_color $1 $2 $3 $4 $5
     convert_color $1 $2 $3 $4 $5
     rm results/grayscale/$2-color-frame1-$4/camera-$5/*.bin
+    train_gray $1 $2 $3 $4
+    render_gray $1 $2 $3 $4 $5
+    convert_gray $1 $2 $3 $4 $5
+    rm results/grayscale/$2-gray-frame1-$4/camera-$5/*.bin
 }
 command_all() {
     command $1 $2 $3 base $4
