@@ -1,0 +1,6 @@
+{
+	"parent": "base_15.json",
+	"encoding": {
+		"n_features_per_level": 1
+	}
+}
