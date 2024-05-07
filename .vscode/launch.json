@@ -592,6 +592,21 @@
                 "--snapshotsimulate_interexportformat",
                 "results/stnerf-taekwondo-regularization-1e-6-Q/frame%d-snapshotsimulate.bson",
             ]
+        },
+        {
+            "name": "ngp2vq",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/grayscale/ngp2vq.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--src",
+                "results/basketball-frame0.bson",
+                "--dst",
+                "results/basketball-frame0-vq.bson",
+            ]
         }
     ]
 }
