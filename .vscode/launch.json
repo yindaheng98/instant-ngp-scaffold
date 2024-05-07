@@ -607,9 +607,10 @@
                 "--dst",
                 "results/basketball-base_15-frame0-vq.bson",
                 "--log2-clusters",
-                "10",
+                "6",
                 "--save-kmeans",
                 "results/basketball-base_15-frame0-kmeans.pkl",
+                "--overwrite",
             ]
         }
     ]
