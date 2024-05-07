@@ -603,11 +603,13 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--src",
-                "results/basketball-frame0.bson",
+                "results/basketball-base_15-frame0.bson",
                 "--dst",
-                "results/basketball-frame0-vq.bson",
+                "results/basketball-base_15-frame0-vq.bson",
                 "--log2-clusters",
                 "10",
+                "--save-kmeans",
+                "results/basketball-base_15-frame0-kmeans.pkl",
             ]
         }
     ]
