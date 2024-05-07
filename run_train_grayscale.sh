@@ -20,7 +20,7 @@ convert_color() {
     python scripts/grayscale/bin2image.py \
         --format results/grayscale/$2-color-frame1-$4/camera-$5/%d.bin
 }
-convert_color '' stnerf-taekwondo '' base 1 # debug
+# convert_color '' stnerf-taekwondo '' base 1 # debug
 vq_color() {
     python scripts/grayscale/ngp2vq.py \
     --src results/grayscale/$1-color-frame1-$2.bson \
@@ -94,14 +94,28 @@ train_both() {
     train_color $1 $2 $3 $4
     train_gray $1 $2 $3 $4
 }
+# train_both taekwondo stnerf-taekwondo 300 base # debug
 eval_both() {
-    render_color $1 $2 $3 $4 $5
-    convert_color $1 $2 $3 $4 $5
+    render_color $1 $2 '' $4 $5
+    convert_color '' $2 '' $4 $5
     rm results/grayscale/$2-color-frame1-$4/camera-$5/*.bin
-    render_gray $1 $2 $3 $4 $5
-    convert_gray $1 $2 $3 $4 $5
+    render_gray $1 $2 '' $4 $5
+    convert_gray '' $2 '' $4 $5
     rm results/grayscale/$2-gray-frame1-$4/camera-$5/*.bin
 }
+# eval_both taekwondo stnerf-taekwondo '' base 1 # debug
+eval_vq() {
+    vq_color $2 $4 $6
+    render_vq_color $1 $2 '' $4 $5 $6
+    convert_vq_color '' $2 '' $4 $5 $6
+    rm results/grayscale/$2-color-frame1-$4/kmeans-$6/camera-$5/*.bin
+    vq_gray $2 $4 $6
+    render_vq_gray $1 $2 '' $4 $5 $6
+    convert_vq_gray '' $2 '' $4 $5 $6
+    rm results/grayscale/$2-gray-frame1-$4/kmeans-$6/camera-$5/*.bin
+}
+# eval_vq taekwondo stnerf-taekwondo '' base 1 8 # debug
+
 train_all() {
     train_both $1 $2 $3 base
     train_both $1 $2 $3 base_18
