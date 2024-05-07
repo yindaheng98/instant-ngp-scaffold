@@ -1,12 +1,13 @@
 import argparse
 import bson
 import numpy as np
-import zlib
+from sklearn.cluster import KMeans
 import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--src", type=str, required=True, help="The source bson.")
 parser.add_argument("--dst", type=str, required=True, help="The destination bson.")
+parser.add_argument("--log2-clusters", type=int, required=True, help="Qualtize from which layer.")
 parser.add_argument("--from-layer", type=int, default=0, help="Qualtize from which layer.")
 
 OFFSET0 = 10240
@@ -44,4 +45,6 @@ if __name__ == "__main__":
     save = load_save(args.src)
     params = load_params(save)
     params_vector = params[OFFSET0:].reshape(-1, N_FEATURES_PER_LEVEL)
+    kmeans = KMeans(n_clusters=2**args.log2_clusters, random_state=0, n_init="auto").fit(params_vector)
+    compressed_vector = kmeans.predict(params_vector)
     print(save)
