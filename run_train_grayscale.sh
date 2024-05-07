@@ -6,6 +6,7 @@ train_color() {
         -c configs/nerf/$4.json \
         data/nerf/$1/frame1
 }
+# train_color taekwondo stnerf-taekwondo 300 base # debug
 render_color() {
     mkdir -p results/grayscale/$2-color-frame1-$4
     ./build/instant-ngp-viewer \
@@ -14,10 +15,35 @@ render_color() {
         --save_image results/grayscale/$2-color-frame1-$4/camera-$5/%d.bin \
         data/nerf/$1/frame1
 }
+# render_color taekwondo stnerf-taekwondo '' base 1 # debug
 convert_color() {
     python scripts/grayscale/bin2image.py \
         --format results/grayscale/$2-color-frame1-$4/camera-$5/%d.bin
 }
+convert_color '' stnerf-taekwondo '' base 1 # debug
+vq_color() {
+    python scripts/grayscale/ngp2vq.py \
+    --src results/grayscale/$1-color-frame1-$2.bson \
+    --dst results/grayscale/$1-color-frame1-$2-vq-exp$3.bson \
+    --save-kmeans results/grayscale/$1-color-frame1-$2-kmeans-exp$3.pkl \
+    --log2-clusters $3 \
+    --overwrite
+}
+# vq_color stnerf-taekwondo base 8 # debug
+render_vq_color() {
+    mkdir -p results/grayscale/$2-color-frame1-$4
+    ./build/instant-ngp-viewer \
+        --load_snapshot results/grayscale/$2-color-frame1-$4-vq-exp$6.bson \
+        --savecam camera/$2-$5.txt \
+        --save_image results/grayscale/$2-color-frame1-$4/kmeans-$6/camera-$5/%d.bin \
+        data/nerf/$1/frame1
+}
+# render_vq_color taekwondo stnerf-taekwondo '' base 1 8 # debug
+convert_vq_color() {
+    python scripts/grayscale/bin2image.py \
+        --format results/grayscale/$2-color-frame1-$4/kmeans-$6/camera-$5/%d.bin
+}
+# convert_vq_color '' stnerf-taekwondo '' base 1 8 # debug
 train_gray() {
     ./build/instant-ngp-train \
         --step=$3 \
@@ -25,6 +51,7 @@ train_gray() {
         -c configs/nerf/$4.json \
         data/nerf/$1/grayscale/frame1
 }
+# train_gray taekwondo stnerf-taekwondo 300 base # debug
 render_gray() {
     mkdir -p results/grayscale/$2-gray-frame1-$4
     ./build/instant-ngp-viewer \
@@ -33,10 +60,36 @@ render_gray() {
         --save_image results/grayscale/$2-gray-frame1-$4/camera-$5/%d.bin \
         data/nerf/$1/frame1
 }
+# render_gray taekwondo stnerf-taekwondo '' base 1 # debug
 convert_gray() {
     python scripts/grayscale/bin2image.py \
         --format results/grayscale/$2-gray-frame1-$4/camera-$5/%d.bin
 }
+# convert_gray '' stnerf-taekwondo '' base 1 # debug
+vq_gray() {
+    python scripts/grayscale/ngp2vq.py \
+    --src results/grayscale/$1-gray-frame1-$2.bson \
+    --dst results/grayscale/$1-gray-frame1-$2-vq-exp$3.bson \
+    --save-kmeans results/grayscale/$1-gray-frame1-$2-kmeans-exp$3.pkl \
+    --log2-clusters $3 \
+    --overwrite
+}
+# vq_gray stnerf-taekwondo base 8 # debug
+render_vq_gray() {
+    mkdir -p results/grayscale/$2-gray-frame1-$4
+    ./build/instant-ngp-viewer \
+        --load_snapshot results/grayscale/$2-gray-frame1-$4-vq-exp$6.bson \
+        --savecam camera/$2-$5.txt \
+        --save_image results/grayscale/$2-gray-frame1-$4/kmeans-$6/camera-$5/%d.bin \
+        data/nerf/$1/frame1
+}
+# render_vq_gray taekwondo stnerf-taekwondo '' base 1 8 # debug
+convert_vq_gray() {
+    python scripts/grayscale/bin2image.py \
+        --format results/grayscale/$2-gray-frame1-$4/kmeans-$6/camera-$5/%d.bin
+}
+# convert_vq_gray '' stnerf-taekwondo '' base 1 8 # debug
+
 train_both() {
     train_color $1 $2 $3 $4
     train_gray $1 $2 $3 $4
