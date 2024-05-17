@@ -142,49 +142,49 @@ eval_all taekwondo stnerf-taekwondo 2
 eval_all taekwondo stnerf-taekwondo 3
 eval_all taekwondo stnerf-taekwondo 4
 
-train_all walking stnerf-walking 30000 1
+train_all walking stnerf-walking 30000
 eval_all walking stnerf-walking 1
 eval_all walking stnerf-walking 2
 eval_all walking stnerf-walking 3
 eval_all walking stnerf-walking 4
 
-train_all coffee_martini coffee_martini 30000 1
+train_all coffee_martini coffee_martini 30000
 eval_all coffee_martini coffee_martini 1
 eval_all coffee_martini coffee_martini 2
 eval_all coffee_martini coffee_martini 3
 eval_all coffee_martini coffee_martini 4
 
-train_all flame_steak flame_steak 30000 1
+train_all flame_steak flame_steak 30000
 eval_all flame_steak flame_steak 1
 eval_all flame_steak flame_steak 2
 eval_all flame_steak flame_steak 3
 eval_all flame_steak flame_steak 4
 
-train_all sear_steak sear_steak 30000 1
+train_all sear_steak sear_steak 30000
 eval_all sear_steak sear_steak 1
 eval_all sear_steak sear_steak 2
 eval_all sear_steak sear_steak 3
 eval_all sear_steak sear_steak 4
 
-train_all discussion discussion 30000 1
+train_all discussion discussion 30000
 eval_all discussion discussion 1
 eval_all discussion discussion 2
 eval_all discussion discussion 3
 eval_all discussion discussion 4
 
-train_all stepin stepin 30000 1
+train_all stepin stepin 30000
 eval_all stepin stepin 1
 eval_all stepin stepin 2
 eval_all stepin stepin 3
 eval_all stepin stepin 4
 
-train_all trimming trimming 30000 1
+train_all trimming trimming 30000
 eval_all trimming trimming 1
 eval_all trimming trimming 2
 eval_all trimming trimming 3
 eval_all trimming trimming 4
 
-train_all vrheadset vrheadset 30000 1
+train_all vrheadset vrheadset 30000
 eval_all vrheadset vrheadset 1
 eval_all vrheadset vrheadset 2
 eval_all vrheadset vrheadset 3
