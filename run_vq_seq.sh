@@ -32,4 +32,15 @@ vq_color() {
             --log2-clusters $4
     done
 }
-vq_color 2 100 coffee_martini-regularization-1e-7 6
+# vq_color 2 100 coffee_martini-regularization-1e-7 6
+render_vq_color() {
+    mkdir -p results/$3/color/kmeans-$4
+    ./build/instant-ngp-replay \
+        --start $1 --end $2 \
+        --load_snapshot results/$3/frame1.bson \
+        --init results/$3/color/kmeans-$4/models/intra/frame1.bson \
+        --frameformat results/$3/color/kmeans-$4/models/intra/frame%d.bson \
+        --savecam camera/$5.txt \
+        --save_image results/$3/color/kmeans-$4/$5/%d.bin
+}
+render_vq_color 2 100 coffee_martini-regularization-1e-7 6 coffee_martini-1 # debug
