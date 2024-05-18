@@ -83,4 +83,5 @@ render_gray_color() {
         --savecam camera/$4.txt \
         --save_image results/$3-regularization-none-gray/color/kmeans-none/$4/%d.bin
 }
-render_gray_color 2 100 coffee_martini coffee_martini-1 # debug
+# render_gray_color 2 100 coffee_martini coffee_martini-1 # debug
+convert_color coffee_martini-regularization-none-gray coffee_martini-1 # debug
