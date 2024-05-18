@@ -15,4 +15,21 @@ convert_color() {
     python scripts/grayscale/bin2image.py \
         --format results/$1/color/kmeans-none/$2/%d.bin
 }
-convert_color coffee_martini-regularization-1e-7 coffee_martini-1 # debug
+# convert_color coffee_martini-regularization-1e-7 coffee_martini-1 # debug
+vq_color() {
+    mkdir -p results/$3/color/kmeans-$4/models/intra
+    python scripts/grayscale/ngp2vq_intra.py \
+        --src results/$3/intra/frame1.bson \
+        --dst results/$3/color/kmeans-$4/models/intra/frame1.bson \
+        --save-kmeans results/$3/color/kmeans-$4/kmeans-params.pkl \
+        --log2-clusters $4 \
+        --overwrite
+    for i in $(seq $1 $2); do
+        python scripts/grayscale/ngp2vq_intra.py \
+            --src results/$3/intra/frame$i.bson \
+            --dst results/$3/color/kmeans-$4/models/intra/frame$i.bson \
+            --save-kmeans results/$3/color/kmeans-$4/kmeans-params.pkl \
+            --log2-clusters $4
+    done
+}
+vq_color 2 100 coffee_martini-regularization-1e-7 6
