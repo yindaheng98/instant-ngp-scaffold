@@ -7,7 +7,12 @@ render_color() {
         --load_snapshot results/$3/frame1.bson \
         --init results/$3/intra/frame1.bson \
         --frameformat results/$3/intra/frame%d.bson \
-        --savecam $4 \
-        --save_image results/$3/color/kmeans-none/%d.bin
+        --savecam camera/$4.txt \
+        --save_image results/$3/color/kmeans-none/$4/%d.bin
 }
-render_color 2 100 coffee_martini-regularization-1e-7 camera/coffee_martini-1.txt # debug
+# render_color 2 100 coffee_martini-regularization-1e-7 coffee_martini-1 # debug
+convert_color() {
+    python scripts/grayscale/bin2image.py \
+        --format results/$1/color/kmeans-none/$2/%d.bin
+}
+convert_color coffee_martini-regularization-1e-7 coffee_martini-1 # debug
