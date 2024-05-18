@@ -66,4 +66,21 @@ train_gray() {
         --saveformat "results/$2-regularization-none-gray/frame%d.bson" \
         --executable "./build/instant-ngp-train"
 }
-train_gray coffee_martini coffee_martini "none" 30000 10000 1 101
+# train_gray coffee_martini coffee_martini "none" 30000 10000 1 101
+gray2bson() {
+    python ./scripts/parse_seq2bson.py --start $1 --end $2 \
+        --saveformat results/$3-regularization-none-gray/frame%d.bson \
+        --fullexportformat results/$3-regularization-none-gray/intra/frame%d.bson
+}
+# gray2bson 1 101 coffee_martini
+render_gray_color() {
+    mkdir -p results/$3-regularization-none-gray/color/kmeans-none
+    ./build/instant-ngp-replay \
+        --start $1 --end $2 \
+        --load_snapshot results/$3-regularization-none-gray/frame1.bson \
+        --init results/$3-regularization-none-gray/intra/frame1.bson \
+        --frameformat results/$3-regularization-none-gray/intra/frame%d.bson \
+        --savecam camera/$4.txt \
+        --save_image results/$3-regularization-none-gray/color/kmeans-none/$4/%d.bin
+}
+render_gray_color 2 100 coffee_martini coffee_martini-1 # debug
