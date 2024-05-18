@@ -28,8 +28,8 @@ vq_color() {
         python scripts/grayscale/ngp2vq_intra.py \
             --src results/$3/intra/frame$i.bson \
             --dst results/$3/color/kmeans-$4/models/intra/frame$i.bson \
-            --log2-clusters $4 \
-            # --save-kmeans results/$3/color/kmeans-$4/kmeans-params.pkl
+            --log2-clusters $4
+        # --save-kmeans results/$3/color/kmeans-$4/kmeans-params.pkl
     done
 }
 # vq_color 2 100 coffee_martini-regularization-none 6
@@ -48,4 +48,22 @@ convert_vq_color() {
     python scripts/grayscale/bin2image.py \
         --format results/$1/color/kmeans-$2/$3/%d.bin
 }
-convert_vq_color coffee_martini-regularization-none 6 coffee_martini-1 # debug
+# convert_vq_color coffee_martini-regularization-none 6 coffee_martini-1 # debug
+train_gray() {
+    mkdir -p results/$2-regularization-none-gray
+    if [ -e "results/$2-frame0-gray.bson" ]; then
+        ./build/instant-ngp-train \
+            --step=$3 \
+            --save_snapshot results/$2-frame0-gray.bson \
+            data/nerf/$1/grayscale/frame$4
+    fi
+    cp results/$2-frame0.bson results/$2-regularization-none-gray/frame$6.bson
+    python scripts/train_seq.py \
+        --init_steps $4 --steps $5 --start $6 --end $7 \
+        --trainargs=--decay=0.5 \
+        --initformat "data/nerf/$1/grayscale/frame%d" \
+        --dataformat "data/nerf/$1/grayscale/frame%d" \
+        --saveformat "results/$2-regularization-none-gray/frame%d.bson" \
+        --executable "./build/instant-ngp-train"
+}
+train_gray coffee_martini coffee_martini "none" 30000 10000 1 101
