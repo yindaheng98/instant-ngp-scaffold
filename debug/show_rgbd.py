@@ -2,11 +2,12 @@ import open3d as o3d
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
+import tifffile
 
 print("Read Redwood dataset")
 redwood_rgbd = o3d.data.SampleRedwoodRGBDImages()
 color_raw = cv2.imread("results/coffee_martini-regularization-none-gray/color/kmeans-none/coffee_martini-1/33.png")
-depth_raw = np.load("results/coffee_martini-regularization-none-gray/color/kmeans-none/coffee_martini-1/33.npz")["rgbd"][..., -1]
+depth_raw = tifffile.imread("results/coffee_martini-regularization-none-gray/color/kmeans-none/coffee_martini-1/33.tif")
 # color_raw = o3d.io.read_image(redwood_rgbd.color_paths[0])
 # depth_raw = o3d.io.read_image(redwood_rgbd.depth_paths[0])
 depth_raw = (depth_raw * 65536).astype(np.uint16)

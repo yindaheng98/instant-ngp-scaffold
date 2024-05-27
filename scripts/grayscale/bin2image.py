@@ -2,6 +2,7 @@ import argparse
 import numpy as np
 import os
 import cv2
+import tifffile
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--format", type=str, required=True, help="The path format of the saved image bin.")
@@ -26,8 +27,7 @@ if __name__ == "__main__":
         img_cv = cv2.cvtColor((img*255).astype(np.uint8), cv2.COLOR_BGR2RGB)
         imgpath = os.path.splitext(binpath)[0] + ".png"
         cv2.imwrite(imgpath, img_cv)
-        depth = np.fromfile(binpath, dtype='float32')[1080*1920*4:].reshape((1080, 1920, 1))
-        rgbd = np.concatenate([img, depth], axis=-1)
-        np.savez_compressed(os.path.splitext(binpath)[0] + '.npz', rgbd=rgbd)
+        depth = np.fromfile(binpath, dtype='float32')[1080*1920*4:].reshape((1080, 1920))
+        tifffile.imsave(os.path.splitext(binpath)[0] + '.tif', depth)
         print(binpath, imgpath)
         i += 1
