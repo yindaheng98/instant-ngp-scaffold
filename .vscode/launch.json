@@ -603,14 +603,27 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--src",
-                "results/basketball-base_15-frame0.bson",
+                "results/grayscale/stnerf-taekwondo-color-frame1-base_17.bson",
                 "--dst",
-                "results/basketball-base_15-frame0-vq.bson",
+                "results/grayscale/stnerf-taekwondo-color-frame1-base_17-vq.bson",
                 "--log2-clusters",
-                "6",
+                "8",
                 "--save-kmeans",
-                "results/basketball-base_15-frame0-kmeans.pkl",
+                "results/grayscale/stnerf-taekwondo-color-frame1-base_17.pkl",
                 "--overwrite",
+            ]
+        },
+        {
+            "name": "bin2image",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/grayscale/bin2image.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--format",
+                "results/coffee_martini-regularization-none-gray/color/kmeans-none/coffee_martini-1/%d.bin",
             ]
         }
     ]
